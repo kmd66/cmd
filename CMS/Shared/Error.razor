@@ -1,0 +1,41 @@
+﻿@if (!string.IsNullOrEmpty(error))
+{
+    <h3 style="color:red">@error</h3>
+    claer();
+    
+    
+}
+@if (errorList.Count > 0)
+{
+    @foreach (var e in errorList)
+    {
+        <h3 style="color:red">@e</h3>
+    }
+    claer();
+    
+}
+
+@code {
+    [Parameter]
+    public string? error { get; set; }
+    [Parameter]
+    public List<string> errorList { get; set; }
+
+    protected void setError(string e)
+    {
+        error = e;
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    protected void setErrorList(List<string> e)
+    {
+        errorList = e;
+        if (e.Count > 0)
+            InvokeAsync(() => StateHasChanged());
+    }
+    protected void claer()
+    {
+        error = null;
+        errorList = new List<string>();
+    }
+}

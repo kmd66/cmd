@@ -1,0 +1,51 @@
+span[class^='svg'], div[class*='svg'] {
+    height: 25px;
+    background: var(--BaseColor);
+    width: 25px;
+    display: inline-block;
+}
+.svgUser {
+    mask-image: url(../svg/user.svg);
+}
+.svgKey {
+    mask-image: url(../svg/key.svg);
+}
+.svgHome {
+    mask-image: url(../svg/home.svg);
+}
+.svgPost {
+    mask-image: url(../svg/post.svg);
+}
+.svgGalleryImport {
+    mask-image: url(../svg/galleryImport.svg);
+}
+.svgMenu {
+    mask-image: url(../svg/menu.svg);
+}
+.svgMessage {
+    mask-image: url(../svg/message.svg);
+}
+.svgPersonalcard {
+    mask-image: url(../svg/personalcard.svg);
+}
+.svgSetting {
+    mask-image: url(../svg/setting.svg);
+}
+.svgLogout {
+    mask-image: url(../svg/logout.svg);
+}
+.svgWebsite {
+    mask-image: url(../svg/website.svg);
+}
+.svgArrowCircleUp {
+    mask-image: url(../svg/ArrowCircleUp.svg);
+}
+.svgFolderAdd {
+    mask-image: url(../svg/FolderAdd.svg);
+}
+.svgMenuLinear {
+    mask-image: url(../svg/MenuLinear.svg);
+}
+.svgSearch {
+    mask-image: url(../svg/Search.svg);
+}

@@ -1,0 +1,187 @@
+﻿@using CMS.Helper;
+@using CMS.Model.Files;
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage;
+@inject IJSRuntime Js;
+
+<div class="flm top-row">
+    <div class="flm-top d-flex align-items-center justify-content-between">
+        <div style="width: 50%;overflow: hidden;">
+            <span class="svgArrowCircleUp bg-dark" @onclick="upFolder"></span>
+            <span class="svgFolderAdd bg-dark" @onclick='(() => ChengState("creatFolder"))'></span>
+            <span class="svgSearch bg-dark"></span>
+        </div>
+        <div style="width: 50%;direction: ltr;overflow: hidden;"><span style="white-space: nowrap;">\@Obj.Serch.Path</span></div>
+    </div>
+    <div class="p-4 flm-main">
+        <div class="row">
+            @foreach (var item in Obj.Items)
+            {
+                i++;
+                string id = $"dropdownMenuButton{i}";
+                <div class="col-lg-3 col-md-4 col-sm-12 d-flex align-items-stretch">
+                    <div class="card w-100 my-2">
+
+                        <div class="@flmchClass(item)" @onclick="(() => getFolder(item))">
+                            @item.Name
+                        </div>
+                        <div class="p-2 text-center d-flex flex-grow-1 justify-content-center align-items-center">
+                            <span class="flm-c-m-s">@item.Extension.ToString().ToUpper()</span>
+                            <img src="@thumbnail(item)" style="width:100%;max-height: 150px" />
+                        </div>
+                        <div class="flm-c-b d-flex align-items-center justify-content-between">
+
+                            <div class="dropdown">
+                                <span class="svgMenuLinear bg-dark" data-bs-toggle="dropdown" aria-expanded="false" id="@id"></span>
+                                <ul class="dropdown-menu" aria-labelledby="@id">
+                                    <li><span class="dropdown-item" style="cursor: pointer;" @onclick="(() => RemoveORChengeName(item,true))">حذف</span></li>
+                                    <li><span class="dropdown-item" style="cursor: pointer;" @onclick="(() => RemoveORChengeName(item,false))">تغییر نام</span></li>
+                                </ul>
+                            </div>
+
+                            <button type="button" class="btn btn-primary btn-sm @btnDisabled(item)" @onclick="(() => SelectItme(item))">انتخاب</button>
+                        </div>
+                       
+                    </div>
+                </div>
+                
+            }
+        </div>
+    </div>
+    <div class="flm-bottom p-2">
+        <div class="input-group">
+            <input class="form-control" type="file" id="file" name="file" aria-label="Upload">
+            <button class="btn btn-outline-secondary" type="button" @onclick="saveFile">Button</button>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    int i = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        i = 0;
+        if (firstRender)
+        {
+            setItem();
+        }
+    }
+
+    async Task saveFile()
+    {
+        await Obj.LoadHandler(true);
+        var tw = await localStorage.GetAsync<string>("token");
+
+        var obj = new
+        {
+            fileId = "file",
+            token = tw.Value,
+            dir = Obj.Serch.Path
+        };
+        var result = await Js.InvokeAsync<Result>("saveFile", obj);
+        if (!result.Success)
+            await Obj.ErrorRequest(result);
+        else
+        {
+            await Obj.ShowAlert(new Alert { msg = "فایل بارگزاری شد", alertType = AlertType.success });
+            setItem();
+        }
+        await Obj.LoadHandler(false);
+    }
+
+    public void ChengState(string s)
+    {
+        Obj.ChengStateCallBack(s);
+    }
+
+    string thumbnail(Item model)
+    {
+        if (!model.IsImg)
+            return "./img/flm-img.png";
+        var t = model.Url.Split('.');
+        return $"{t[0]}-thumbnail.{model.Extension}";
+    }
+    string flmchClass(Item model)
+    {
+        if(model.Type == Model.PathType.Folder)
+            return $"flm-c-h flm-c-h-f";
+        return $"flm-c-h";
+    }
+    string btnDisabled(Item model)
+    {
+        if (model.Type == Model.PathType.Folder || Obj.SelectItem != null)
+            return "";
+        return "disabled";
+    }
+
+    private async void setItem()
+    {
+        var itemResult = Obj.Upload.GetItems(Obj.Serch);
+
+        if (!itemResult.Success)
+        {
+            await Obj.ErrorRequest(itemResult);
+            return;
+        }
+        Obj.Items = itemResult.Data;
+        StateHasChanged();
+    }
+
+    protected async Task getFolder(Item model)
+    {
+        if (model.Type != Model.PathType.Folder)
+            return;
+
+        if (string.IsNullOrEmpty(Obj.Serch.Path))
+            Obj.Serch.Path = $@"{model.Name}\";
+        else
+            Obj.Serch.Path += $@"{model.Name}\";
+        setItem();
+    }
+    protected async Task upFolder()
+    {
+        if (!string.IsNullOrEmpty(Obj.Serch.Path))
+        {
+            var t = Obj.Serch.Path.Split('\\');
+            if (t.Length == 2)
+            {
+                Obj.Serch.Path = null;
+                setItem();
+                return;
+            }
+
+            Obj.Serch.Path = Obj.Serch.Path = Obj.Serch.Path.Remove(Obj.Serch.Path.Remove(Obj.Serch.Path.Length - 1).LastIndexOf('\\') + 1);
+            setItem();
+        }
+    }
+    protected async Task SelectItme(Item model)
+    {
+        if (model.Type == Model.PathType.Folder || Obj.SelectItem != null)
+            await getFolder(model);
+        else if (Obj.SelectItem != null)
+            return;
+        else
+        {
+
+        }
+    }
+    protected async Task RemoveORChengeName(Item model, bool remove)
+    {
+        Obj.RemoveItem = null;
+        Obj.ChengeNameItem = null;
+        if (remove)
+            Obj.RemoveItem = model;
+        else
+            Obj.ChengeNameItem = model;
+
+        Obj.ChengStateCallBack("RemoveORChengeName");
+    }
+
+}

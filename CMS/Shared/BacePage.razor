@@ -1,0 +1,109 @@
+﻿@typeparam T where T : BasePageObj
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject Helper.ApiRequest apiRequest
+@inject ProtectedLocalStorage localStorage
+@inject NavigationManager _navManager;
+@inject IJSRuntime Js
+
+<div class="loding" id="loding">
+    <div class="container h-100">
+
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+    <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+        </div>
+    </div>
+</div>
+
+<div class="anotherElement"></div>
+
+@code {
+
+    public virtual T Obj { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Obj.State = "main";
+            Obj.ChengStateCallBack = ChengState;
+            Obj.ShowAlert = async delegate (Alert model)
+            {
+                await ShowAlert(model);
+            }; 
+            Obj.LoadHandler = async delegate (bool model)
+            {
+                await LoadHandler(model);
+            };
+            Obj.ErrorRequest = async delegate (Result model)
+            {
+                await ErrorRequest(model);
+            };
+        }
+    }
+
+    public void ChengState(string s)
+    {
+        Obj.State = s;
+        StateHasChanged();
+    }
+    public void MethodA(bool message)
+    {
+        Console.WriteLine(message);
+    }
+
+    public async Task LoadHandler(bool b)
+    {
+        if (b)
+           await ShowLoad();
+        else
+           await HideLoad();
+    }
+
+    public async Task ShowLoad()
+        => await Js.InvokeVoidAsync("ShowLoad");
+    public async Task HideLoad()
+        => await Js.InvokeVoidAsync("HideLoad");
+
+
+    public async Task<Result<T>> Request<T>(string route, object? data = null)
+    {
+        var tw = await localStorage.GetAsync<string>("token");
+        var result = await apiRequest.Post<T>(route, data, tw.Value);
+        if (!result.Success)
+            await ErrorRequest(result);
+        return result;
+        //StateHasChanged();
+    }
+    public async Task ShowAlert(Alert model)
+    => await ShowAlert(model.msg, model.alertType, model.expires, model.withProgress, model.container);
+    public async Task ShowAlert(string msg,
+        AlertType alertType,
+        bool expires = true,
+        bool withProgress = true,
+        string container = ".anotherElement"
+    )
+    {
+        var obj = new
+        {
+            type = alertType.ToString(),
+            message = msg,
+            expires = expires,
+            container = container,
+            withProgress = withProgress
+        };
+        await Js.InvokeVoidAsync("JsShowAlert", obj);
+    }
+
+    private async Task ErrorRequest(Result result)
+    {
+        await ShowAlert(result.Message, AlertType.error);
+        if (result.Code == 401)
+        {
+            await localStorage.DeleteAsync("token");
+            await Js.InvokeVoidAsync("ShowModal", "tokenModal");
+        }
+    }
+}

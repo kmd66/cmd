@@ -1,0 +1,30 @@
+﻿@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+@inject Helper.ApiRequest apiRequest;
+@inject ProtectedLocalStorage localStorage;
+@inject NavigationManager _navManager;
+
+@ChildContent
+@if (show == true)
+{
+}
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    public bool show = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+            var tw = await localStorage.GetAsync<string>("token");
+            if (!tw.Success)
+            {
+                _navManager.NavigateTo("/cmd-login");
+            }
+            show = true;
+            StateHasChanged();
+        }
+    }
+}

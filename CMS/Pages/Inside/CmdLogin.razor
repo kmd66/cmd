@@ -1,0 +1,77 @@
+﻿@page "/cmd-login"
+@using CMS.Helper;
+@using CMS.Model;
+@inherits BacePage<BasePageObj>
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@inject NavigationManager _navManager
+
+<PageTitle>Login</PageTitle>
+
+@{base.BuildRenderTree(__builder);}
+
+
+<div class="w-100 h-100 bg-BasebackgroundColor">
+    <div class="container h-100">
+
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+            <div class="card" style="width:350px">
+                <div class="p-3  h2 bg-BaseColor text-white text-center">
+                    فرم ورود
+                </div>
+                <div class="p-4">
+
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-BaseColor" id="basic-addon1">
+                            <span class="svgUser bg-white"></span>
+                        </span>
+
+                        <input @bind="InputValue.UserName" placeholder="Username" class="form-control" type="text" />
+                    </div>
+
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-BaseColor" id="basic-addon1">
+                            <span class="svgKey bg-white"></span>
+                        </span>
+
+                        <input @bind="InputValue.Password" placeholder="Password" class="form-control" type="password" />
+                    </div>
+                    <button type="button" class="btn w-100 bg-BaseColor text-white mt-4" @onclick="getToken">ورود</button>
+                    <div class="mt-3 text-center">cmd login template</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private User InputValue = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+    async Task getToken()
+    {
+
+        await ShowLoad();
+
+        var t = await Request<TokenObject>(AppRoute.TokenGet, InputValue);
+        if (t.Success)
+        {
+            await localStorage.SetAsync("token", t.Data.AccessToken);
+            _navManager.NavigateTo("/cmd-admin/index");
+        }
+
+        await HideLoad();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var tw = await localStorage.GetAsync<string>("token");
+        if (tw.Success)
+        {
+            _navManager.NavigateTo("/cmd-admin/index");
+        }
+    }
+
+}

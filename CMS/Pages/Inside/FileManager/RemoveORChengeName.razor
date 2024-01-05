@@ -1,0 +1,89 @@
+﻿@using CMS.Helper;
+@using CMS.Model.Files;
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage;
+@inject IJSRuntime Js;
+
+@Obj.Serch.Path
+
+@if (Obj.ChengeNameItem != null) 
+{
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">نام جدید برای @Obj.ChengeNameItem.Name</label>
+        <input @bind="NewName" type="text" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="ChengeName">ویرایش</button>
+}
+else if (Obj.RemoveItem != null)
+{
+    <div class="mb-3">
+        آیا از حذف @Obj.RemoveItem.Name اطمینان دارید؟
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="Remove">تایید</button>
+}
+else
+{
+    <h1>مشکلی رخ داده است</h1>
+}
+
+<button type="button" class="btn bg-secondary mx-2"
+        @onclick='(() => Obj.ChengStateCallBack("main"))'>
+    انصراف
+</button>
+
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+    public string NewName { get; set; }
+
+
+    public async Task ChengeName()
+    {
+        if (string.IsNullOrEmpty(NewName))
+        {
+            await Obj.ShowAlert(new Model.Alert
+                {
+                    msg = "نام وارد نشده",
+                    alertType = Model.AlertType.error
+                });
+            return;
+        }
+
+        var f = Obj.Upload.Rename(Obj.Serch.Path, Obj.ChengeNameItem, NewName);
+        if (f.Success)
+        {
+            await Obj.ShowAlert(new Model.Alert
+                {
+                    msg = "نام تغییر کرد",
+                    alertType = Model.AlertType.success
+                });
+            Obj.ChengStateCallBack("main");
+        }
+        else
+        {
+            await Obj.ErrorRequest(f);
+        }
+    }
+    public async Task Remove()
+    {
+        var f = Obj.Upload.Delete(Obj.Serch.Path, Obj.RemoveItem);
+        if (f.Success)
+        {
+            await Obj.ShowAlert(new Model.Alert
+                {
+                    msg = "حذف انجام شد",
+                    alertType = Model.AlertType.success
+                });
+            Obj.ChengStateCallBack("main");
+        }
+        else
+        {
+            await Obj.ErrorRequest(f);
+        }
+    }
+
+}

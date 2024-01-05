@@ -1,0 +1,51 @@
+﻿@using CMS.Helper;
+@using CMS.Model.Files;
+
+
+<div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">نام پوشه</label>
+    <input @bind="FolderName" type="text" class="form-control">
+</div>
+
+<button type="submit" class="btn btn-primary" @onclick="Creat">ایجاد</button>
+
+<button type="button" class="btn bg-secondary"
+        @onclick='(() => Obj.ChengStateCallBack("main"))'>
+    انصراف
+</button>
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+    public string FolderName { get; set; }
+
+
+    public async void Creat()
+    {
+        if (string.IsNullOrEmpty(FolderName))
+        {
+            await Obj.ShowAlert(new Model.Alert
+            {
+                msg= "نام وارد نشده",
+                alertType = Model.AlertType.error
+            });
+            return;
+        }
+
+        var f = Obj.Upload.CreateFolder(Obj.Serch, FolderName);
+        if(f.Success)
+        {
+            await Obj.ShowAlert(new Model.Alert
+                {
+                    msg = "پوشه ایجاد شد",
+                    alertType = Model.AlertType.success
+                });
+            Obj.ChengStateCallBack("main");
+        }
+        else
+        {
+            await Obj.ErrorRequest(f);
+        }
+    }
+}

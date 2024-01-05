@@ -1,0 +1,30 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage;
+@inject NavigationManager _navManager;
+@inject IJSRuntime Js;
+
+<nav class="navbar fixed-top bg-dark text-white">
+    <div class="container-fluid">
+        <span class="svgWebsite bg-white" style="cursor: pointer;width: 16px;height: 16px;" @onclick="GetToWeb"></span>
+        <span class="svgUser bg-white" style="cursor: pointer;width: 16px;height: 16px;" @onclick="User"></span>
+        <span class="svgLogout  bg-white" style="cursor: pointer;width: 16px;height: 16px;" @onclick="Logout"></span>
+    </div>
+</nav>
+
+@code {
+    private async Task GetToWeb()
+    {
+        await Js.InvokeVoidAsync("OpenNewTab", _navManager.BaseUri);
+    }
+
+    private void User()
+    {
+        _navManager.NavigateTo("/cmd-profile");
+    }
+    private async Task Logout()
+    {
+        await localStorage.DeleteAsync("token");
+        _navManager.NavigateTo("/cmd-login");
+    }
+
+}

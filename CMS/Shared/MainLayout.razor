@@ -1,0 +1,72 @@
+﻿@inherits LayoutComponentBase
+@using CMS.Shared.Component;
+@inject NavigationManager _navManager
+@inject IJSRuntime Js
+
+<PageTitle>CMS M l</PageTitle>
+
+
+@if (_navManager.Uri.Contains("cmd-login"))
+{
+    @Body
+}
+else if (_navManager.Uri.Contains("cmd-admin"))
+{
+    <CheckToken>
+        <div class="container-fluid">
+            <div class="row flex-nowrap">
+                <AdminNavMenu />
+                <AdminSideMenu />
+
+                <div class="col py-3" style="margin: 40px 0 20px 0;">
+                    @Body
+                </div>
+
+            </div>
+        </div>
+    </CheckToken>
+}
+else
+{
+    <div class="page">
+        <div class="sidebar">
+        </div>
+
+        <main>
+            <div class="top-row px-4">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            </div>
+
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+}
+
+<div class="modal fade" id="tokenModal" tabindex="-1" aria-labelledby="tokenModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tokenModalLabel">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                توکن منقضی  شده برای ورود رودکه تایید کلیک کنید
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary" @onclick="GetLogin">تایید</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+
+    private void GetLogin()
+    {
+        _navManager.NavigateTo("/cmd-login");
+        Js.InvokeVoidAsync("HideModal", "tokenModal");
+    }
+}
