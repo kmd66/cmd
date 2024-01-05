@@ -13,10 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpContextAccessor();
 
-RegisterLibrary(builder.Services);
 SetProperty(builder);
-
+RegisterLibrary(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,7 +44,8 @@ app.Run();
 void RegisterLibrary(IServiceCollection services)
 {
     services.AddDbService();
-    services.AddScoped<IInfo, CMS.Tools.Info>();
+    //services.AddScoped<IInfo, CMS.Tools.Info>();
+    services.AddScoped<IRequestInfo, CMS.Tools.RequestInfo>();
     services.AddTransient<ApiRequest>();
 }
 

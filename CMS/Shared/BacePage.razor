@@ -27,20 +27,23 @@
     {
         if (firstRender)
         {
-            Obj.State = "main";
-            Obj.ChengStateCallBack = ChengState;
-            Obj.ShowAlert = async delegate (Alert model)
+            if (Obj != null)
             {
-                await ShowAlert(model);
-            }; 
-            Obj.LoadHandler = async delegate (bool model)
-            {
-                await LoadHandler(model);
-            };
-            Obj.ErrorRequest = async delegate (Result model)
-            {
-                await ErrorRequest(model);
-            };
+                Obj.State = "main";
+                Obj.ChengStateCallBack = ChengState;
+                Obj.ShowAlert = async delegate (Alert model)
+                {
+                    await ShowAlert(model);
+                };
+                Obj.LoadHandler = async delegate (bool model)
+                {
+                    await LoadHandler(model);
+                };
+                Obj.ErrorRequest = async delegate (Result model)
+                {
+                    await ErrorRequest(model);
+                };
+            }
         }
     }
 
@@ -66,7 +69,7 @@
         => await Js.InvokeVoidAsync("ShowLoad");
     public async Task HideLoad()
         => await Js.InvokeVoidAsync("HideLoad");
-
+        
 
     public async Task<Result<T>> Request<T>(string route, object? data = null)
     {
@@ -77,6 +80,15 @@
         return result;
         //StateHasChanged();
     }
+    public async Task<Result> Request(string route, object? data = null)
+    {
+        var tw = await localStorage.GetAsync<string>("token");
+        var result = await apiRequest.Post(route, data, tw.Value);
+        if (!result.Success)
+            await ErrorRequest(result);
+        return result;
+    }
+
     public async Task ShowAlert(Alert model)
     => await ShowAlert(model.msg, model.alertType, model.expires, model.withProgress, model.container);
     public async Task ShowAlert(string msg,

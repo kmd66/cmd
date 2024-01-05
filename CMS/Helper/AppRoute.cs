@@ -12,5 +12,7 @@ namespace CMS.Helper
         public const string TokenGet = "api/Token/Get";
         public const string TokenGet2 = "api/Token/Get2";
 
+        // User
+        public const string UserChangePassword = "api/User/ChangePassword";
     }
 }

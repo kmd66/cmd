@@ -41,3 +41,11 @@ body {
 .sideMenu a {
     color: rgba(var(--bs-white-rgb),var(--bs-text-opacity)) !important;
 }
+.ltr {
+    direction: ltr;
+    text-align: left;
+}
+.rtl {
+    direction: rtl;
+    text-align: right;
+}

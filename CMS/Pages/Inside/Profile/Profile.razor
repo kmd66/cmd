@@ -1,0 +1,52 @@
+﻿@page "/cmd-admin/profile"
+@inherits BacePage<BasePageObj>
+@using CMS.Helper;
+@using CMS.Model;
+
+<link rel="stylesheet" href="./comcss/FileManager.css" />
+
+<PageTitle>profile</PageTitle>
+@{base.BuildRenderTree(__builder);}
+
+<h1>تغییر رمز عبور</h1>
+
+<div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+    <label class="form-label">رمز عبور</label>
+    <input @bind="model.Password" type="password" class="form-control ltr">
+</div>
+<div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+    <label class="form-label">رمز عبور جدید</label>
+    <input @bind="model.NewPassword1" type="password" class="form-control ltr">
+</div>
+<div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+    <label class="form-label">تکرار رمز عبور جدید</label>
+    <input @bind="model.NewPassword2" type="password" class="form-control ltr">
+</div>
+
+<button type="submit" class="btn btn-primary" @onclick="ChangePassword">تغییر رمز عبور</button>
+
+@code {
+    private UserChangePassword model = new UserChangePassword();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public async Task ChangePassword()
+    {
+        await ShowLoad();
+
+        var t = await Request(AppRoute.UserChangePassword, model);
+        if (t.Success)
+        {
+            await ShowAlert("رمز عبور تغییر کرد", AlertType.success);
+        }
+
+        await HideLoad();
+    }
+
+}

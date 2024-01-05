@@ -7,7 +7,6 @@
 @inject IJSRuntime Js;
 
 <PageTitle>CMS</PageTitle>
-
 @{base.BuildRenderTree(__builder);}
 
 
@@ -37,7 +36,7 @@
         {
             await ShowAlert(result.Message, AlertType.error);
         }
-        await HideLoad();
+        //await HideLoad();
     }
 
     async Task getToken()
@@ -51,7 +50,7 @@
             await ShowAlert("ssssssss", AlertType.success);
         }
 
-        await HideLoad();
+        //await HideLoad();
     }
 
     protected override async Task OnInitializedAsync()
