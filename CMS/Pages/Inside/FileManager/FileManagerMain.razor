@@ -83,7 +83,7 @@
         {
             fileId = "file",
             token = tw.Value,
-            dir = Obj.Serch.Path
+            dir = Obj.Serch.Path != null ? Obj.Serch.Path:""
         };
         var result = await Js.InvokeAsync<Result>("saveFile", obj);
         if (!result.Success)
