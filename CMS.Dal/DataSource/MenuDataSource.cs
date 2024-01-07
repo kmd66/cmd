@@ -98,17 +98,15 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<IEnumerable<Menu>>> ListAsync(MenuVM model)
+        public async Task<Result> ListAsync()
         {
             try
             {
-                var ett = await _pblContexts.Menus.Where(
-                    x =>(model.Published == null || x.Published == model.Published)
-                ).ToListAsync();
+                var ett = await _pblContexts.Menus.ToListAsync();
 
-                var returnMOdel = MapList<Menu, DbModel.Menu>(ett);
+                Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
 
-                return Result<IEnumerable<Menu>>.Successful(data: returnMOdel);
+                return Result.Successful();
             }
             catch (Exception ex)
             {

@@ -1,0 +1,30 @@
+﻿@using CMS.Model;
+
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    int i = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        i = 0;
+        if (firstRender)
+        {
+        }
+
+    }
+
+    private async void setItem()
+    {
+        var itemResult = Obj.Helper.GetItems(Obj.Serch);
+
+        if (!itemResult.Success)
+        {
+            await Obj.ErrorRequest(itemResult);
+            return;
+        }
+        Obj.Items = itemResult.Data;
+        StateHasChanged();
+    }
+}

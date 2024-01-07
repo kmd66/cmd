@@ -1,8 +1,17 @@
-﻿namespace CMS.Model
+﻿using System.Text.Json;
+
+namespace CMS.Model
 {
     public class Menu : BaseModel
     {
         public Menu() { }
+        public static Menu Instance(Menu item)
+        {
+            string jsonString = JsonSerializer.Serialize(item);
+
+            var menu = JsonSerializer.Deserialize<Menu>(jsonString);
+            return menu != null ? menu : new Menu();
+        }
 
         public int Order { get; set; }
         
@@ -19,6 +28,8 @@
         public DateTime Date { get; set; }
 
         public bool Published { get; set; }
+
+        public List<Menu>? Child { get; set; }
 
 
     }

@@ -1,0 +1,36 @@
+﻿@page "/cmd-admin/menu"
+@using CMS.Helper;
+@using CMS.Model;
+@inherits BacePage<PageObj>
+
+<PageTitle>menu</PageTitle>
+
+@{base.BuildRenderTree(__builder);}
+
+
+@if (Obj.State == "Main")
+{
+    <MenuMain Obj="@Obj" />
+}
+else if (Obj.State == "Edit" || Obj.State == "Add")
+{
+    <MenuModify Obj="@Obj" />
+}
+
+@code {
+    private PageObj obj = new PageObj();
+    public override PageObj Obj { get => obj; set => obj = value; }
+    public bool isShow = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var token = await localStorage.GetAsync<string>("token");
+            Obj.Upload = new UploadHelper(token.Value);
+            isShow = true;
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

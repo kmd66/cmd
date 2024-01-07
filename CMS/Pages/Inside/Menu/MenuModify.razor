@@ -1,0 +1,15 @@
+﻿@using CMS.Model;
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    int i = 0;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        i = 0;
+        if (firstRender)
+        {
+        }
+    }
+}

@@ -1,4 +1,5 @@
 
+using CMS.Dal.DataSource;
 using CMS.Helper;
 using CMS.Model.Interface;
 using Microsoft.AspNetCore.Components;
@@ -41,12 +42,14 @@ CMS.Tools.Container.Init(builder.Services);
 app.MapControllers();
 app.Run();
 
-void RegisterLibrary(IServiceCollection services)
+async void RegisterLibrary(IServiceCollection services)
 {
     services.AddDbService();
     //services.AddScoped<IInfo, CMS.Tools.Info>();
     services.AddScoped<IRequestInfo, CMS.Tools.RequestInfo>();
     services.AddTransient<ApiRequest>();
+
+    await new MenuDataSource().ListAsync();
 }
 
 void SetProperty(WebApplicationBuilder b)
