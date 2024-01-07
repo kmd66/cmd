@@ -1,11 +1,6 @@
 ﻿using CMS.Dal.DbModel;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using Sample.Model.Data;
 
 namespace CMS.Dal
 {
@@ -28,13 +23,18 @@ namespace CMS.Dal
 
             modelBuilder.Entity<User>()
                 .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<Menu>()
+                .HasIndex(p => p.UnicId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(CMS.Model.Property.ConnectionString);
+            optionsBuilder.UseSqlServer(Register.ConnectionString);
 
         }
+
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Menu> Menus { get; set; }
     }
 }

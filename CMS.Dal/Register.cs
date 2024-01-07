@@ -1,10 +1,12 @@
 ﻿using CMS.Dal;
+using CMS.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Sample.Model.Data
 {
@@ -17,6 +19,22 @@ namespace Sample.Model.Data
 
             return services;
 
+        }
+        private static string connectionString;
+        public static string ConnectionString
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    using (StreamReader sr = File.OpenText(AppContext.BaseDirectory+"/dalSettings.txt"))
+                    {
+                        connectionString = sr.ReadToEnd();
+                    }
+
+                }
+                return connectionString;
+            }
         }
     }
 }

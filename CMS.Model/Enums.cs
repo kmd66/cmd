@@ -31,11 +31,19 @@
         docx ,
         zip ,
         rar ,
-        _7z 
+        _7z
     }
     public enum PathType
     {
         File,
         Folder
     }
+    public enum MenuType
+    {
+        Title,
+        Content,
+        Categorie,
+        Link
+    }
+
 }

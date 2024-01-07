@@ -1,0 +1,3 @@
+abp new Abp.UploudCenter -u blazor -csf v 7.0.0
+dotnet ef migrations add Created_Book_Entity
+dotnet ef database update

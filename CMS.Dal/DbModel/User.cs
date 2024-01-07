@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace CMS.Dal.DbModel
         [MaxLength(25)]
         public string Password { get; set; }
 
+        [DefaultValue(0)]
         public byte Type { get; set; }
 
         public DateTime Date { get; set; }

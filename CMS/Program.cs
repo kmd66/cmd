@@ -52,6 +52,7 @@ void RegisterLibrary(IServiceCollection services)
 void SetProperty(WebApplicationBuilder b)
 {
     var builder = WebApplication.CreateBuilder();
+    //CMS.Model.Property.ConnectionString = b.Configuration.GetConnectionString("SqlServer");
     CMS.Model.Property.ConnectionString = b.Configuration.GetConnectionString("SqlServer");
     CMS.Model.Property.AccessTokenExpireTimeSpan = int.Parse(b.Configuration["AppSettings:AccessTokenExpireTimeSpan"]);
     CMS.Model.Property.AttachmentSize = int.Parse(b.Configuration["AppSettings:AttachmentSize"]);
