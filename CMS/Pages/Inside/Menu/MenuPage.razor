@@ -1,36 +1,53 @@
-﻿@page "/cmd-admin/menu"
+﻿@page "/cmd-admin/menu/{state?}/{id?}"
+@inherits BacePage<PageObj>
 @using CMS.Helper;
 @using CMS.Model;
-@inherits BacePage<PageObj>
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
 
 <PageTitle>menu</PageTitle>
 
 @{base.BuildRenderTree(__builder);}
 
-
-@if (Obj.State == "Main")
+@if (Obj.State == "main")
 {
     <MenuMain Obj="@Obj" />
 }
-else if (Obj.State == "Edit" || Obj.State == "Add")
+else if (Obj.State == "edit" || Obj.State == "add")
 {
-    <MenuModify Obj="@Obj" />
+    <MenuModify Obj="@Obj" id="id" />
+}
+else if (Obj.State != "loading")
+{
+    <h3>وضعیت اشتباه</h3>
+    <h6>مطلبی برای نمایش وجود ندارد</h6>
 }
 
 @code {
-    private PageObj obj = new PageObj();
+    [Parameter]
+    public string id { get; set; }
+    [Parameter]
+    public string state { get; set; }
+
+    private PageObj obj = new PageObj() { State = "loading" };
     public override PageObj Obj { get => obj; set => obj = value; }
-    public bool isShow = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             var token = await localStorage.GetAsync<string>("token");
-            Obj.Upload = new UploadHelper(token.Value);
-            isShow = true;
+            Obj.Helper = new MenuHelper(token.Value);
+            FirstRender(state);
             StateHasChanged();
+        }else
+        {
+            if (Obj.State != state)
+            {
+                Obj.State = state;
+                StateHasChanged();
+            }
         }
-        await base.OnAfterRenderAsync(firstRender);
+        //await base.OnAfterRenderAsync(firstRender);
     }
 }

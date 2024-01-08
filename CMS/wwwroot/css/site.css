@@ -49,3 +49,15 @@ body {
     direction: rtl;
     text-align: right;
 }
+.tableMain {
+    border: 1px solid #dee2e6;
+    border-bottom: unset;
+    border-top: unset;
+}
+.tableHeder {
+    background: #dee2e6;
+    padding: 5px;
+}
+    .tableHeder a {
+        color: var(--BaseColor);
+    }

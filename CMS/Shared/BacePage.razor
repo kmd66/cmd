@@ -27,24 +27,30 @@
     {
         if (firstRender)
         {
-            if (Obj != null)
-            {
-                Obj.State = "main";
-                Obj.ChengStateCallBack = ChengState;
-                Obj.ShowAlert = async delegate (Alert model)
-                {
-                    await ShowAlert(model);
-                };
-                Obj.LoadHandler = async delegate (bool model)
-                {
-                    await LoadHandler(model);
-                };
-                Obj.ErrorRequest = async delegate (Result model)
-                {
-                    await ErrorRequest(model);
-                };
-            }
+            FirstRender();
         }
+    }
+
+    public void FirstRender(string state = "main")
+    {
+        if (Obj != null)
+        {
+            Obj.State = state;
+            Obj.ChengStateCallBack = ChengState;
+            Obj.ShowAlert = async delegate (Alert model)
+            {
+                await ShowAlert(model);
+            };
+            Obj.LoadHandler = async delegate (bool model)
+            {
+                await LoadHandler(model);
+            };
+            Obj.ErrorRequest = async delegate (Result model)
+            {
+                await ErrorRequest(model);
+            };
+        }
+
     }
 
     public void ChengState(string s)

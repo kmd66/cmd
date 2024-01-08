@@ -4,7 +4,7 @@ namespace CMS.Model
 {
     public static class Menus{
 
-        public static List<Menu> List { get; set; }
+        public static List<Menu> List = new List<Menu>();
 
         public static List<Menu> GetList(MenuVM modelVM)
         {

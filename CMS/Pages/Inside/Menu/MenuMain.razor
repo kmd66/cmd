@@ -1,5 +1,40 @@
 ﻿@using CMS.Model;
+<div class="tableMain">
+    <div class="tableHeder">
+        <NavLink href='cmd-admin/menu/add' class="btn">
+            ایجاد
+        </NavLink>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" style="width:50px"></th>
+                <th scope="col">نام</th>
+                <th scope="col">نوع</th>
+                <th scope="col" style="width:50px"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Obj.Items)
+            {
+                <tr>
+                    <th scope="row" style="text-align:center;cursor: pointer;color:var(--BaseColor);">
+                        <div @onclick='(() => ChangeIndex(true, item))'>↑</div>
+                        <div @onclick='(() => ChangeIndex(false, item))'>↓</div>
+                    </th>
+                    <td>@item.Name</td>
+                    <td>@item.Type</td>
+                    <td style="text-align:center">
+                        <NavLink href='@($"cmd-admin/menu/edit/{item.UnicId}")' class="nav-link d-flex">
+                            <span class="svgEdit"></span>
+                        </NavLink>
+                    </td>
+                </tr>
 
+            }
+        </tbody>
+    </table>
+</div>
 
 @code {
     [Parameter]
@@ -11,6 +46,7 @@
         i = 0;
         if (firstRender)
         {
+            setItem();
         }
 
     }
@@ -26,5 +62,36 @@
         }
         Obj.Items = itemResult.Data;
         StateHasChanged();
+    }
+
+    private async void ChangeIndex(bool up, Model.Menu model)
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.EditItem(model);
+
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            return;
+        }
+        await Obj.LoadHandler(false);
+        setItem();
+    }
+
+    private async void SetPublish(Model.Menu model)
+    {
+        model.Published = !model.Published;
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.EditItem(model);
+
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            return;
+        }
+        await Obj.LoadHandler(false);
+        setItem();
     }
 }

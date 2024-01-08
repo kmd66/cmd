@@ -1,4 +1,5 @@
-﻿using CMS.Helper;
+﻿using CMS.Dal.DataSource;
+using CMS.Helper;
 using CMS.Model;
 
 namespace CMS.Pages.Inside.Menu
@@ -13,8 +14,10 @@ namespace CMS.Pages.Inside.Menu
                 if (claims != null)
                     isAuthorize = true;
             }
+            _dataSource = new MenuDataSource();
         }
         public bool isAuthorize { get; set; }
+        private readonly MenuDataSource _dataSource;
 
         public Result<List<Model.Menu>> GetItems(MenuVM model)
         {
@@ -23,6 +26,26 @@ namespace CMS.Pages.Inside.Menu
 
             var items = Menus.GetList(model);
             return Result<List<Model.Menu>>.Successful(data: items);
+        }
+
+        public Result ChangeIndex(bool up, Model.Menu model)
+        {
+            if (!isAuthorize)
+                return Result<List<Model.Menu>>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+            //Menus
+            //var items = Menus.GetList(model);
+            return Result.Successful();
+        }
+
+        public async Task<Result> EditItem(Model.Menu model)
+        {
+            if (!isAuthorize)
+                return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+           await  _dataSource.EditAsync(model);
+
+            return Result.Successful();
         }
     }
 }

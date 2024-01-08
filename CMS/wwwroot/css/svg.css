@@ -49,3 +49,6 @@ span[class^='svg'], div[class*='svg'] {
 .svgSearch {
     mask-image: url(../svg/Search.svg);
 }
+.svgEdit {
+    mask-image: url(../svg/Edit.svg);
+}

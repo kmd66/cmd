@@ -38,12 +38,13 @@
         File,
         Folder
     }
-    public enum MenuType
+    public enum MenuType : byte
     {
-        Title,
-        Content,
-        Categorie,
-        Link
+        Unknown = 0,
+        Title =1,
+        Content =2,
+        Categorie=3,
+        Link=4
     }
 
 }

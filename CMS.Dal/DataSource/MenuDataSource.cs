@@ -40,7 +40,7 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<Menu>> AddAsync(Menu model)
+        public async Task<Result> AddAsync(Menu model)
         {
             try
             {
@@ -48,18 +48,18 @@ namespace CMS.Dal.DataSource
                 _pblContexts.Add<Dal.DbModel.Menu>(ett);
                 await _pblContexts.SaveChangesAsync();
                
-                return await GetAsync(0, ett.UnicId);
+                return await ListAsync();
             }
             catch (Exception ex)
             {
-                return Result<Menu>.Failure(message: ex.Message);
+                return Result.Failure(message: ex.Message);
             }
             finally
             {
                 _pblContexts.ChangeTracker.Clear();
             }
         }
-        public async Task<Result<Menu>> EditAsync(Menu model)
+        public async Task<Result> EditAsync(Menu model)
         {
             try
             {
@@ -67,11 +67,11 @@ namespace CMS.Dal.DataSource
                 _pblContexts.Update<Dal.DbModel.Menu>(ett);
                 await _pblContexts.SaveChangesAsync();
                
-                return await GetAsync(0, ett.UnicId);
+                return await ListAsync();
             }
             catch (Exception ex)
             {
-                return Result<Menu>.Failure(message: ex.Message);
+                return Result.Failure(message: ex.Message);
             }
             finally
             {
@@ -105,7 +105,7 @@ namespace CMS.Dal.DataSource
                 var ett = await _pblContexts.Menus.ToListAsync();
 
                 Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
-
+                Menus.List.OrderBy(x => x.Order);
                 return Result.Successful();
             }
             catch (Exception ex)
