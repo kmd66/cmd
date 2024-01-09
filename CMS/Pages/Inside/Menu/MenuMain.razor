@@ -1,4 +1,5 @@
 ﻿@using CMS.Model;
+
 <div class="tableMain">
     <div class="tableHeder">
         <NavLink href='cmd-admin/menu/add' class="btn">
@@ -17,10 +18,10 @@
         <tbody>
             @foreach (var item in Obj.Items)
             {
-                <tr>
+                <tr class="@getNemwCalss(item)">
                     <th scope="row" style="text-align:center;cursor: pointer;color:var(--BaseColor);">
-                        <div @onclick='(() => ChangeIndex(true, item))'>↑</div>
-                        <div @onclick='(() => ChangeIndex(false, item))'>↓</div>
+                        <div @onclick='(() => SetOrder(item,true))'>↑</div>
+                        <div @onclick='(() => SetOrder(item,false))'>↓</div>
                     </th>
                     <td>@item.Name</td>
                     <td>@item.Type</td>
@@ -64,11 +65,16 @@
         StateHasChanged();
     }
 
-    private async void ChangeIndex(bool up, Model.Menu model)
+    private string getNemwCalss(Menu model)
+    {
+        return model.Published ? " cmc" : " text-danger";
+    }
+
+    private async void SetOrder(Model.Menu model, bool up)
     {
         await Obj.LoadHandler(true);
 
-        var result = await Obj.Helper.EditItem(model);
+        var result = await Obj.Helper.SetOrder(model, up);
 
         if (!result.Success)
         {

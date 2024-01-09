@@ -1,8 +1,9 @@
 ﻿@using CMS.Helper;
 @using CMS.Model;
 
-@if (Child?.Count > 0)
+@if (Obj.EditItem.Child?.Count > 0)
 {
+    <hr class="mt-4" />
     <div class="tableMain mt-4">
         <div class="tableHeder text-center p-2">
             زیر مجموعه
@@ -18,10 +19,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Child)
+                @foreach (var item in Obj.EditItem.Child)
                 {
-                    <tr>
+                    <tr class="@getNemwCalss(item)">
                         <th scope="row" style="text-align:center;cursor: pointer;color:var(--BaseColor);">
+                            <div @onclick='(() => SetOrder(item,true))'>↑</div>
+                            <div @onclick='(() => SetOrder(item,false))'>↓</div>
                         </th>
                         <td>@item.Name</td>
                         <td>@item.Type</td>
@@ -40,5 +43,28 @@
 
 @code {
     [Parameter]
-    public List<Menu>? Child { get; set; }
+    public PageObj Obj { get; set; }
+    [Parameter]
+    public EventCallback selectItem { get; set; }
+
+    private string getNemwCalss(Menu model)
+    {
+        return model.Published ? " cmc" : " text-danger";
+    }
+
+    private async void SetOrder(Model.Menu model, bool up)
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.SetOrder(model, up);
+
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            return;
+        }
+        await Obj.LoadHandler(false);
+        await selectItem.InvokeAsync();
+        //setItem();
+    }
 }

@@ -20,17 +20,16 @@ namespace CMS.Dal.DbModel
         [MaxLength(25)]
         public string Name { get; set; }
 
-        [DefaultValue("")]
         public string Link { get; set; }
+
+        public Guid PostId { get; set; }
 
         public Guid Parent { get; set; }
 
-        [DefaultValue("")]
         public string Img { get; set; }
 
         public DateTime Date { get; set; }
 
-        [DefaultValue(true)]
         public bool Published { get; set; }
     }
 }

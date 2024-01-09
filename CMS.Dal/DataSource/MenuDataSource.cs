@@ -4,6 +4,7 @@ using CMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 
 namespace CMS.Dal.DataSource
@@ -106,6 +107,26 @@ namespace CMS.Dal.DataSource
 
                 Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
                 Menus.List.OrderBy(x => x.Order);
+                return Result.Successful();
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Menu>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result> SetOrder(List<Menu> model)
+        {
+            try
+            {
+                var menu = System.Text.Json.JsonSerializer.Serialize(model.Select(x => new { UnicId = x.UnicId, Order = x.Order }));
+                var ett = await _pblContexts.Menus.FromSql($"pbl.SpMenuSetOrder {menu}").ToListAsync();
+
+                Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
                 return Result.Successful();
             }
             catch (Exception ex)

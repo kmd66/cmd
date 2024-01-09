@@ -1,6 +1,7 @@
 ﻿using CMS.Dal.DbModel;
 using Microsoft.EntityFrameworkCore;
 using Sample.Model.Data;
+using System.Reflection.Metadata;
 
 namespace CMS.Dal
 {
@@ -23,13 +24,25 @@ namespace CMS.Dal
 
             modelBuilder.Entity<User>()
                 .HasIndex(p => p.UnicId);
-            modelBuilder.Entity<Menu>()
-                .HasIndex(p => p.UnicId);
+            menusConfig(ref modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(Register.ConnectionString);
+
+        }
+
+        private void menusConfig(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Menu>()
+                .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<Menu>()
+                .Property(b => b.Link).HasDefaultValue("");
+            modelBuilder.Entity<Menu>()
+                .Property(b => b.Img).HasDefaultValue("");
+            modelBuilder.Entity<Menu>()
+                .Property(b => b.Published).HasDefaultValue(true);
 
         }
 

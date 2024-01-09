@@ -1,5 +1,6 @@
 ﻿@using CMS.Model;
 @inject IJSRuntime Js
+@inject NavigationManager _navManager;
 
 @if (Obj.EditItem != null)
 {
@@ -21,35 +22,41 @@
     </div>
     <div class="row">
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label">والد </label>
-            <input @bind="Obj.EditItem.Name" type="text" class="form-control">
+            <label class="form-label">والد</label>
+            <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.Parent">
+                <option value="@Guid.Empty">ریشه</option>
+            @foreach (var m in menues)
+            {
+                <option value="@m.UnicId">@m.Name</option>
+
+            }
+            </select>
         </div>
+
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label">انتشار : @Obj.EditItem.Published</label>
+            <label class="form-label">انتشار</label>
             <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.PublishedString">
                     <option value="True">منتشر شده</option>
                     <option value="False">عدم انتشار</option>
             </select>
         </div>
     </div>
-    <button class="btn btn-outline-secondary" type="button" @onclick="save">Button</button>
-
-    <MenuPageChild Child="Obj.EditItem.Child"/>
-}
-
-<div class="modal fade" id="fileManagerModal" tabindex="-1" aria-labelledby="fileManagerModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="height:90%; max-width:95%">
-        <div class="modal-content" style="height:100%">
-            <div class="modal-header">
-                <h5 class="modal-title" id="fileManagerModalLabel">File Manager</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <CMS.Pages.Inside.FileManager.FileManagerCom SelectItem="SelectFile"></CMS.Pages.Inside.FileManager.FileManagerCom>
-            </div>
+    @if (Obj.EditItem.Type == MenuType.Link)
+    {
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">لینک </label>
+            <input @bind="Obj.EditItem.Link" type="text" class="form-control ltr">
         </div>
-    </div>
-</div>
+    }
+    <MenuPageImg Obj="Obj" />
+
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
+    <NavLink href='cmd-admin/menu/main' class="btn btn-outline-secondary">
+        انصراف
+    </NavLink>
+
+    <MenuPageChild Obj="Obj" selectItem="selectItem" />
+}
 
 @code {
     [Parameter]
@@ -72,6 +79,7 @@
         }
     }
 
+    List<Menu> menues = new List<Menu>();
     bool b = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -91,7 +99,7 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        if (!string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(id) || Obj.State == "add")
             selectItem();
     }
 
@@ -111,21 +119,30 @@
             {
                 Obj.EditItem = new Menu() { Published = true };
                 await Obj.ErrorRequest(result);
+                await Obj.LoadHandler(false);
                 return;
             }
             await Obj.LoadHandler(false);
             Obj.EditItem = result.Data;
         }
+        menues = Obj.Helper.GetList2(new MenuVM(), "|-", Obj.EditItem.UnicId).Data;
         StateHasChanged();
     }
 
     private async Task save()
     {
-        await Js.InvokeVoidAsync("ShowModal", "fileManagerModal");
-        b = true;
-    }
+        await Obj.LoadHandler(true);
 
-    private async Task SelectFile(Model.Files.Item model)
-    {
+        var result = await Obj.Helper.Save(Obj.EditItem, Obj.State);
+
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        _navManager.NavigateTo("cmd-admin/menu/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
     }
 }

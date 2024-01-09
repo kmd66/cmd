@@ -29,7 +29,7 @@
                         </div>
                         <div class="p-2 text-center d-flex flex-grow-1 justify-content-center align-items-center">
                             <span class="flm-c-m-s">@item.Extension.ToString().ToUpper()</span>
-                            <img src="@thumbnail(item)" style="width:100%;max-height: 150px" />
+                            <img src="@item.Thumbnail" style="width:100%;max-height: 150px" />
                         </div>
                         <div class="flm-c-b d-flex align-items-center justify-content-between">
 
@@ -101,13 +101,6 @@
         Obj.ChengStateCallBack(s);
     }
 
-    string thumbnail(Item model)
-    {
-        if (!model.IsImg)
-            return "./img/flm-img.png";
-        var t = model.Url.Split('.');
-        return $"{t[0]}-thumbnail.{model.Extension}";
-    }
     string flmchClass(Item model)
     {
         if(model.Type == Model.PathType.Folder)

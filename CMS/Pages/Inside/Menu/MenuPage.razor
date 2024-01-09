@@ -11,10 +11,19 @@
 
 @if (Obj.State == "main")
 {
+    <h4 class="mb-4">لیست منو</h4>
     <MenuMain Obj="@Obj" />
 }
 else if (Obj.State == "edit" || Obj.State == "add")
 {
+    if (Obj.State == "add")
+    {
+        <h4 class="mb-4">افزودن منو</h4>
+    }
+    else
+    {
+        <h4 class="mb-4">ویرایش منو</h4>
+    }
     <MenuModify Obj="@Obj" id="@id" />
 }
 else if (Obj.State != "loading")

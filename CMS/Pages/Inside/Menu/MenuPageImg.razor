@@ -1,0 +1,65 @@
+﻿@using CMS.Model;
+@inject IJSRuntime Js
+
+<div class="m-4">
+    <div class="border">
+        <div style="padding: 5px;background: #dee2e6;">تصویر شاخص </div>
+        <div style="padding: 12px">
+            @if (string.IsNullOrEmpty(Obj.EditItem.Img))
+            {
+                <div>
+                    <button type="button" class="btn btn-outline-info" @onclick="GetFileManager">ایجاد</button>
+                </div>
+            }
+            else
+            {
+                <div style="width:100px;height:100px;cursor:pointer">
+                    <img src="@Model.Files.Item.GetThumbnail(Obj.EditItem.Img)">
+                </div>
+                <div class="mt-3">
+                    <button type="button" class="btn btn-outline-info" @onclick="GetFileManager">تغییر</button>
+                    <button type="button" class="btn btn-outline-danger" @onclick="Remove">حذف</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fileManagerModal" tabindex="-1" aria-labelledby="fileManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="height:90%; max-width:95%">
+        <div class="modal-content" style="height:100%">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileManagerModalLabel">File Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <CMS.Pages.Inside.FileManager.FileManagerCom SelectItem="SelectFile"></CMS.Pages.Inside.FileManager.FileManagerCom>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+    private async Task GetFileManager() =>
+        await Js.InvokeVoidAsync("ShowModal", "fileManagerModal");
+
+    private async Task SelectFile(Model.Files.Item model)
+    {
+        if (!model.IsImg)
+        {
+            await Obj.ErrorRequest(Result.Failure(message: "یک تصویر انتخاب کنید"));
+            return;
+        }
+        if (model?.Url != null)
+            Obj.EditItem.Img = model.Url;
+        await Js.InvokeVoidAsync("HideModal", "fileManagerModal");
+    }
+
+    private async Task Remove()
+    {
+        Obj.EditItem.Img = "";
+    }
+}
