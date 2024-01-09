@@ -29,6 +29,15 @@ namespace CMS.Model
 
         public bool Published { get; set; }
 
+        public string PublishedString { get=> Published.ToString();
+            set {
+                if (value == "True")
+                    Published = true;
+                else
+                    Published = false;
+            }
+        }
+
         public List<Menu>? Child { get; set; }
 
 

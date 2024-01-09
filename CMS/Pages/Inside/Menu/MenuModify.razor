@@ -1,15 +1,131 @@
 ﻿@using CMS.Model;
-ssssssssss
+@inject IJSRuntime Js
+
+@if (Obj.EditItem != null)
+{
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">نام </label>
+            <input @bind="Obj.EditItem.Name" type="text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">نوع </label>
+            <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.Type">
+                @foreach (Model.MenuType type in Enum.GetValues<Model.MenuType>())
+                {
+                    <option value="@type">@type.ToString()</option>
+
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">والد </label>
+            <input @bind="Obj.EditItem.Name" type="text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">انتشار : @Obj.EditItem.Published</label>
+            <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.PublishedString">
+                    <option value="True">منتشر شده</option>
+                    <option value="False">عدم انتشار</option>
+            </select>
+        </div>
+    </div>
+    <button class="btn btn-outline-secondary" type="button" @onclick="save">Button</button>
+
+    <MenuPageChild Child="Obj.EditItem.Child"/>
+}
+
+<div class="modal fade" id="fileManagerModal" tabindex="-1" aria-labelledby="fileManagerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="height:90%; max-width:95%">
+        <div class="modal-content" style="height:100%">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileManagerModalLabel">File Manager</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <CMS.Pages.Inside.FileManager.FileManagerCom SelectItem="SelectFile"></CMS.Pages.Inside.FileManager.FileManagerCom>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
     [Parameter]
     public PageObj Obj { get; set; }
-    int i = 0;
+    [Parameter]
+    public string id { get; set; }
+    public Guid Id
+    {
+        get
+        {
+            try
+            {
+                return new Guid(id);
+            }
+            catch
+            {
+
+                return Guid.Empty;
+            }
+        }
+    }
+
+    bool b = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        i = 0;
-        if (firstRender)
+        //if (firstRender)
+        //{
+        //    selectItem();
+        //}
+        //else
+        //{
+        //    if (Obj.EditItem.UnicId != Id)
+        //    {
+        //        selectItem();
+        //    }
+        //}
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+            selectItem();
+    }
+
+    private async Task selectItem()
+    {
+        if(Obj.State == "add")
         {
+            Obj.EditItem = new Menu(){Published=true};
         }
+        else
+        {
+            await Obj.LoadHandler(true);
+
+            var result = await Obj.Helper.GetItem(Id);
+
+            if (!result.Success)
+            {
+                Obj.EditItem = new Menu() { Published = true };
+                await Obj.ErrorRequest(result);
+                return;
+            }
+            await Obj.LoadHandler(false);
+            Obj.EditItem = result.Data;
+        }
+        StateHasChanged();
+    }
+
+    private async Task save()
+    {
+        await Js.InvokeVoidAsync("ShowModal", "fileManagerModal");
+        b = true;
+    }
+
+    private async Task SelectFile(Model.Files.Item model)
+    {
     }
 }

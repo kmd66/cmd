@@ -61,3 +61,4 @@ body {
     .tableHeder a {
         color: var(--BaseColor);
     }
+.required{color:red}

@@ -17,7 +17,7 @@ namespace CMS.Model.Files
             {
                 string url = $"{Property.Upload}/";
                 if (!string.IsNullOrEmpty(Path))
-                    url += $"{Path}/";
+                    url += $"{Path}";
 
                 if (Type == PathType.File)
                     url += $"{Name}";

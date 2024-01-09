@@ -1,4 +1,5 @@
 ﻿using CMS.Dal.DataSource;
+using CMS.Dal.DbModel;
 using CMS.Helper;
 using CMS.Model;
 
@@ -26,6 +27,18 @@ namespace CMS.Pages.Inside.Menu
 
             var items = Menus.GetList(model);
             return Result<List<Model.Menu>>.Successful(data: items);
+        }
+
+        public async Task<Result<Model.Menu>> GetItem(Guid unicId)
+        {
+            if (!isAuthorize)
+                return Result<Model.Menu>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+            var item = Menus.List.FirstOrDefault(x=> x.UnicId == unicId);
+            if(item == null)
+                return Result<Model.Menu>.Failure(message: "یافت نشد");
+            item.Child = Menus.addChild(new MenuVM(), item);
+            return Result<Model.Menu>.Successful(data: item);
         }
 
         public Result ChangeIndex(bool up, Model.Menu model)

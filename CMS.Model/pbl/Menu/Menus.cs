@@ -25,7 +25,7 @@ namespace CMS.Model
             return list;
         }
 
-        private static List<Menu>? addChild(MenuVM modelVM, Menu model )
+        public static List<Menu>? addChild(MenuVM modelVM, Menu model )
         {
             var list = new List<Menu>();
 

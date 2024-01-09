@@ -10,7 +10,7 @@ namespace CMS.Pages.Inside.FileManager
 
         public List<Item> Items = new List<Item>();
         public UploadHelper Upload { get; set; }
-        public Func<Item> SelectItem { get; set; }
+        public Func<Item,Task> SelectItem { get; set; }
         public Item? RemoveItem { get; set; }
         public Item? ChengeNameItem { get; set; }
     }

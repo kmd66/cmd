@@ -163,13 +163,14 @@
     }
     protected async Task SelectItme(Item model)
     {
-        if (model.Type == Model.PathType.Folder || Obj.SelectItem != null)
-            await getFolder(model);
-        else if (Obj.SelectItem != null)
+        if (model.Type != Model.PathType.Folder && Obj.SelectItem == null)
             return;
+
+        if (model.Type == Model.PathType.Folder)
+            await getFolder(model);
         else
         {
-
+            await Obj.SelectItem(model);
         }
     }
     protected async Task RemoveORChengeName(Item model, bool remove)

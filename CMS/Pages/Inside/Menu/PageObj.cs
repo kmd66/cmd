@@ -10,6 +10,6 @@ namespace CMS.Pages.Inside.Menu
 
         public List<Model.Menu> Items = new List<Model.Menu>();
         public MenuHelper Helper { get; set; }
-        public Model.Menu? EditItem { get; set; }
+        public Model.Menu EditItem { get; set; }
     }
 }
