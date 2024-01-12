@@ -12,7 +12,10 @@ namespace CMS.Model
 
         public string Name { get; set; }
 
+        public string Alias { get; set; }
+
         public string Link { get; set; }
+
         public Guid PostId { get; set; }
 
         public Guid Parent { get; set; }

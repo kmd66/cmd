@@ -14,6 +14,9 @@ namespace CMS.Dal.DbModel
         [MaxLength(25)]
         public string Name { get; set; }
 
+        [MaxLength(25)]
+        public string Alias { get; set; }
+
         public string Link { get; set; }
 
         public Guid PostId { get; set; }

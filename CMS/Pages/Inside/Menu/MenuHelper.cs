@@ -104,6 +104,9 @@ namespace CMS.Pages.Inside.Menu
             if (string.IsNullOrEmpty(model.Name))
                 return Result.Failure(message: "نام وارد نشده");
 
+            if (string.IsNullOrEmpty(model.Alias))
+                return Result.Failure(message: "نام مستعار وارد نشده");
+
             if (model.Type == MenuType.Unknown)
                 return Result.Failure(message: "نوع وارد نشده");
 

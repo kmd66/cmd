@@ -4,9 +4,9 @@
 @inject ProtectedLocalStorage localStorage;
 @inject NavigationManager _navManager;
 
-@ChildContent
 @if (show == true)
 {
+    @ChildContent
 }
 @code {
     [Parameter]
@@ -22,6 +22,15 @@
             if (!tw.Success)
             {
                 _navManager.NavigateTo("/cmd-login");
+                return;
+            }
+
+            var claims = new CMS.Helper.JwtHelper().GetClaims(tw.Value);
+            if (claims == null)
+            {
+                await localStorage.DeleteAsync("token");
+                _navManager.NavigateTo("/cmd-login");
+                return;
             }
             show = true;
             StateHasChanged();
