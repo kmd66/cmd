@@ -29,7 +29,7 @@ namespace CMS.Pages.Inside.Menu
         }
         private async Task<Result> Add(Model.Menu model)
         {
-            var validationResult = validation(model);
+            var validationResult = await validation(model);
             if (!validationResult.Success)
                 return Result.Failure(message: validationResult.Message);
 
@@ -46,7 +46,7 @@ namespace CMS.Pages.Inside.Menu
         }
         private async Task<Result> Edit(Model.Menu model)
         {
-            var validationResult = validation(model);
+            var validationResult = await validation(model);
             if (!validationResult.Success)
                 return Result.Failure(message: validationResult.Message);
 
@@ -96,7 +96,7 @@ namespace CMS.Pages.Inside.Menu
 
         }
 
-        private Result validation(Model.Menu model)
+        private async Task<Result> validation(Model.Menu model)
         {
             if (!isAuthorize)
                 return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
@@ -112,6 +112,10 @@ namespace CMS.Pages.Inside.Menu
 
             if (model.Type == MenuType.Content && model.PostId == Guid.Empty)
                 return Result.Failure(message: "مطلب انتخاب نشده");
+
+            var result = await _dataSource.GetAsync(model.Name);
+            if (result.Data != null)
+                return Result.Failure(message: "نام تکراری است");
 
             return Result.Successful();
         }

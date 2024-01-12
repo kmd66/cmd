@@ -41,6 +41,32 @@ namespace CMS.Dal.DataSource
             }
         }
 
+        public async Task<Result<Menu>> GetAsync(string name)
+        {
+            try
+            {
+                if(string.IsNullOrEmpty(name))
+                    return Result<Menu>.Successful();
+                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                    x.Name == name
+                );
+                if (ett == null)
+                    return Result<Menu>.Successful();
+
+                var returnMOdel = Map<Menu, Dal.DbModel.Menu>(ett);
+
+                return Result<Menu>.Successful(data: returnMOdel);
+            }
+            catch (Exception ex)
+            {
+                return Result<Menu>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
         public async Task<Result> AddAsync(Menu model)
         {
             try
