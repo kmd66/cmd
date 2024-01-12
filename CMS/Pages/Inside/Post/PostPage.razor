@@ -1,0 +1,55 @@
+﻿@page "/cmd-admin/post{state?}/{id?}"
+@inherits BacePage<PageObj>
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+
+<PageTitle>post</PageTitle>
+
+@{base.BuildRenderTree(__builder);}
+
+
+@if (Obj.State == "main")
+{
+    <h4 class="mb-4">لیست مطلب</h4>
+    <PostMain Obj="@Obj" />
+}
+else if (Obj.State == "edit" || Obj.State == "add")
+{
+    if (Obj.State == "add")
+    {
+        <h4 class="mb-4">افزودن مطلب</h4>
+    }
+    else
+    {
+        <h4 class="mb-4">ویرایش مطلب</h4>
+    }
+    <PostModify Obj="@Obj" id="@id" />
+}
+else if (Obj.State != "loading")
+{
+    <h3>وضعیت اشتباه</h3>
+    <h6>مطلبی برای نمایش وجود ندارد</h6>
+}
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+    [Parameter]
+    public string state { get; set; }
+
+    private PageObj obj = new PageObj() { State = "loading" };
+    public override PageObj Obj { get => obj; set => obj = value; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        else
+        {
+        }
+    }
+
+}

@@ -41,10 +41,15 @@
     public enum MenuType : byte
     {
         Unknown = 0,
-        Title =1,
-        Content =2,
-        Categorie=3,
-        Link=4
+        Title = 1,
+        Content = 2,
+        Categorie = 3,
+        Link = 4
+    }
+    public enum PostAccessType : byte
+    {
+        Unknown = 0,
+        Publiced = 1,
     }
 
 }

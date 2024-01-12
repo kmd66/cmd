@@ -2,16 +2,9 @@
 
 namespace CMS.Model
 {
-    public class Menu : BaseModel
+    public class Menu : BaseModel<Menu>
     {
         public Menu() { }
-        public static Menu Instance(Menu item)
-        {
-            string jsonString = JsonSerializer.Serialize(item);
-
-            var menu = JsonSerializer.Deserialize<Menu>(jsonString);
-            return menu != null ? menu : new Menu();
-        }
 
         public int Order { get; set; }
         
