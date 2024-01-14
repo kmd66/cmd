@@ -10,18 +10,12 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CMS.Helper
 {
-    public class UploadHelper
+    public class UploadHelper : BaseHelper
     {
         public UploadHelper(string? auth)
+            :base(auth)
         {
-            if (auth != null)
-            {
-                var claims = new JwtHelper().GetClaims(auth);
-                if (claims != null)
-                    isAuthorize = true;
-            }
         }
-        public bool isAuthorize { get; set; }
 
         private string currentDir(string? path)
         {

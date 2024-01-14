@@ -6,19 +6,13 @@ using CMS.Model.Files;
 
 namespace CMS.Pages.Inside.Menu
 {
-    public class MenuHelper
+    public class MenuHelper: BaseHelper
     {
         public MenuHelper(string? auth)
+            :base(auth)
         {
-            if (auth != null)
-            {
-                var claims = new JwtHelper().GetClaims(auth);
-                if (claims != null)
-                    isAuthorize = true;
-            }
             _dataSource = new MenuDataSource();
         }
-        public bool isAuthorize { get; set; }
         private readonly MenuDataSource _dataSource;
 
         public async Task<Result> Save(Model.Menu model, string state)
