@@ -10,6 +10,10 @@
             <input @bind="Obj.EditItem.Name" type="text" class="form-control">
         </div>
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">نام مستعار </label>
+            <input @bind="Obj.EditItem.Alias" type="text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
             <label class="form-label required">نوع </label>
             <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.Type">
                 @foreach (Model.MenuType type in Enum.GetValues<Model.MenuType>())

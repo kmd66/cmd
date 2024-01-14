@@ -39,7 +39,7 @@ namespace CMS.Pages.Inside.Menu
             var result = await _dataSource.AddAsync(model);
             if (!result.Success)
                 return Result.Failure(message: result.Message);
-
+            model.Date = DateTime.Now;
             await SetOrder(model.Parent);
 
             return Result.Successful();
