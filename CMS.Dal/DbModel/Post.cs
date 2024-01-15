@@ -17,7 +17,7 @@ namespace CMS.Dal.DbModel
         [MaxLength(350)]
         public string Summary { get; set; }
 
-        public bool Content { get; set; }
+        public string Content { get; set; }
 
         public string Img { get; set; }
 

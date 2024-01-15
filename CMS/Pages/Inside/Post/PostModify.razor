@@ -1,5 +1,5 @@
 ﻿@using CMS.Model;
-
+@inject IJSRuntime Js
 
 @if (Obj.EditItem != null)
 {
@@ -31,7 +31,7 @@
     </div>
 
     <hr />
-    <button class="btn btn-primary" type="button">ذخیره</button>
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
     <NavLink href='cmd-admin/post/main' class="btn btn-outline-secondary">
         انصراف
     </NavLink>
@@ -50,10 +50,44 @@
     }
     private async Task selectItem()
     {
-        Obj.EditItem = new Post() { Published = true, Access= PostAccessType.Publiced };
-        Obj.Tags = new List<Tag>();
+        if (Obj.State == "add")
+        {
+            Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
+            Obj.Tags = new List<Tag>();
+        }
+        else
+        {
+            await Obj.LoadHandler(true);
+
+            //var result = await Obj.Helper.GetItem(Id);
+
+            //if (!result.Success)
+            //{
+            //    Obj.EditItem = new Menu() { Published = true };
+            //    await Obj.ErrorRequest(result);
+            //    await Obj.LoadHandler(false);
+            //    return;
+            //}
+            await Obj.LoadHandler(false);
+        }
 
         StateHasChanged();
+    }
+
+    private async Task save()
+    {
+        await Obj.LoadHandler(true);
+        Obj.EditItem.Content = await Js.InvokeAsync<string>("TextEditor.getContents");
+
+        var result = await Obj.Helper.Save(Obj.EditItem, Obj.State);
+
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        await Obj.LoadHandler(false);
     }
 
 }
