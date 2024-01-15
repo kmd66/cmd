@@ -4,8 +4,15 @@
 @using CMS.Model;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage localStorage
+@inject NavigationManager _navManager;
+
 
 <PageTitle>post</PageTitle>
+<link rel="stylesheet" href="./comcss/quillLtr.css" />
+@*<HeadContent>
+    @((MarkupString)script)
+    @((MarkupString)script2)
+</HeadContent>*@
 
 @{base.BuildRenderTree(__builder);}
 
@@ -26,13 +33,13 @@ else if (Obj.State == "edit" || Obj.State == "add")
         <h4 class="mb-4">ویرایش مطلب</h4>
     }
     <PostModify Obj="@Obj" id="@id" />
+
 }
 else if (Obj.State != "loading")
 {
     <h3>وضعیت اشتباه</h3>
     <h6>مطلبی برای نمایش وجود ندارد</h6>
 }
-
 @code {
     [Parameter]
     public string id { get; set; }
@@ -46,9 +53,21 @@ else if (Obj.State != "loading")
     {
         if (firstRender)
         {
+            if (string.IsNullOrEmpty(state))
+                state = "main";
+
+            var token = await localStorage.GetAsync<string>("token");
+            Obj.Helper = new PostHelper(token.Value);
+            FirstRender(state);
+            StateHasChanged();
         }
         else
         {
+            if (Obj.State != state)
+            {
+                Obj.State = state;
+                StateHasChanged();
+            }
         }
     }
 

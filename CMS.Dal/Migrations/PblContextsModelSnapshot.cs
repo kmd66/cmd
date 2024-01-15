@@ -116,6 +116,14 @@ namespace CMS.Dal.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("");
 
+                    b.Property<DateTime?>("PublishDown")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Published")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<bool>("Special")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -133,14 +141,6 @@ namespace CMS.Dal.Migrations
 
                     b.Property<Guid>("UnicId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("publishDown")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("published")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
 
                     b.HasKey("Id");
 

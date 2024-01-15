@@ -17,7 +17,6 @@
     {
         if (firstRender)
         {
-
             var tw = await localStorage.GetAsync<string>("token");
             if (!tw.Success)
             {
@@ -32,8 +31,11 @@
                 _navManager.NavigateTo("/cmd-login");
                 return;
             }
-            show = true;
-            StateHasChanged();
+            else
+            {
+                show = true;
+                StateHasChanged();
+            }
         }
     }
 }

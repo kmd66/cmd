@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CMS.Model.pbl.Post
+namespace CMS.Model
 {
-    internal class PostVM
+    public class PostVM : ListVM
     {
     }
 }

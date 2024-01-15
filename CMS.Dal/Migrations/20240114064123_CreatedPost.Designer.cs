@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Dal.Migrations
 {
     [DbContext(typeof(PblContexts))]
-    [Migration("20240112092055_CreatedPost")]
+    [Migration("20240114064123_CreatedPost")]
     partial class CreatedPost
     {
         /// <inheritdoc />
@@ -33,6 +33,11 @@ namespace CMS.Dal.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -114,6 +119,14 @@ namespace CMS.Dal.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("");
 
+                    b.Property<DateTime?>("PublishDown")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Published")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<bool>("Special")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -132,19 +145,37 @@ namespace CMS.Dal.Migrations
                     b.Property<Guid>("UnicId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("publishDown")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("published")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
                     b.HasKey("Id");
 
                     b.HasIndex("UnicId");
 
                     b.ToTable("Posts", "pbl");
+                });
+
+            modelBuilder.Entity("CMS.Dal.DbModel.Tag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("PostID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.Property<Guid>("UnicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UnicId");
+
+                    b.ToTable("Tags", "pbl");
                 });
 
             modelBuilder.Entity("CMS.Dal.DbModel.User", b =>

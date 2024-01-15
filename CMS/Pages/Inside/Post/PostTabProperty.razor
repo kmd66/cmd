@@ -1,0 +1,37 @@
+﻿@using CMS.Model;
+
+<div class="row mx-0">
+    <div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+        <input class="form-check-input" type="checkbox" @bind="Obj.EditItem.Published">
+        <label class="form-check-label" >وضعیت انتشار</label>
+    </div>
+    <div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+        <input class="form-check-input" type="checkbox" @bind="Obj.EditItem.Special">
+        <label class="form-check-label">مطلب ویژه</label>
+    </div>
+</div>
+<div class="row">
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+        <label class="form-label">تاریخ اتام انتشار</label>
+        <input type="text" class="form-control" placeholder="2020-01-01" @bind="Obj.EditItem.PublishDownString">
+    </div>
+
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+        <label class="form-label required">دسترسی</label>
+        <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.Access">
+            @foreach (Model.PostAccessType type in Enum.GetValues<Model.PostAccessType>())
+            {
+                <option value="@type">@type.ToString()</option>
+
+            }
+        </select>
+    </div>
+</div>
+
+<CMS.Pages.Inside.Menu.MenuPageImg Obj="Obj" Img="Obj.EditItem" />
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+}

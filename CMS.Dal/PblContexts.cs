@@ -56,7 +56,7 @@ namespace CMS.Dal
             modelBuilder.Entity<Post>()
                 .Property(b => b.Img).HasDefaultValue("");
             modelBuilder.Entity<Post>()
-                .Property(b => b.published).HasDefaultValue(true);
+                .Property(b => b.Published).HasDefaultValue(true);
             modelBuilder.Entity<Post>()
                 .Property(b => b.Special).HasDefaultValue(true);
             modelBuilder.Entity<Post>()

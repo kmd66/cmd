@@ -37,7 +37,7 @@
         </div>
 
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label">انتشار</label>
+            <label class="form-label required">انتشار</label>
             <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.PublishedString">
                     <option value="True">منتشر شده</option>
                     <option value="False">عدم انتشار</option>
@@ -51,7 +51,7 @@
             <input @bind="Obj.EditItem.Link" type="text" class="form-control ltr">
         </div>
     }
-    <MenuPageImg Obj="Obj" />
+    <MenuPageImg Obj="Obj" Img="Obj.EditItem" />
 
     <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
     <NavLink href='cmd-admin/menu/main' class="btn btn-outline-secondary">

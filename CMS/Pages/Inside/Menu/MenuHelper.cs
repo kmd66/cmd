@@ -111,8 +111,12 @@ namespace CMS.Pages.Inside.Menu
                 return Result.Failure(message: "مطلب انتخاب نشده");
 
             var result = await _dataSource.GetAsync(model.Name);
-            if (result.Data != null)
+            if (result.Data != null && result.Data.Id != model.Id)
                 return Result.Failure(message: "نام تکراری است");
+
+            var resultAlias = await _dataSource.GetByAliasAsync(model.Alias);
+            if (resultAlias.Data != null && resultAlias.Data.Id != model.Id)
+                return Result.Failure(message: "نام مستعار تکراری است");
 
             return Result.Successful();
         }

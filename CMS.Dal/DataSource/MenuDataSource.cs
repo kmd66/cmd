@@ -45,10 +45,35 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                if(string.IsNullOrEmpty(name))
+                if (string.IsNullOrEmpty(name))
                     return Result<Menu>.Successful();
                 var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
                     x.Name == name
+                );
+                if (ett == null)
+                    return Result<Menu>.Successful();
+
+                var returnMOdel = Map<Menu, Dal.DbModel.Menu>(ett);
+
+                return Result<Menu>.Successful(data: returnMOdel);
+            }
+            catch (Exception ex)
+            {
+                return Result<Menu>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+        public async Task<Result<Menu>> GetByAliasAsync(string alias)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(alias))
+                    return Result<Menu>.Successful();
+                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                    x.Alias == alias
                 );
                 if (ett == null)
                     return Result<Menu>.Successful();

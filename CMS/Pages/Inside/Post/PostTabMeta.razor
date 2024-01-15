@@ -1,0 +1,32 @@
+﻿@using CMS.Model;
+<div class="mb-3">
+    <label class="form-label">توضیح کوتاه</label>
+    <textarea class="form-control" id="descriptionTextarea" onc rows="3" style="border-bottom: unset;" @bind="Obj.EditItem.Summary"></textarea>
+    <div class="descriptionTextareaFotter">
+        <span id="descriptionCount"></span> -  <span id="descriptionwordCount"></span>
+    </div>
+</div>
+@foreach (var item in Obj.Tags)
+{
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+        <label class="form-label">
+            برچسب
+        </label>
+        <input type="text" @bind="item.Text" class="form-control">
+    </div>
+}
+@if (Obj.Tags.Count < 5)
+{
+    <button class="btn btn-primary" type="button" @onclick="addTag">افزودن برچسب</button>
+
+}
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+    private async Task addTag()
+    {
+        Obj.Tags.Add(new Tag());
+    }
+}

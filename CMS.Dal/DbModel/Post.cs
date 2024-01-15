@@ -23,9 +23,9 @@ namespace CMS.Dal.DbModel
 
         public bool Special { get; set; }
 
-        public bool published { get; set; }
+        public bool Published { get; set; }
 
-        public DateTime? publishDown { get; set; }
+        public DateTime? PublishDown { get; set; }
 
         public DateTime Date { get; set; }
 

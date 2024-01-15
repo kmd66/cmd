@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace CMS.Model.pbl.Post
+namespace CMS.Model
 {
     public class Post: BaseModel<Post>
     {
@@ -38,21 +38,42 @@ namespace CMS.Model.pbl.Post
         #endregion
 
         #region publish
-        public bool published { get; set; }
+        public bool Published { get; set; }
 
-        public string publishedString
+        public string PublishedString
         {
-            get => published.ToString();
+            get => Published.ToString();
             set
             {
                 if (value == "True")
-                    published = true;
+                    Published = true;
                 else
-                    published = false;
+                    Published = false;
             }
         }
 
-        public DateTime? publishDown { get; set; }
+        public DateTime? PublishDown { get; set; }
+
+        public string PublishDownString
+        {
+            get => PublishDown != null ? ((DateTime)PublishDown).ToString("yyyy-MM-dd") : "";
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    PublishDown = null;
+                else
+                {
+                    try
+                    {
+                        PublishDown = DateTime.Parse(value);
+                    }
+                    catch
+                    {
+                        PublishDown = null;
+                    }
+                }
+            }
+        }
         #endregion
 
         public DateTime Date { get; set; }
