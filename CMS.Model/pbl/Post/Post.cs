@@ -11,6 +11,8 @@ namespace CMS.Model
     {
         public Post() { }
 
+        public Guid MenuId { get; set; }
+
         public string Title { get; set; }
 
         public string Alias { get; set; }

@@ -28,12 +28,12 @@ namespace CMS.Pages.Inside.Menu
                 return Result.Failure(message: validationResult.Message);
 
             model.UnicId = Guid.NewGuid();
+            model.Date = DateTime.Now;
             model.Order = Menus.List.Count + 10;
 
             var result = await _dataSource.AddAsync(model);
             if (!result.Success)
                 return Result.Failure(message: result.Message);
-            model.Date = DateTime.Now;
             await SetOrder(model.Parent);
 
             return Result.Successful();

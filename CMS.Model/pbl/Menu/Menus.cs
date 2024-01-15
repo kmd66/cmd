@@ -53,6 +53,8 @@ namespace CMS.Model
             {
                 if (modelVM.Published != null && item.Published != modelVM.Published)
                     continue;
+                if (modelVM.Type != MenuType.Unknown && item.Type != modelVM.Type)
+                    continue;
                 if (ignore!= null && item.UnicId == ignore)
                     continue;
 
@@ -74,6 +76,8 @@ namespace CMS.Model
             foreach (var item in List)
             {
                 if (modelVM.Published != null && item.Published != modelVM.Published)
+                    continue;
+                if (modelVM.Type != MenuType.Unknown && item.Type != modelVM.Type)
                     continue;
                 if (ignore != null && item.UnicId == ignore)
                     continue;

@@ -9,31 +9,31 @@ using System.Collections.Generic;
 
 namespace CMS.Dal.DataSource
 {
-    public class MenuDataSource : BaseDataSource,IDataSource
+    public class PostDataSource : BaseDataSource,IDataSource
     {
-        public MenuDataSource() {
+        public PostDataSource() {
             _pblContexts = new PblContexts();
         }
         readonly PblContexts _pblContexts;
 
-        public async Task<Result<Menu>> GetAsync(long id = 0, Guid? unicId = null)
+        public async Task<Result<Post>> GetAsync(long id = 0, Guid? unicId = null)
         {
             try
             {
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
                    (id != 0 && x.Id == id)
                    || (id == 0 && x.UnicId == unicId)
                 );
                 if (ett == null)
-                    return Result<Menu>.Successful();
+                    return Result<Post>.Successful();
 
-                var returnMOdel = Map<Menu, Dal.DbModel.Menu>(ett);
+                var returnMOdel = Map<Post, Dal.DbModel.Post>(ett);
 
-                return Result<Menu>.Successful(data: returnMOdel);
+                return Result<Post>.Successful(data: returnMOdel);
             }
             catch (Exception ex)
             {
-                return Result<Menu>.Failure(message: ex.Message);
+                return Result<Post>.Failure(message: ex.Message);
             }
             finally
             {
@@ -41,50 +41,50 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<Menu>> GetAsync(string name)
+        public async Task<Result<Post>> GetAsync(string name)
         {
             try
             {
                 if (string.IsNullOrEmpty(name))
-                    return Result<Menu>.Successful();
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
-                    x.Name == name
+                    return Result<Post>.Successful();
+                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
+                    x.Title == name
                 );
                 if (ett == null)
-                    return Result<Menu>.Successful();
+                    return Result<Post>.Successful();
 
-                var returnMOdel = Map<Menu, Dal.DbModel.Menu>(ett);
+                var returnMOdel = Map<Post, Dal.DbModel.Post>(ett);
 
-                return Result<Menu>.Successful(data: returnMOdel);
+                return Result<Post>.Successful(data: returnMOdel);
             }
             catch (Exception ex)
             {
-                return Result<Menu>.Failure(message: ex.Message);
+                return Result<Post>.Failure(message: ex.Message);
             }
             finally
             {
                 _pblContexts.ChangeTracker.Clear();
             }
         }
-        public async Task<Result<Menu>> GetByAliasAsync(string alias)
+        public async Task<Result<Post>> GetByAliasAsync(string alias)
         {
             try
             {
                 if (string.IsNullOrEmpty(alias))
-                    return Result<Menu>.Successful();
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                    return Result<Post>.Successful();
+                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
                     x.Alias == alias
                 );
                 if (ett == null)
-                    return Result<Menu>.Successful();
+                    return Result<Post>.Successful();
 
-                var returnMOdel = Map<Menu, Dal.DbModel.Menu>(ett);
+                var returnMOdel = Map<Post, Dal.DbModel.Post>(ett);
 
-                return Result<Menu>.Successful(data: returnMOdel);
+                return Result<Post>.Successful(data: returnMOdel);
             }
             catch (Exception ex)
             {
-                return Result<Menu>.Failure(message: ex.Message);
+                return Result<Post>.Failure(message: ex.Message);
             }
             finally
             {
@@ -92,15 +92,15 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result> AddAsync(Menu model)
+        public async Task<Result> AddAsync(Post model)
         {
             try
             {
-                var ett = Map<Dal.DbModel.Menu, Menu>(model);
-                _pblContexts.Add<Dal.DbModel.Menu>(ett);
+                var ett = Map<Dal.DbModel.Post, Post>(model);
+                _pblContexts.Add<Dal.DbModel.Post>(ett);
                 await _pblContexts.SaveChangesAsync();
-               
-                return await ListAsync();
+
+                return Result.Successful();
             }
             catch (Exception ex)
             {
@@ -111,15 +111,26 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
-        public async Task<Result> EditAsync(Menu model)
+        public async Task<Result> EditAsync(Post model)
         {
             try
             {
-                var ett = Map<Dal.DbModel.Menu, Menu>(model);
-                _pblContexts.Update<Dal.DbModel.Menu>(ett);
-                await _pblContexts.SaveChangesAsync();
+                var record = await GetAsync(model.Id);
+                if(!record.Success)
+                    return Result.Failure(message: record.Message);
+                if (record == null)
+                    return Result.Successful();
+
+                var ett = Map<Dal.DbModel.Post, Post>(model);
                
-                return await ListAsync();
+                ett.Id = record.Data.Id;
+                ett.UnicId = record.Data.UnicId;
+                ett.Date = record.Data.Date;
+                ett.Hit = record.Data.Hit;
+                
+                _pblContexts.Update<Dal.DbModel.Post>(ett);
+                await _pblContexts.SaveChangesAsync();
+                return Result.Successful();
             }
             catch (Exception ex)
             {
@@ -135,7 +146,7 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                _pblContexts.Remove<Dal.DbModel.Menu>(new DbModel.Menu { Id = id });
+                _pblContexts.Remove<Dal.DbModel.Post>(new DbModel.Post { Id = id });
                 await _pblContexts.SaveChangesAsync();
                
                 return Result.Successful();
@@ -150,75 +161,5 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result> ListAsync()
-        {
-            try
-            {
-                var ett = await _pblContexts.Menus.ToListAsync();
-
-                Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
-                Menus.List.OrderBy(x => x.Order);
-                return Result.Successful();
-            }
-            catch (Exception ex)
-            {
-                return Result<IEnumerable<Menu>>.Failure(message: ex.Message);
-            }
-            finally
-            {
-                _pblContexts.ChangeTracker.Clear();
-            }
-        }
-
-        public async Task<Result> SetOrder(List<Menu> model)
-        {
-            try
-            {
-                var menu = System.Text.Json.JsonSerializer.Serialize(model.Select(x => new { UnicId = x.UnicId, Order = x.Order }));
-                var ett = await _pblContexts.Menus.FromSql($"pbl.SpMenuSetOrder {menu}").ToListAsync();
-
-                Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
-                return Result.Successful();
-            }
-            catch (Exception ex)
-            {
-                return Result<IEnumerable<Menu>>.Failure(message: ex.Message);
-            }
-            finally
-            {
-                _pblContexts.ChangeTracker.Clear();
-            }
-        }
     }
 }
-
-
-/*
- 
-        var _ds = new CMS.Dal.DataSource.MenuDataSource();
-        var model = new Model.Menu
-            {
-                UnicId = Guid.NewGuid(),
-                FirstName = "f1",
-                LastName = "l1",
-                MenuName = "u1",
-                Password = "p1"
-            };
-        var m1 = await _ds.AddAsync(model);
-        m1.Data.Password = "p1-1";
-        await _ds.EditAsync(m1.Data);
-
-        var m2 = await _ds.AddAsync(new Model.Menu
-            {
-                UnicId = Guid.NewGuid(),
-                FirstName = "f2",
-                LastName = "l2",
-                MenuName = "u2",
-                Password = "p2"
-            });
-
-        var m3 = await _ds.GetAsync(m2.Data.Id);
-        var m4 = await _ds.ListAsync(new Model.MenuVM());
-        var m5 = await _ds.ListAsync(new Model.MenuVM { MenuName = "1" });
-        var m = await _ds.RemoveAsync(m2.Data.Id);
- */

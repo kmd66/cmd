@@ -50,28 +50,45 @@
     }
     private async Task selectItem()
     {
+        Obj.Menues = Menus.GetList2(
+            new MenuVM() { Published = true, Type = MenuType.Categorie }, ""
+        );
         if (Obj.State == "add")
         {
-            Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
-            Obj.Tags = new List<Tag>();
+            await selectAdd();
         }
         else
         {
-            await Obj.LoadHandler(true);
-
-            //var result = await Obj.Helper.GetItem(Id);
-
-            //if (!result.Success)
-            //{
-            //    Obj.EditItem = new Menu() { Published = true };
-            //    await Obj.ErrorRequest(result);
-            //    await Obj.LoadHandler(false);
-            //    return;
-            //}
-            await Obj.LoadHandler(false);
+            await selectEdit();
         }
 
         StateHasChanged();
+    }
+    private async Task selectAdd()
+    {
+        Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
+        Obj.Tags = new List<Tag>();
+    }
+    private async Task selectEdit()
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.Get(0, id);
+
+        if (!result.Success)
+        {
+            await selectError(result);
+            return;
+        }
+        Obj.EditItem = result.Data;
+        Obj.Tags = new List<Tag>();
+        await Obj.LoadHandler(false);
+    }
+    private async Task selectError(Result result)
+    {
+        await selectAdd();
+        await Obj.ErrorRequest(result);
+        await Obj.LoadHandler(false);
     }
 
     private async Task save()

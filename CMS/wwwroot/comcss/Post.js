@@ -92,6 +92,7 @@ export class TextEditor {
             theme: 'snow'
         });
         TextEditor.textChange();
+        TextEditor.descriptionChange($("#descriptionTextarea").val());
 
         quill.on('editor-change', function (eventName, ...args) {
             if (eventName === 'text-change') {
@@ -151,6 +152,7 @@ export class TextEditor {
     }
 
     static insertEmbed(data) {
+        quill.focus();
         var range = quill.getSelection();
         if (!range) {
             range = { index: 0 };

@@ -8,6 +8,8 @@ namespace CMS.Dal.DbModel
     public class Post: BaseModel
     {
 
+        public Guid MenuId { get; set; }
+
         [MaxLength(25)]
         public string Title { get; set; }
 

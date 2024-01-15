@@ -4,6 +4,7 @@ using CMS.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Dal.Migrations
 {
     [DbContext(typeof(PblContexts))]
-    partial class PblContextsModelSnapshot : ModelSnapshot
+    [Migration("20240115105422_PostUpdate_1")]
+    partial class PostUpdate_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,9 @@ namespace CMS.Dal.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Published")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
@@ -90,7 +95,9 @@ namespace CMS.Dal.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<byte>("Access")
-                        .HasColumnType("tinyint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint")
+                        .HasDefaultValue((byte)1);
 
                     b.Property<string>("Alias")
                         .IsRequired()
@@ -120,10 +127,14 @@ namespace CMS.Dal.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Published")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("Special")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Summary")
                         .IsRequired()

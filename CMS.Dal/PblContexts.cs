@@ -44,8 +44,8 @@ namespace CMS.Dal
                 .Property(b => b.Link).HasDefaultValue("");
             modelBuilder.Entity<Menu>()
                 .Property(b => b.Img).HasDefaultValue("");
-            modelBuilder.Entity<Menu>()
-                .Property(b => b.Published).HasDefaultValue(true);
+            //modelBuilder.Entity<Menu>()
+            //    .Property(b => b.Published).HasDefaultValue(true);
 
         }
 
@@ -55,12 +55,12 @@ namespace CMS.Dal
                 .HasIndex(p => p.UnicId);
             modelBuilder.Entity<Post>()
                 .Property(b => b.Img).HasDefaultValue("");
-            modelBuilder.Entity<Post>()
-                .Property(b => b.Published).HasDefaultValue(true);
-            modelBuilder.Entity<Post>()
-                .Property(b => b.Special).HasDefaultValue(true);
-            modelBuilder.Entity<Post>()
-                .Property(b => b.Access).HasDefaultValue(1);
+            //modelBuilder.Entity<Post>()
+            //    .Property(b => b.Published).HasDefaultValue(true);
+            //modelBuilder.Entity<Post>()
+            //    .Property(b => b.Special).HasDefaultValue(true);
+            //modelBuilder.Entity<Post>()
+            //    .Property(b => b.Access).HasDefaultValue(1);
 
         }
 

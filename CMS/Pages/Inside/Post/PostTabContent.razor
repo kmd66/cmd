@@ -12,6 +12,16 @@
         <label class="form-label required">نام مستعار </label>
         <input type="text" class="form-control" @bind="Obj.EditItem.Alias">
     </div>
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+        <label class="form-label">والد</label>
+        <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.MenuId">
+            <option value="@Guid.Empty">ریشه</option>
+            @foreach (var m in Obj.Menues)
+            {
+                <option value="@m.UnicId">@m.Name</option>
+            }
+        </select>
+    </div>
 </div>
 
 <div id="editorHeder">
@@ -56,7 +66,7 @@
                 <button class="btn btn-primary" type="button" @onclick="AddImg">افزودن</button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="overflow: auto;">
                 <div class="text-center">
                     <img src="@Model.Files.Item.GetThumbnail(imgUrl)">
                 </div>
@@ -144,6 +154,11 @@
         else
         {
         }
+
+        if (Obj.State == "edit")
+        {
+            await Js.InvokeVoidAsync("TextEditor.setContents", Obj.EditItem.Content);
+        }
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
@@ -178,10 +193,6 @@
             imgWidth = "512";
             imgThumbnail = false;
             await Js.InvokeVoidAsync("ShowModal", "editImgProperty");
-
-            //await Js.InvokeVoidAsync("TextEditor.setContents", "");
-            //var result = await Js.InvokeAsync<string>("TextEditor.getContents");
-
         }
     }
 
