@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CMS.Dal.DbModel
 {
     [Index(nameof(UnicId))]
-    public class Post: BaseModel
+    public class Post : BaseModel
     {
 
         public Guid MenuId { get; set; }

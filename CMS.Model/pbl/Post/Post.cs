@@ -11,8 +11,6 @@ namespace CMS.Model
     {
         public Post() { }
 
-        public Guid MenuId { get; set; }
-
         public string Title { get; set; }
 
         public string Alias { get; set; }
@@ -83,6 +81,8 @@ namespace CMS.Model
         public PostAccessType Access { get; set; }
 
         public int Hit { get; set; }
+        public Guid MenuId { get; set; }
+        public string MenuName { get; set; }
     }
 }
 

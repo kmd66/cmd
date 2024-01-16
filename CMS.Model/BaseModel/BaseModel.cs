@@ -9,6 +9,8 @@ namespace CMS.Model
 {
     public class BaseModel<T>: BaseModel
     {
+        public int Total { get; set; }
+
         public static T Instance(T item)
         {
             string jsonString = JsonSerializer.Serialize(item);

@@ -9,12 +9,13 @@ using System.Collections.Generic;
 
 namespace CMS.Dal.DataSource
 {
-    public class PostDataSource : BaseDataSource,IDataSource
+    public class PostDataSource : BaseDataSource, IDataSource
     {
-        public PostDataSource() {
-            _pblContexts = new PblContexts();
+        public PostDataSource()
+        {
+            _pblContexts = new CntContexts();
         }
-        readonly PblContexts _pblContexts;
+        readonly CntContexts _pblContexts;
 
         public async Task<Result<Post>> GetAsync(long id = 0, Guid? unicId = null)
         {
@@ -118,18 +119,18 @@ namespace CMS.Dal.DataSource
             try
             {
                 var record = await GetAsync(model.Id);
-                if(!record.Success)
+                if (!record.Success)
                     return Result.Failure(message: record.Message);
                 if (record == null)
                     return Result.Successful();
 
                 var ett = Map<Dal.DbModel.Post, Post>(model);
-               
+
                 ett.Id = record.Data.Id;
                 ett.UnicId = record.Data.UnicId;
                 ett.Date = record.Data.Date;
                 ett.Hit = record.Data.Hit;
-                
+
                 _pblContexts.Update<Dal.DbModel.Post>(ett);
                 await _pblContexts.SaveChangesAsync();
                 return Result.Successful();
@@ -144,18 +145,27 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result> RemoveAsync(long id = 0)
+        public async Task<Result<IEnumerable<Post>>> ListAsync(PostVM model)
         {
             try
             {
-                _pblContexts.Remove<Dal.DbModel.Post>(new DbModel.Post { Id = id });
-                await _pblContexts.SaveChangesAsync();
-               
-                return Result.Successful();
+                var query = $"cnt.SpGetPosts"
+                    + $" @Title = {model.Title.Query()}"
+                    + $", @Alias = {model.Alias.Query()}"
+                    + $", @Special = {model.Special.Query()}"
+                    + $", @Published = {model.Published.Query()}"
+                    + $", @PageSize = {model.PageSize.Query()}"
+                    + $", @PageIndex = {model.PageIndex.Query()}";
+                //var ett = await _pblContexts.Set().FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+                var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var returnMOdel = MapList<Post, Dal.DbModel.PostDto>(ett);
+
+                return Result<IEnumerable<Post>>.Successful(data: returnMOdel);
             }
             catch (Exception ex)
             {
-                return Result.Failure(message: ex.Message);
+                return Result<IEnumerable<Post>>.Failure(message: ex.Message);
             }
             finally
             {

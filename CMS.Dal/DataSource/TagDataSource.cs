@@ -9,9 +9,9 @@ namespace CMS.Dal.DataSource
     public class TagDataSource : BaseDataSource,IDataSource
     {
         public TagDataSource() {
-            _pblContexts = new PblContexts();
+            _pblContexts = new CntContexts();
         }
-        readonly PblContexts _pblContexts;
+        readonly CntContexts _pblContexts;
 
         public async Task<Result<IEnumerable<Tag>>> GetAsync(long postId)
         {
@@ -41,7 +41,7 @@ namespace CMS.Dal.DataSource
             try
             {
                 var texts = System.Text.Json.JsonSerializer.Serialize(tags.Select(x => x.Text));
-                var ett = await _pblContexts.Tags.FromSql($"pbl.SpTagAdd @PostId = {postId}, @Json = {texts}").ToListAsync();
+                var ett = await _pblContexts.Tags.FromSql($"cnt.SpTagAdd @PostId = {postId}, @Json = {texts}").ToListAsync();
 
                 var returnMOdel = MapList<Tag, Dal.DbModel.Tag>(ett);
 

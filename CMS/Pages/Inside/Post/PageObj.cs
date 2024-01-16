@@ -4,7 +4,7 @@ namespace CMS.Pages.Inside.Post
 {
     public class PageObj: BasePageObj
     {
-        public PostVM Serch = new PostVM();
+        public PostVM Serch = new PostVM {PageIndex=1,PageSize = 10 };
 
         public List<Model.Post> Items = new List<Model.Post>();
 

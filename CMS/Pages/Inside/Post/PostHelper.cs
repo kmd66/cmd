@@ -90,5 +90,17 @@ namespace CMS.Pages.Inside.Post
 
             return Result.Successful();
         }
+
+        public async Task<Result<List<Model.Post>>> List(PostVM model)
+        {
+            if (!isAuthorize)
+                return Result<List<Model.Post>>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+            
+            var retult = await _dataSource.ListAsync(model);
+            if (!retult.Success)
+                return Result<List<Model.Post>>.Failure(message: retult.Message);
+            return Result<List<Model.Post>>.Successful(data: retult.Data.ToList());
+
+        }
     }
 }

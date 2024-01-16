@@ -8,5 +8,14 @@ namespace CMS.Model
 {
     public class PostVM : ListVM
     {
+
+        public string? Title { get; set; }
+
+        public string? Alias { get; set; }
+
+        public bool? Special { get; set; }
+
+        public bool? Published { get; set; }
+
     }
 }

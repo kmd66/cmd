@@ -25,7 +25,6 @@ namespace CMS.Dal
             modelBuilder.Entity<User>()
                 .HasIndex(p => p.UnicId);
             menusConfig(ref modelBuilder);
-            postConfig(ref modelBuilder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -44,30 +43,10 @@ namespace CMS.Dal
                 .Property(b => b.Img).HasDefaultValue("");
             //modelBuilder.Entity<Menu>()
             //    .Property(b => b.Published).HasDefaultValue(true);
-
         }
-
-        private void postConfig(ref ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Post>()
-                .HasIndex(p => p.UnicId);
-            modelBuilder.Entity<Post>()
-                .Property(b => b.Img).HasDefaultValue("");
-            //modelBuilder.Entity<Post>()
-            //    .Property(b => b.Published).HasDefaultValue(true);
-            //modelBuilder.Entity<Post>()
-            //    .Property(b => b.Special).HasDefaultValue(true);
-            //modelBuilder.Entity<Post>()
-            //    .Property(b => b.Access).HasDefaultValue(1);
-
-        }
-
+        
         public DbSet<User> Users { get; set; }
 
         public DbSet<Menu> Menus { get; set; }
-
-        public DbSet<Post> Posts { get; set; }
-
-        public DbSet<Tag> Tags { get; set; }
     }
 }

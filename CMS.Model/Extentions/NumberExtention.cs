@@ -9,7 +9,7 @@ namespace CMS.Model
 {
     public static class NumberExtention
     {
-        public static long StringToLong(this string s )
+        public static long StringToLong(this string s)
         {
             try
             {

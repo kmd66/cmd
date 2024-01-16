@@ -1,2 +1,2 @@
-dotnet ef migrations add Created_Book_Entity
+dotnet ef migrations add cnt --context CntContexts
 dotnet ef database update

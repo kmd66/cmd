@@ -9,13 +9,29 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col" style="width:50px"></th>
+                <th scope="col" style="width:50px">شناسه</th>
                 <th scope="col">نام</th>
-                <th scope="col">نوع</th>
+                <th scope="col">نام مستعار</th>
+                <th scope="col">منو</th>
                 <th scope="col" style="width:50px"></th>
             </tr>
         </thead>
         <tbody>
+            @foreach (var item in Obj.Items)
+            {
+                <tr class="@getNemwCalss(item)">
+                    <td>@item.Id</td>
+                    <td>@item.Title</td>
+                    <td>@item.Alias</td>
+                    <td>@item.MenuName</td>
+                    <td style="text-align:center">
+                        <NavLink href='@($"cmd-admin/post/edit/{item.UnicId}")' class="nav-link d-flex">
+                            <span class="svgEdit"></span>
+                        </NavLink>
+                    </td>
+                </tr>
+
+            }
         </tbody>
     </table>
 </div>
@@ -23,4 +39,33 @@
 @code {
     [Parameter]
     public PageObj Obj { get; set; }
+    int tableIndex = 0;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        tableIndex = 0;
+        if (firstRender)
+        {
+            Obj.Serch.PageIndex = 1;
+            setItem();
+        }
+
+    }
+
+    private string getNemwCalss(Post model)
+    {
+        return model.Published ? (model.Special ? " text-info" : " cmc") : " text-danger";
+    }
+
+    private async void setItem()
+    {
+        var itemResult = await Obj.Helper.List(Obj.Serch);
+
+        if (!itemResult.Success)
+        {
+            await Obj.ErrorRequest(itemResult);
+            return;
+        }
+        Obj.Items = itemResult.Data;
+        StateHasChanged();
+    }
 }
