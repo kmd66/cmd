@@ -1,39 +1,78 @@
 ﻿@using CMS.Model;
 
 <div class="tableMain">
-    <div class="tableHeder">
+    <div class="tableHeder d-flex justify-content-between">
         <NavLink href='cmd-admin/post/add' class="btn">
             ایجاد
         </NavLink>
+        <button class="btn tx-BaseColor collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#serchPanel">
+           جستجو
+        </button>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col" style="width:50px">شناسه</th>
-                <th scope="col">نام</th>
-                <th scope="col">نام مستعار</th>
-                <th scope="col">منو</th>
-                <th scope="col" style="width:50px"></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Obj.Items)
-            {
-                <tr class="@getNemwCalss(item)">
-                    <td>@item.Id</td>
-                    <td>@item.Title</td>
-                    <td>@item.Alias</td>
-                    <td>@item.MenuName</td>
-                    <td style="text-align:center">
-                        <NavLink href='@($"cmd-admin/post/edit/{item.UnicId}")' class="nav-link d-flex">
-                            <span class="svgEdit"></span>
-                        </NavLink>
-                    </td>
+    
+    <div id="serchPanel" class="accordion-collapse collapse p-3">
+        <div class="row m-4">
+            <div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+                <input class="form-check-input" type="checkbox" @bind="Obj.Serch.Published">
+                <label class="form-check-label">وضعیت انتشار</label>
+            </div>
+            <div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+                <input class="form-check-input" type="checkbox" @bind="Obj.Serch.Special">
+                <label class="form-check-label">مطلب ویژه</label>
+            </div>
+        </div>
+        <div class="row mx-2">
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label">نام </label>
+                <input type="text" class="form-control" @bind="Obj.Serch.Title">
+            </div>
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label">نام مستعار </label>
+                <input type="text" class="form-control" @bind="Obj.Serch.Alias">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="search">جستجو</button>
+        <hr />
+    </div>
+  
+    @if (Obj.Items?.Count > 0)
+    {
+        <table class="table" style="margin-bottom:auto;">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:50px">شناسه</th>
+                    <th scope="col">نام</th>
+                    <th scope="col">نام مستعار</th>
+                    <th scope="col">منو</th>
+                    <th scope="col" style="width:50px"></th>
                 </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Obj.Items)
+                {
+                    <tr class="@getNameCalss(item)">
+                        <td>@item.Id</td>
+                        <td>@item.Title</td>
+                        <td>@item.Alias</td>
+                        <td>@item.MenuName</td>
+                        <td style="text-align:center">
+                            <NavLink href='@($"cmd-admin/post/edit/{item.UnicId}")' class="nav-link d-flex">
+                                <span class="svgEdit"></span>
+                            </NavLink>
+                        </td>
+                    </tr>
 
-            }
-        </tbody>
-    </table>
+                }
+            </tbody>
+        </table>
+        <PostPagInation Obj="Obj" SetPageIndex="setPageIndex" />
+    }
+    else
+    {
+        <div class="p-4">
+            <h6>مطلبی برای نمایش وجود ندارد</h6>
+        </div>
+    }
 </div>
 
 @code {
@@ -51,10 +90,8 @@
 
     }
 
-    private string getNemwCalss(Post model)
-    {
-        return model.Published ? (model.Special ? " text-info" : " cmc") : " text-danger";
-    }
+    private string getNameCalss(Post model)=> 
+        model.Published ? (model.Special ? " text-info" : " cmc") : " text-danger";
 
     private async void setItem()
     {
@@ -67,5 +104,16 @@
         }
         Obj.Items = itemResult.Data;
         StateHasChanged();
+    }
+
+    private void setPageIndex(int i)
+    {
+        Obj.Serch.PageIndex = i;
+        setItem();
+    }
+    private void search()
+    {
+        Obj.Serch.PageIndex = 1;
+        setItem();
     }
 }

@@ -6,5 +6,6 @@ namespace CMS.Dal.DbModel
     public class PostDto : Post
     {
         public string? MenuName { get; set; }
+        public int Total { get; set; }
     }
 }

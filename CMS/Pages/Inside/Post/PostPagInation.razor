@@ -1,0 +1,145 @@
+﻿@using CMS.Model;
+
+@if (count> 1)
+{
+    <nav aria-label="Page navigation example" style="background: #dee2e6;">
+        <ul class="pagination justify-content-center">
+
+            <li class="@getPreviousCalss()">
+                <a class="page-link" aria-label="Next" @onclick="(() =>elClick(false))">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @foreach(var i in item){
+
+                <li class="@getNextCalss(i)" @onclick="(() =>setPageIndex(i))"><a class="page-link">@getText(i)</a></li>
+            }
+            <li class="@getNextCalss()">
+                <a class="page-link" aria-label="Next" @onclick="(() =>elClick(true))">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+       
+        </ul>
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    [Parameter]
+    public EventCallback<int> SetPageIndex { get; set; }
+
+    double count = 0;
+    int? pageIndex;
+
+    List<int> item = new List<int>();
+    int start;
+    int end;
+
+    int min;
+    int max;
+
+    bool endMore;
+    bool startMore;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender || pageIndex != Obj.Serch.PageIndex)
+        {
+            pageIndex = Obj.Serch.PageIndex;
+            setItem();
+        }
+    }
+
+    private string getPreviousCalss() =>
+        pageIndex != 1 ? "page-item" : "page-item disabled";
+    private string getNextCalss() =>
+        pageIndex != count ? "page-item" : "page-item disabled";
+    private string getNextCalss(int i) =>
+        i != 0 && pageIndex != i? "page-item" : "page-item disabled";
+    private string getText(int i) =>
+        i != 0 ? i.ToString() : "...";
+
+
+    private async void setItem()
+    {
+        item = new List<int>();
+        count = 0;
+        if (Obj.Serch.PageIndex.Default() == 0
+            || Obj.Serch.PageSize.Default() == 0
+            || Obj.Items?.Count <= 0
+        )
+            return;
+
+        count = Math.Ceiling(Obj.Items[0].Total.ToDouble() / Obj.Serch.PageSize.ToDouble());
+
+        startMore = false;
+        endMore = false;
+
+        min = 1;
+        max = count.ToInt();
+        start = pageIndex.Default() - 2;
+        end = pageIndex.Default() + 2;
+        if (start <= 1)
+        {
+            start = 1;
+
+            min = 0;
+        }
+
+        if (end >= count)
+        {
+            end = count.ToInt();
+            max = 0;
+        }
+
+        if (min > 0 && min < start - 1)
+            startMore = true;
+        if (max > 0 && max > end +1 )
+            endMore = true;
+
+
+        if (min > 0)
+        {
+            item.Add(min);
+        }
+        if (startMore)
+        {
+            item.Add(0);
+        }
+        for (int x = start; x <= end; x++)
+        {
+            item.Add(x);
+        }
+        if (endMore)
+        {
+            item.Add(0);
+        }
+        if (max > 0)
+        {
+            item.Add(max);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task setPageIndex(int i)
+    {
+        if (i == 0 || i == pageIndex)
+            return;
+        await SetPageIndex.InvokeAsync(i);
+    }
+
+    private async Task elClick(bool up)
+    {
+        int i= 1;
+        if (up)
+            i = pageIndex.Default() + 1;
+        else
+            i = pageIndex.Default() - 1;
+        if (i > count || i < 1)
+            return;
+        await setPageIndex(i);
+    }
+}
