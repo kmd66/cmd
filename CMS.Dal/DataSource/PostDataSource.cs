@@ -66,6 +66,7 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
+
         public async Task<Result<Post>> GetByAliasAsync(string alias)
         {
             try
@@ -111,6 +112,7 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
+
         public async Task<Result> EditAsync(Post model)
         {
             try

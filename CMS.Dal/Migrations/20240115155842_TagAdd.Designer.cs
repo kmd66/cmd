@@ -4,6 +4,7 @@ using CMS.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Dal.Migrations
 {
     [DbContext(typeof(PblContexts))]
-    partial class PblContextsModelSnapshot : ModelSnapshot
+    [Migration("20240115155842_TagAdd")]
+    partial class TagAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,27 +148,6 @@ namespace CMS.Dal.Migrations
                     b.ToTable("Posts", "pbl");
                 });
 
-            modelBuilder.Entity("CMS.Dal.DbModel.Tag", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("PostId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Tags", "pbl");
-                });
-
             modelBuilder.Entity("CMS.Dal.DbModel.User", b =>
                 {
                     b.Property<long>("Id")
@@ -208,22 +190,6 @@ namespace CMS.Dal.Migrations
                     b.HasIndex("UnicId");
 
                     b.ToTable("Users", "pbl");
-                });
-
-            modelBuilder.Entity("CMS.Dal.DbModel.Tag", b =>
-                {
-                    b.HasOne("CMS.Dal.DbModel.Post", "Post")
-                        .WithMany("Tags")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("CMS.Dal.DbModel.Post", b =>
-                {
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

@@ -26,8 +26,6 @@ namespace CMS.Dal
                 .HasIndex(p => p.UnicId);
             menusConfig(ref modelBuilder);
             postConfig(ref modelBuilder);
-            modelBuilder.Entity<Tag>()
-                .HasIndex(p => p.UnicId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

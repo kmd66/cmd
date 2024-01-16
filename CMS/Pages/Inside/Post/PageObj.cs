@@ -7,8 +7,9 @@ namespace CMS.Pages.Inside.Post
         public PostVM Serch = new PostVM();
 
         public List<Model.Post> Items = new List<Model.Post>();
-        
+
         public PostHelper Helper { get; set; }
+        public TagHelper TagHelper { get; set; }
 
         public List<Model.Menu> Menues = new List<Model.Menu>();
 

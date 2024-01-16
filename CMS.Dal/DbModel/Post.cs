@@ -34,6 +34,8 @@ namespace CMS.Dal.DbModel
         public byte Access { get; set; }
 
         public int Hit { get; set; }
+
+        public ICollection<Tag> Tags { get; set; }
     }
 }
 

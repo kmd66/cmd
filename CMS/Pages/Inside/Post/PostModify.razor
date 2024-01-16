@@ -1,5 +1,6 @@
 ﻿@using CMS.Model;
 @inject IJSRuntime Js
+@inject NavigationManager _navManager;
 
 @if (Obj.EditItem != null)
 {
@@ -81,12 +82,20 @@
             return;
         }
         Obj.EditItem = result.Data;
-        Obj.Tags = new List<Tag>();
+
+        var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
+        if (!resultTag.Success)
+        {
+            await selectError(resultTag);
+            return;
+        }
+        Obj.Tags = resultTag.Data;
         await Obj.LoadHandler(false);
     }
-    private async Task selectError(Result result)
+    private async Task selectError(Result result, bool selectadd = true)
     {
-        await selectAdd();
+        if (selectadd)
+            await selectAdd();
         await Obj.ErrorRequest(result);
         await Obj.LoadHandler(false);
     }
@@ -97,14 +106,22 @@
         Obj.EditItem.Content = await Js.InvokeAsync<string>("TextEditor.getContents");
 
         var result = await Obj.Helper.Save(Obj.EditItem, Obj.State);
-
         if (!result.Success)
         {
-            await Obj.ErrorRequest(result);
-            await Obj.LoadHandler(false);
+            await selectError(result, false);
             return;
         }
+        Obj.EditItem = result.Data;
+        var resultTag = await Obj.TagHelper.Add(Obj.EditItem.Id, Obj.Tags);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/post/main");
         await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
     }
 
 }

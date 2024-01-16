@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CMS.Model
+﻿namespace CMS.Model
 {
-    public class Tag : BaseModel<Tag>
+    public class Tag
     {
-        public Tag() { }
-        public long PostID { get; set; }
+        public Guid Id { get; set; }
+
         public string Text { get; set; }
+
+        public long PostId { get; set; }
     }
 }

@@ -25,30 +25,33 @@ namespace CMS.Pages.Inside.Post
                 _unicId = new Guid(unicId);
             return await _dataSource.GetAsync(id, _unicId);
         }
-        public async Task<Result> Save(Model.Post model, string state)
+        public async Task<Result<Model.Post>> Save(Model.Post model, string state)
         {
             if (state == "add")
                 return await Add(model);
             return await Edit(model);
         }
-        private async Task<Result> Add(Model.Post model)
+        public async Task<Result<Model.Post>> Add(Model.Post model)
         {
             var validationResult = await validation(model);
             if (!validationResult.Success)
-                return Result.Failure(message: validationResult.Message);
+                return Result<Model.Post>.Failure(message: validationResult.Message);
 
             model.UnicId = Guid.NewGuid();
             model.Date = DateTime.Now;
 
-            return await _dataSource.AddAsync(model);
+            await _dataSource.AddAsync(model);
+
+            return await _dataSource.GetAsync(0, model.UnicId);
         }
-        private async Task<Result> Edit(Model.Post model)
+        public async Task<Result<Model.Post>> Edit(Model.Post model)
         {
             var validationResult = await validation(model);
             if (!validationResult.Success)
-                return Result.Failure(message: validationResult.Message);
+                return Result<Model.Post>.Failure(message: validationResult.Message);
 
-            return await _dataSource.EditAsync(model);
+            await _dataSource.EditAsync(model);
+            return await _dataSource.GetAsync(0, model.UnicId);
         }
         private async Task<Result> validation(Model.Post model)
         {
