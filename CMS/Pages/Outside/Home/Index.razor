@@ -1,0 +1,22 @@
+﻿@page "/"
+@using CMS.Model;
+
+<PageTitle>Index</PageTitle>
+@{base.BuildRenderTree(__builder);}
+
+<Fotter></Fotter>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

@@ -28,20 +28,7 @@ else if (_navManager.Uri.Contains("cmd-admin"))
 }
 else
 {
-    <div class="page">
-        <div class="sidebar">
-        </div>
-
-        <main>
-            <div class="top-row px-4">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-            </div>
-
-            <article class="content px-4">
-                @Body
-            </article>
-        </main>
-    </div>
+    @Body
 }
 
 <div class="modal fade" id="tokenModal" tabindex="-1" aria-labelledby="tokenModalLabel" aria-hidden="true">
@@ -52,7 +39,7 @@ else
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                توکن منقضی  شده برای ورود رودکه تایید کلیک کنید
+                توکن منقضی  شده برای ورود روی دکه تایید کلیک کنید
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>

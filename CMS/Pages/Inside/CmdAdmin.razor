@@ -9,57 +9,6 @@
 <PageTitle>CMS</PageTitle>
 @{base.BuildRenderTree(__builder);}
 
-
-
-<div class="input-group">
-    <input class="form-control" type="file" id="file" name="file" aria-label="Upload">
-    <button class="btn btn-outline-secondary" type="button" @onclick="saveFile">Button</button>
-</div>
-
-
-<button type="button" class="btn w-100 bg-BaseColor text-white mt-4" @onclick="getToken">ورود</button>
 @code {
-    private User InputValue = new User();
-
-    async Task saveFile()
-    {
-        await ShowLoad();
-        var tw = await localStorage.GetAsync<string>("token");
-
-        var obj = new
-        {
-            fileId = "file",
-            token = tw.Value,
-        };
-        var result = await Js.InvokeAsync<Result>("saveFile", obj);
-        if (!result.Success)
-        {
-            await ShowAlert(result.Message, AlertType.error);
-        }
-        //await HideLoad();
-    }
-
-    async Task getToken()
-    {
-
-        await ShowLoad();
-
-        var t = await Request<TokenObject>(AppRoute.TokenGet2, InputValue);
-        if (t.Success)
-        {
-            await ShowAlert("ssssssss", AlertType.success);
-        }
-
-        //await HideLoad();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-    }
-
 
 }
