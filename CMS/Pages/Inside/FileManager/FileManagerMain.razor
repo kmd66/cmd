@@ -41,7 +41,7 @@
                                 </ul>
                             </div>
 
-                            <button type="button" class="btn btn-primary btn-sm @btnDisabled(item)" @onclick="(() => SelectItme(item))">انتخاب</button>
+                            <button type="button" class="btn btn-primary btn-sm @*@btnDisabled(item)*@" @onclick="(() => SelectItme(item))">انتخاب</button>
                         </div>
                        
                     </div>
@@ -57,8 +57,6 @@
         </div>
     </div>
 </div>
-
-
 
 @code {
     [Parameter]
@@ -157,7 +155,11 @@
     protected async Task SelectItme(Item model)
     {
         if (model.Type != Model.PathType.Folder && Obj.SelectItem == null)
+        {
+            await Js.InvokeVoidAsync("CopyToClipboard", model.Url);
+            await Obj.ShowAlert(new Alert { msg = "آدرس فایل کپی شد", alertType = AlertType.success });
             return;
+        }
 
         if (model.Type == Model.PathType.Folder)
             await getFolder(model);

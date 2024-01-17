@@ -156,7 +156,6 @@ namespace CMS.Dal.DataSource
                     + $", @Published = {model.Published.Query()}"
                     + $", @PageSize = {model.PageSize.Query()}"
                     + $", @PageIndex = {model.PageIndex.Query()}";
-                //var ett = await _pblContexts.Set().FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
                 var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
                 var returnMOdel = MapList<Post, Dal.DbModel.PostDto>(ett);

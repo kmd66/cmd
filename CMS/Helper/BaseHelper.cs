@@ -11,6 +11,10 @@ namespace CMS.Helper
         {
             isAuthorize = true;
         }
+        public BaseHelper(bool auth)
+        {
+            isAuthorize = auth;
+        }
         public BaseHelper(string? auth)
         {
             if (auth != null)

@@ -41,7 +41,7 @@ namespace CMS.Dal.DataSource
             try
             {
                 var texts = System.Text.Json.JsonSerializer.Serialize(tags.Select(x => x.Text));
-                var ett = await _pblContexts.Tags.FromSql($"cnt.SpTagAdd @PostId = {postId}, @Json = {texts}").ToListAsync();
+                var ett = await _pblContexts.Tags.FromSql($"cnt.SpTagAdd @PostId = {postId}, @Json = {texts.JsonQuery()}").ToListAsync();
 
                 var returnMOdel = MapList<Tag, Dal.DbModel.Tag>(ett);
 

@@ -116,9 +116,9 @@
         }
         Obj.EditItem = result.Data;
         var resultTag = await Obj.TagHelper.Add(Obj.EditItem.Id, Obj.Tags);
-        if (!result.Success)
+        if (!resultTag.Success)
         {
-            await selectError(result, false);
+            await selectError(resultTag, false);
             return;
         }
 

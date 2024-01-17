@@ -11,7 +11,7 @@
 @if (Obj.ChengeNameItem != null) 
 {
     <div class="mb-3">
-        <label for="exampleInputPassword1" class="form-label">نام جدید برای @Obj.ChengeNameItem.Name</label>
+        <label class="form-label">نام جدید برای @Obj.ChengeNameItem.Name</label>
         <input @bind="NewName" type="text" class="form-control">
     </div>
     <button type="submit" class="btn btn-primary" @onclick="ChengeName">ویرایش</button>

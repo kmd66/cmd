@@ -174,8 +174,8 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var menu = System.Text.Json.JsonSerializer.Serialize(model.Select(x => new { UnicId = x.UnicId, Order = x.Order }));
-                var ett = await _pblContexts.Menus.FromSql($"pbl.SpMenuSetOrder {menu}").ToListAsync();
+                var json = System.Text.Json.JsonSerializer.Serialize(model.Select(x => new { UnicId = x.UnicId, Order = x.Order }));
+                var ett = await _pblContexts.Menus.FromSql($"pbl.SpMenuSetOrder {json.JsonQuery()}").ToListAsync();
 
                 Menus.List = MapList<Menu, DbModel.Menu>(ett).ToList();
                 return Result.Successful();

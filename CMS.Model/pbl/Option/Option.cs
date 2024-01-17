@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using CMS.Model.Files;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace CMS.Model
 {
@@ -8,6 +10,7 @@ namespace CMS.Model
         public OptionType Type { get; set; }
         public string Text { get; set; }
 
+        private static List<Option> listInstance = new List<Option>();
 
         public Option() { }
         public static Option Instance(Option model)
@@ -20,9 +23,8 @@ namespace CMS.Model
             return item;
         }
 
-        private static List<Option> listInstance = new List<Option>();
         public static void SetInstance(List<Option> model)=> listInstance = model;
-        public static List<Option> GetItems()
+        public static List<Option> GetItem()
         {
             List<Option> list = new List<Option>();
             foreach (var item in listInstance)
@@ -30,14 +32,23 @@ namespace CMS.Model
             return list;
         }
 
-        public static List<Option> GetItems(List<OptionType> model)
+        public static Option GetItem(OptionType model)
+        {
+            var option = listInstance.FirstOrDefault(x => x.Type == model);
+            if (option != null)
+                return Instance(option);
+            return new Option() { Id = Guid.NewGuid(), Type = model, Text = "" };
+        }
+        public static List<Option> GetItem(List<OptionType> model)
         {
             List<Option> list = new List<Option>();
-            foreach (var item in listInstance)
+            foreach(var type in model)
             {
-                var option = model.FirstOrDefault(x => x == item.Type);
-                if(option != OptionType.Unknown)
-                    list.Add(Instance(item));
+                var option = listInstance.FirstOrDefault(x => x.Type == type);
+                if (option != null)
+                    list.Add(Instance(option));
+                else
+                    list.Add(new Option() { Id = Guid.NewGuid(), Type = type, Text = "" });
             }
             return list;
         }

@@ -15,6 +15,12 @@ namespace CMS.Model
                 return "NULL";
             return $"N'{s}'";
         }
+        public static string JsonQuery(this string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return "[]";
+            return s;
+        }
         public static string Query(this int? i)
         {
             if (i == null)

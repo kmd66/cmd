@@ -1,0 +1,68 @@
+﻿@page "/cmd-admin/setting/general"
+@inherits BacePage<BasePageObj>
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+
+<PageTitle>setting general</PageTitle>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@foreach(var item in items)
+{
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+        <label class="form-label">@item.Type</label>
+        <input type="text" class="form-control" @bind="item.Text">
+    </div>
+}
+
+<div>
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
+    <NavLink href='cmd-admin/setting' class="btn btn-outline-secondary">
+        انصراف
+    </NavLink>
+</div>
+
+@code {
+    private BasePageObj obj = new BasePageObj() { State = "main" };
+    public override BasePageObj Obj { get => obj; set => obj = value; }
+
+    List<Option> items = new List<Option>();
+    OptinHelper helper;
+
+    protected override async Task OnInitializedAsync()
+    {
+        helper = new OptinHelper(true);
+        items = Option.GetItem(new List<OptionType>
+            {
+                OptionType.Title,
+                OptionType.Comment,
+                OptionType.Icon,
+            });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task save()
+    {
+        await Obj.LoadHandler(true);
+        var result = await helper.Add(items);
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+        }
+        else
+        {
+            await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+        }
+        await Obj.LoadHandler(false);
+    }
+}

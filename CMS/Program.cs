@@ -46,10 +46,11 @@ async void RegisterLibrary(IServiceCollection services)
 {
     services.AddDbService();
     //services.AddScoped<IInfo, CMS.Tools.Info>();
-    services.AddScoped<IRequestInfo, CMS.Tools.RequestInfo>();
+    //services.AddScoped<IOptionDataSource, OptionDataSource>();
     services.AddTransient<ApiRequest>();
 
-    await new MenuDataSource().ListAsync();
+    new MenuDataSource().ListAsync();
+    new OptionDataSource().ListAsync();
 }
 
 void SetProperty(WebApplicationBuilder b)

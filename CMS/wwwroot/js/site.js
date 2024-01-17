@@ -1,4 +1,8 @@
-﻿function ShowLoad() {
+﻿
+function CopyToClipboard(data) {
+    navigator.clipboard.writeText(data);
+}
+function ShowLoad() {
     $("#loding").addClass("d-block");
 }
 function HideLoad() {
