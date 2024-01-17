@@ -2,6 +2,8 @@
 {
     public enum OptionType : int
     {
+        Unknown = 0,
+
         //general
         Title = 1,
         Comment = 2,

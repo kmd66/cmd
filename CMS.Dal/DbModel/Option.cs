@@ -9,7 +9,7 @@ namespace CMS.Dal.DbModel
     {
         public Guid Id { get; set; }
         public int Type { get; set; }
-        public int Text { get; set; }
+        public string Text { get; set; }
         
     }
 }

@@ -9,6 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.Model", "CMS.Model\CMS.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMS.Dal", "CMS.Dal\CMS.Dal.csproj", "{61FD1698-89C9-40F8-8E45-F268CEECCAE7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B7DBA203-29DC-4F7F-A411-6C49A0067073}"
+	ProjectSection(SolutionItems) = preProject
+		doc.txt = doc.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -48,5 +48,7 @@ namespace CMS.Dal
         public DbSet<User> Users { get; set; }
 
         public DbSet<Menu> Menus { get; set; }
+
+        public DbSet<Option> Options { get; set; }
     }
 }

@@ -1,2 +1,6 @@
 dotnet ef migrations add cnt --context CntContexts
 dotnet ef database update --context CntContexts
+
+dotnet ef migrations add cnt --context PblContexts
+dotnet ef database update --context PblContexts
+

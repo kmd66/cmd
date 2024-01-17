@@ -150,14 +150,14 @@
             modulePost = await Js.InvokeAsync<IJSObjectReference>(
                 "import", "./comcss/Post.js");
             await modulePost.InvokeVoidAsync("TextEditor.init");
+
+            if (Obj.State == "edit")
+            {
+                await Js.InvokeVoidAsync("TextEditor.setContents", Obj.EditItem.Content);
+            }
         }
         else
         {
-        }
-
-        if (Obj.State == "edit")
-        {
-            await Js.InvokeVoidAsync("TextEditor.setContents", Obj.EditItem.Content);
         }
     }
 
