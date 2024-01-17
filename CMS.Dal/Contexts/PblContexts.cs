@@ -44,11 +44,13 @@ namespace CMS.Dal
             //modelBuilder.Entity<Menu>()
             //    .Property(b => b.Published).HasDefaultValue(true);
         }
-        
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Menu> Menus { get; set; }
 
         public DbSet<Option> Options { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
     }
 }

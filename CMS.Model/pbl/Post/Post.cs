@@ -81,6 +81,8 @@ namespace CMS.Model
         public PostAccessType Access { get; set; }
 
         public int Hit { get; set; }
+
+        public bool IsProduct { get; set; }
         public Guid MenuId { get; set; }
         public string MenuName { get; set; }
     }

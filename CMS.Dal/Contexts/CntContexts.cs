@@ -11,7 +11,8 @@ namespace CMS.Dal
         {
             modelBuilder.HasDefaultSchema("cnt");
             postConfig(ref modelBuilder);
-            
+            productConfig(ref modelBuilder);
+
             modelBuilder
                 .Entity<PostDto>(eb =>
                 {
@@ -24,20 +25,6 @@ namespace CMS.Dal
         {
             optionsBuilder.UseSqlServer(Register.ConnectionString);
 
-        }
-
-        private void menusConfig(ref ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Menu>()
-                .HasIndex(p => p.UnicId);
-            modelBuilder.Entity<Menu>()
-                .Property(b => b.Link).HasDefaultValue("");
-            modelBuilder.Entity<Menu>()
-                .Property(b => b.Img).HasDefaultValue("");
-            //modelBuilder.Entity<Menu>()
-            //    .Property(b => b.Published).HasDefaultValue(true);
-
-            modelBuilder.Ignore<PostDto>();
         }
 
         private void postConfig(ref ModelBuilder modelBuilder)
@@ -55,10 +42,21 @@ namespace CMS.Dal
 
 
         }
+        private void productConfig(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<Product>()
+                .Property(b => b.ProductID).HasDefaultValue("");
+            modelBuilder.Entity<Product>()
+                .Property(b => b.Property).HasDefaultValue("");
+        }
 
         public DbSet<Post> Posts { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<Product> Products { get; set; }
 
         public DbSet<PostDto> PostDtos { get; set; }
     }

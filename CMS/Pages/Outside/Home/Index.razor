@@ -1,8 +1,12 @@
 ﻿@page "/"
 @using CMS.Model;
 
+@*<HeadContent>
+    <Meta Name="Robots" Content= "No Index , No Follow" />
+</HeadContent>*@
 <PageTitle>Index</PageTitle>
 @{base.BuildRenderTree(__builder);}
+
 
 <Fotter></Fotter>
 

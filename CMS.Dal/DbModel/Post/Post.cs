@@ -35,6 +35,8 @@ namespace CMS.Dal.DbModel
 
         public int Hit { get; set; }
 
+        public bool IsProduct { get; set; }
+
         public ICollection<Tag> Tags { get; set; }
     }
 }

@@ -51,5 +51,25 @@
         Unknown = 0,
         Publiced = 1,
     }
+    public enum ProductType : byte
+    {
+        Unknown = 0,
+        خرید = 1,
+        پیش_خرید = 2,
+    }
+    public enum OrderType : byte
+    {
+        Unknown = 0,
+        سفارش = 1,
+        درحال_بررسی = 2,
+        آماده_سازی = 3,
 
+        ارسال = 20,
+
+        تحویل = 50,
+
+        بازگشت = 200,
+        لغو = 201,
+        انصراف = 202,
+    }
 }
