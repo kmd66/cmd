@@ -9,6 +9,7 @@ CREATE PROCEDURE cnt.SpGetPosts
 	@Alias NVARCHAR(max),
 	@Special NVARCHAR(max),
 	@Published NVARCHAR(max),	
+	@IsProduct BIT,	
 	@PageSize INT,
 	@PageIndex INT
 --WITH ENCRYPTION
@@ -24,20 +25,7 @@ BEGIN
 
 	; WITH MainSelect AS
 	(
-		SELECT post.[Id]
-			,post.[Title]
-			,post.[Alias]
-			,post.[Summary]
-			,post.[Content]
-			,post.[Img]
-			,post.[Special]
-			,post.[Published]
-			,post.[PublishDown]
-			,post.[Date]
-			,post.[Access]
-			,post.[Hit]
-			,post.[UnicId]
-			,post.[MenuId]
+		SELECT post.*
 			,menu.[Name] MenuName
  		FROM [TalaPishe].cnt.[Posts] post
 		LEFT JOIN pbl.[Menus] menu On menu.UnicId = post.MenuId
@@ -46,6 +34,7 @@ BEGIN
 			AND (@Alias IS NULL OR post.Alias LIKE '%' + @Alias + '%')
 			AND (@Special IS NULL OR Special = @Special)
 			AND (@Published IS NULL OR post.Published = @Published)
+			AND (@IsProduct IS NULL OR post.IsProduct = @IsProduct)
 	)
 	SELECT 
 		count(*) OVER() Total,* 

@@ -31,7 +31,7 @@ namespace CMS.Pages.Inside.Post
                 return await Add(model);
             return await Edit(model);
         }
-        public async Task<Result<Model.Post>> Add(Model.Post model)
+        private async Task<Result<Model.Post>> Add(Model.Post model)
         {
             var validationResult = await validation(model);
             if (!validationResult.Success)
@@ -44,7 +44,7 @@ namespace CMS.Pages.Inside.Post
 
             return await _dataSource.GetAsync(0, model.UnicId);
         }
-        public async Task<Result<Model.Post>> Edit(Model.Post model)
+        private async Task<Result<Model.Post>> Edit(Model.Post model)
         {
             var validationResult = await validation(model);
             if (!validationResult.Success)

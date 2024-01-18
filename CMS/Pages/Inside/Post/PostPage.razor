@@ -58,6 +58,7 @@ else if (Obj.State != "loading")
 
             var token = await localStorage.GetAsync<string>("token");
             Obj.Helper = new PostHelper(token.Value);
+            Obj.ProductHelper = new ProductHelper(token.Value);
             Obj.TagHelper = new TagHelper(token.Value);
             FirstRender(state);
             StateHasChanged();

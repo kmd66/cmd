@@ -17,5 +17,7 @@ namespace CMS.Model
 
         public bool? Published { get; set; }
 
+        public bool? IsProduct { get; set; }
+
     }
 }

@@ -154,6 +154,7 @@ namespace CMS.Dal.DataSource
                     + $", @Alias = {model.Alias.Query()}"
                     + $", @Special = {model.Special.Query()}"
                     + $", @Published = {model.Published.Query()}"
+                    + $", @IsProduct = {model.IsProduct.Query()}"
                     + $", @PageSize = {model.PageSize.Query()}"
                     + $", @PageIndex = {model.PageIndex.Query()}";
                 var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();

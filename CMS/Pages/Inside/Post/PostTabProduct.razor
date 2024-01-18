@@ -1,0 +1,83 @@
+﻿@using CMS.Model;
+
+<div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+    <input class="form-check-input" type="checkbox" @bind="Obj.EditItem.IsProduct">
+    <label class="form-check-label">وضعیت محصول</label>
+</div>
+
+@if (Obj.EditItem.IsProduct)
+{
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">قیمت</label>
+            <input type="text" class="form-control" @bind="Obj.EditProductItem.Price">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label v class="form-label required">قیمت ویژه</label>
+            <input type="text" class="form-control" @bind="Obj.EditProductItem.SpecialPrice">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">نوع سفارش</label>
+            <select class="form-select " aria-label="Default select example" @bind="Obj.EditProductItem.Type">
+                @foreach (Model.ProductType type in Enum.GetValues<Model.ProductType>())
+                {
+                    <option value="@type">@type.ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">موجودی انبار</label>
+            <input type="text" class="form-control" @bind="Obj.EditProductItem.Number">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">شناسه محصول</label>
+            <input type="text" class="form-control" @bind="Obj.EditProductItem.ProductID">
+        </div>
+    </div>
+
+    <hr />
+    @foreach (var item in Obj.ProductPropertys)
+    {
+        <div class="row">
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label">
+                    نام
+                </label>
+                <input type="text" @bind="item.Name" class="form-control">
+            </div>
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12" style="position:relative">
+                <label class="form-label">
+                    مقدار
+                </label>
+                <input type="text" @bind="item.Value" class="form-control">
+                <span class="removeSpanTag" @onclick="(()=>removeProperty(item))">×</span>
+            </div>
+        </div>
+    }
+
+    <button class="btn btn-primary" type="button" @onclick="addProperty">افزودن مقدارجدید</button>
+}
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+
+    private async Task addProperty()
+    {
+        Obj.ProductPropertys.Add(new ProductProperty());
+    }
+    private async Task removeProperty(ProductProperty model)
+    {
+        Obj.ProductPropertys.Remove(model);
+    }
+
+}

@@ -14,6 +14,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="property-tab" data-bs-toggle="tab" data-bs-target="#property" type="button" role="tab" aria-controls="property" aria-selected="false">خواص</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#product" type="button" role="tab" aria-controls="property" aria-selected="false">محصول</button>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
   
@@ -28,6 +31,10 @@
 
         <div class="tab-pane my-3 fade" id="property" role="tabpanel" aria-labelledby="property-tab">
             <PostTabProperty Obj="Obj" />
+        </div>
+
+        <div class="tab-pane my-3 fade" id="product" role="tabpanel" aria-labelledby="product-tab">
+            <PostTabProduct Obj="Obj" />
         </div>
     </div>
 
@@ -70,6 +77,8 @@
     {
         Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
         Obj.Tags = new List<Tag>();
+        Obj.EditProductItem = new Product();
+        Obj.ProductPropertys = new List<ProductProperty>();
     }
 
     private async Task selectEdit()
@@ -84,6 +93,17 @@
             return;
         }
         Obj.EditItem = result.Data;
+
+        var resultProduct = await Obj.ProductHelper.Get(Obj.EditItem.UnicId);
+
+        if (!resultProduct.Success)
+        {
+            await selectError(resultProduct);
+            return;
+        }
+        Obj.EditProductItem = resultProduct.Data;
+        Obj.ProductPropertys = Obj.EditProductItem.GetPropertys();
+
 
         var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
         if (!resultTag.Success)
@@ -114,7 +134,19 @@
             await selectError(result, false);
             return;
         }
+
         Obj.EditItem = result.Data;
+
+        if (result.Data.IsProduct)
+        {
+            Obj.EditProductItem.SetPropertys(Obj.ProductPropertys);
+            var resultProduct = await Obj.ProductHelper.Save(Obj.EditProductItem, Obj.EditItem);
+            if (!resultProduct.Success)
+            {
+                await selectError(resultProduct, false);
+                return;
+            }
+        }
         var resultTag = await Obj.TagHelper.Add(Obj.EditItem.Id, Obj.Tags);
         if (!resultTag.Success)
         {

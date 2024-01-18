@@ -68,3 +68,11 @@ img {
 .pagination a {
     cursor: pointer;
 }
+.removeSpanTag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    padding: 5px;
+    color: red;
+}
