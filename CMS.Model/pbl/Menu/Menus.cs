@@ -20,7 +20,7 @@ namespace CMS.Model
                 {
                     var menu = Menu.Instance(item);
                     menu.Child = addChild(modelVM, menu);
-                    list.Add(item);
+                    list.Add(menu);
                 }
             }
             return list;

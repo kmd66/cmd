@@ -1,16 +1,30 @@
 ﻿@page "/"
 @using CMS.Model;
+@inject IJSRuntime Js
 
-@*<HeadContent>
-    <Meta Name="Robots" Content= "No Index , No Follow" />
-</HeadContent>*@
-<PageTitle>Index</PageTitle>
+<PageTitle>home</PageTitle>
 @{base.BuildRenderTree(__builder);}
 
+<div class="container main">
+    <div class="mainSlideLeft">
+        <p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p>
+    </div>
+    <div class="mainSlideRight">
+        <div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
+        <div style="background: antiquewhite;padding:5px; height:200px">
+            <div style=" background: #d9d9d9; height:100px; height: 50px"> wwwwd</div>
+        </div>
+    </div>
+</div>
+<div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
+<div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
 
-<Fotter></Fotter>
+
+<ul class="navbar-nav fw500"><!--!--><li class="nav-Item"><!--!--><a href="/" class="navbar-brand active">خانه</a></li><!--!--><li class="nav-Item"><!--!--><a href="category/category" class="navbar-brand active">دسته</a></li><!--!--><li class="p-2 dropdown-toggle" type="button" id="dropdownMenuButtonPostTitle" data-bs-toggle="dropdown" aria-expanded="false" style=" color: var(--bs-nav-link-color);">مطلب</li><ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonPostTitle"><li><!--!--><li class="nav-Item"><!--!--><a href="/1" class="dropdown-item">مطلب 1</a></li></li><li><!--!--><li class="nav-Item"><!--!--><a href="/2" class="dropdown-item">مطلب 2</a></li></li><li><!--!--><li class="nav-Item"><!--!--><a href="/s3" class="dropdown-item">مطلب 3</a></li></li></ul></ul>
 
 @code {
+    [Parameter]
+    public string name { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -20,6 +34,7 @@
     {
         if (firstRender)
         {
+            await Js.InvokeVoidAsync("PageInit");
         }
         await base.OnAfterRenderAsync(firstRender);
     }

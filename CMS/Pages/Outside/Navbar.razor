@@ -1,0 +1,49 @@
+﻿
+<nav id="navbar" class="navbar navbar-expand-lg navbar-light p-0" style="background: #a9a9a975; ">
+    <div class="container">
+        <button class="navbar-toggler" type="button" onclick="getToTop()">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav fw500">
+                @foreach (var item in menus)
+                {
+                    <MenuItem Item="item" />
+                }
+
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown link
+                    </a>
+
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div id="fixNavbar" class="navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide" style="background: #a9a9a975; ">
+    asdasdas
+</div>
+
+@code {
+
+    List<CMS.Model.Menu> menus = new List<Model.Menu>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        menus = CMS.Model.Menus.GetList(new Model.MenuVM { Published = true });
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+}
