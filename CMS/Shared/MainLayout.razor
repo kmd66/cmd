@@ -28,7 +28,9 @@ else if (_navManager.Uri.Contains("cmd-admin"))
 }
 else
 {
-    @((MarkupString)"<link rel=\"stylesheet\" href=\"/css/pSite.css\" />")
+    <HeadContent>
+        @((MarkupString)"<link rel=\"stylesheet\" href=\"/css/pSite.css\" />")
+    </HeadContent>
     <CMS.Pages.Outside.Navbar></CMS.Pages.Outside.Navbar>
     @Body
     <CMS.Pages.Outside.Fotter></CMS.Pages.Outside.Fotter>

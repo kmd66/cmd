@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.WebEncoders;
 using Sample.Model.Data;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +47,12 @@ app.Run();
 
 async void RegisterLibrary(IServiceCollection services)
 {
+    services.Configure<WebEncoderOptions>(options =>
+    {
+        options.TextEncoderSettings = new TextEncoderSettings(
+            UnicodeRanges.BasicLatin,
+            UnicodeRanges.All);
+    });
     services.AddDbService();
     //services.AddScoped<IInfo, CMS.Tools.Info>();
     //services.AddScoped<IOptionDataSource, OptionDataSource>();

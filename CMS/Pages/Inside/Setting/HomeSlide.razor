@@ -1,0 +1,97 @@
+﻿@page "/cmd-admin/setting/home-slide"
+@inherits BacePage<BasePageObj>
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+
+<PageTitle>setting general</PageTitle>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@foreach (var slide in slides)
+{
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">
+                لینک تصویر
+            </label>
+            <input type="text" @bind="slide.Img" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">
+                متن
+            </label>
+            <input type="text" @bind="slide.Text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12" style="position:relative">
+            <label class="form-label">
+                لینک
+            </label>
+            <input type="text" @bind="slide.Link" class="form-control">
+            <span class="removeSpanTag" @onclick="(()=>removeProperty(slide))">×</span>
+        </div>
+    </div>
+    <hr />
+}
+
+<button class="btn btn-primary" type="button" @onclick="addProperty">افزودن مقدارجدید</button>
+<hr />
+
+<div>
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
+    <NavLink href='cmd-admin/setting' class="btn btn-outline-secondary">
+        بازگشت
+    </NavLink>
+</div>
+
+@code {
+    private BasePageObj obj = new BasePageObj() { State = "main" };
+    public override BasePageObj Obj { get => obj; set => obj = value; }
+
+    Option item = new Option();
+    List<CMS.Model.HomeSlide> slides = new List<Model.HomeSlide>();
+    OptinHelper helper;
+
+    protected override async Task OnInitializedAsync()
+    {
+        helper = new OptinHelper(true);
+        item = Option.GetItem(OptionType.HomeSlide);
+        if (!string.IsNullOrEmpty(item.Text))
+            slides = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.HomeSlide>>(item.Text);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task save()
+    {
+        await Obj.LoadHandler(true);
+        item.Text = Newtonsoft.Json.JsonConvert.SerializeObject(slides);
+        var result = await helper.Add(new List<Option>() { item });
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+        }
+        else
+        {
+            await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+        }
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task addProperty()
+    {
+        slides.Add(new Model.HomeSlide());
+    }
+    private async Task removeProperty(Model.HomeSlide model)
+    {
+        slides.Remove(model);
+    }
+}

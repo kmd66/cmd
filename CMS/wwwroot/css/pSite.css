@@ -65,9 +65,12 @@ body {
     }
 
 #fixNavbar {
-    opacity: 1;
+    opacity: 0.7;
     visibility: visible;
     transition: visibility .3s linear,opacity .3s linear;
+}
+#fixNavbar:hover {
+    opacity: 1;
 }
 
 #getToTop {
@@ -103,4 +106,56 @@ body {
     opacity: .1 !important;
     visibility: hidden !important;
     overflow: hidden !important;
+}
+.navbar-brand {
+    margin-left: unset;
+    font-size: unset;
+}
+.navbar {
+    background: #fcfcfc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+    box-shadow: inset 0 0px 3px rgba(0,0,0,.1);
+    font-size: 1.2rem !important;
+}
+.navbarItem, .navbarIcon {
+    background-color: transparent;
+    padding: 7px;
+}
+    .navbarItem a:hover, .navbarItem span:hover {
+        color: var(--BaseColor) !important
+    }
+    .navbarItem:hover, .navbarIcon:hover {
+        background-color: var(--BasebackgroundColor);
+    }
+.navbarIcon {
+    padding: 7px 12px;
+}
+.navbarIcon span{
+    cursor: pointer;
+    background-color: rgba(0,0,0,.9);
+}
+.navbarIcon {
+    list-style: none;
+}
+.navbar-nav > .navbarItem:first-child, .navbarIcon{
+    -webkit-box-shadow: -1px 0 0 0 rgba(0,0,0,.05), 1px 0 0 0 rgba(0,0,0,.05);
+    box-shadow: -1px 0 0 0 rgba(0,0,0,.05), 1px 0 0 0 rgba(0,0,0,.05);
+}
+.navbar-nav > .navbarItem {
+     -webkit-box-shadow: -1px 0 0 0 rgba(0,0,0,.05); 
+     box-shadow: -1px 0 0 0 rgba(0,0,0,.05); 
+}
+.navbar span[class^='svg'], .navbar div[class*='svg'] {
+    cursor: pointer;
+    background-color: rgba(0,0,0,.9);
+    width: 20px;
+    height: 20px;
+}
+.dropdown-item.active, .dropdown-item:active, .navbar-brand.active {
+    color: var(--BaseColor) !important;
+    text-decoration: none;
+    background-color: unset;
+}
+li:has(> .dropdown-item.active), li:has(> .navbar-brand.active) {
+    background-color: var(--BasebackgroundColor);
 }

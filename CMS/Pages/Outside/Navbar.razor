@@ -1,42 +1,48 @@
-﻿
-<nav id="navbar" class="navbar navbar-expand-lg navbar-light p-0" style="background: #a9a9a975; ">
+﻿<div class="bg-white">
     <div class="container">
-        <button class="navbar-toggler" type="button" onclick="getToTop()">
-            <span class="navbar-toggler-icon"></span>
+        <div class="d-flex align-items-center justify-content-around p-3">
+            <img src="@logo" style="width:70px" />
+            <div style=" font-size: 16px; margin: 0.4375em 0 0;">
+
+                <p class="site-title" style="font-weight: 700;font-size: 26px;margin: 0; color: var(--BaseColor) !important;">@title</p>
+                <p class="site-description" style="font-weight: 700;color: #6c757d;">@comment</p>
+            </div>
+        </div>
+    </div>
+</div>
+<nav id="navbar" class="navbar navbar-expand-lg navbar-light p-0">
+    <div class="container">
+        <button class="navbar-toggler navbarIcon" type="button" onclick="getToTop()">
+            <span class="navbar-toggler-icon" style="background-color:transparent"></span>
         </button>
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav fw500">
                 @foreach (var item in menus)
                 {
-                    <MenuItem Item="item" />
+                    <MenuItem Item="item" Child="false" />
                 }
 
-                <div class="dropdown">
-                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown link
-                    </a>
-
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </div>
 
             </ul>
         </div>
+        <li class="nav-Item navbarIcon">
+            <span class="svgSearch"></span>
+        </li>
     </div>
 </nav>
-<div id="fixNavbar" class="navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide" style="background: #a9a9a975; ">
-    asdasdas
-</div>
+<div id="fixNavbar" class="navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide "></div>
 
 @code {
-
+    string logo = "";
+    string title = "";
+    string comment = "";
     List<CMS.Model.Menu> menus = new List<Model.Menu>();
 
     protected override async Task OnInitializedAsync()
     {
+        logo = CMS.Model.Option.GetItem( Model.OptionType.Icon).Text;
+        title = CMS.Model.Option.GetItem(Model.OptionType.Title).Text;
+        comment = CMS.Model.Option.GetItem(Model.OptionType.Comment).Text;
         menus = CMS.Model.Menus.GetList(new Model.MenuVM { Published = true });
     }
 

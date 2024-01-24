@@ -52,3 +52,13 @@ span[class^='svg'], div[class*='svg'] {
 .svgEdit {
     mask-image: url(../svg/Edit.svg);
 }
+.svgDirectUp {
+    mask-image: url(../svg/DirectUp.svg);
+}
+.svgDirectRight {
+    mask-image: url(../svg/DirectRight.svg);
+}
+.svgDirectLeft {
+    mask-image: url(../svg/DirectLeft.svg);
+}
+

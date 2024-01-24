@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Security.Cryptography.X509Certificates;
 
 namespace CMS.Dal.DataSource
 {
@@ -166,6 +166,32 @@ namespace CMS.Dal.DataSource
             catch (Exception ex)
             {
                 return Result<IEnumerable<Post>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result<List<Post>>> ListAsync(PostVM model,int count)
+        {
+            try
+            {
+                var ett = await _pblContexts.Posts.Where(x=> 
+                    x.Published == true && (
+                   (model.Special == null || x.Special == model.Special)
+                   && (model.IsProduct == null || x.IsProduct == model.IsProduct)
+                )).Take(count).OrderBy(x=>x.Date).ToListAsync();
+                if (ett == null)
+                    return Result<List<Post>>.Successful(data: new List<Post>());
+
+                var returnMOdel = MapList<Post, Dal.DbModel.Post>(ett);
+
+                return Result<List<Post>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<Post>>.Failure(message: ex.Message);
             }
             finally
             {

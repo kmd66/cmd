@@ -99,19 +99,21 @@ function setMainSlideRightLastChildOffset(t) {
 
 
 function showGetToTop(t) {
-    if (t.scrollY > 450 && document.getElementById('getToTop').className.indexOf('d-hide') > -1) {
+    var el = document.getElementById('getToTop');
+    if (t.scrollY > 450 && el?.className.indexOf('d-hide') > -1) {
         document.getElementById('getToTop').classList.remove("d-hide");
     }
-    if (t.scrollY < 450 && document.getElementById('getToTop').className.indexOf('d-hide') == -1) {
+    if (t.scrollY < 450 && el?.className.indexOf('d-hide') == -1) {
         document.getElementById('getToTop').classList.add("d-hide");
     }
 }
 
 function showFixNavbar(t) {
-    if (t.scrollY > 450 && document.getElementById('fixNavbar').className.indexOf('d-hide') > -1) {
+    var el = document.getElementById('fixNavbar');
+    if (t.scrollY > 450 && el?.className.indexOf('d-hide') > -1) {
         document.getElementById('fixNavbar').classList.remove("d-hide");
     }
-    if (t.scrollY < 450 && document.getElementById('fixNavbar').className.indexOf('d-hide') == -1) {
+    if (t.scrollY < 450 && el?.className.indexOf('d-hide') == -1) {
         document.getElementById('fixNavbar').classList.add("d-hide");
     }
 }

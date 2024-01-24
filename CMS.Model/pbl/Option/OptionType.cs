@@ -11,6 +11,7 @@
 
         //Post
         HomePostId = 100,
-        PostCount = 101
+        PostCount = 101,
+        HomeSlide = 200,
     }
 }

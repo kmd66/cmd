@@ -2,39 +2,42 @@
 
 @if (Item.Type == Model.MenuType.Link)
 {
-    <li class="nav-Item">
-        <NavLink href="@Item.Link" class="@getItemClass()">@Item.Name</NavLink>
+    <li class="@getNavbarItemClass()">
+        <NavLink href="@Item.Link" class="@getItemClass()" Match="NavLinkMatch.All">@Item.Name</NavLink>
     </li>
 }
 else if (Item.Type == Model.MenuType.Content)
 {
-    <li class="nav-Item">
-        <NavLink href="@Item.Alias" class="@getItemClass()">@Item.Name</NavLink>
+    <li class="@getNavbarItemClass()">
+        <NavLink href="@Item.Alias" class="@getItemClass()" Match="NavLinkMatch.All">@Item.Name</NavLink>
     </li>
 }
 else if (Item.Type == Model.MenuType.Categorie)
 {
-    <li class="nav-Item">
-        <NavLink href="@($"category/{Item.Alias}")" class="@getItemClass()">@Item.Name</NavLink>
+    <li class="@getNavbarItemClass()">
+        <NavLink href="@($"category/{Item.Alias}")" class="@getItemClass()" Match="NavLinkMatch.All">@Item.Name</NavLink>
     </li>
 }
 else if (Item.Type == Model.MenuType.Title)
 {
-    <li class="p-2 dropdown-toggle" type="button" id="dropdownMenuButton@(Item.Alias)" 
-        data-bs-toggle="dropdown" aria-expanded="false" style=" color: var(--bs-nav-link-color);">@Item.Name
-    </li>
-    @if (Item.Child?.Count > 0)
-    { 
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton@(Item.Alias)">
-            
-            @foreach (var child in Item.Child)
-            {
-                <li>
-                    <MenuItem Item="child" Child="true" />
-                </li>
-            }
-        </ul>
-    }
+    <div class="dropdown navbarItem">
+        <span class="dropdown-toggle px-2" type="button" id="dropdownMenuButton@(Item.Alias)"
+        data-bs-toggle="dropdown" aria-expanded="false" style=" color: var(--bs-nav-link-color);">
+            @Item.Name
+        </span>
+        @if (Item.Child?.Count > 0)
+        {
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton@(Item.Alias)">
+
+                @foreach (var child in Item.Child)
+                {
+                    <li>
+                        <MenuItem Item="child" Child="true" />
+                    </li>
+                }
+            </ul>
+        }
+    </div>
 }
 @code {
     [Parameter]
@@ -44,6 +47,12 @@ else if (Item.Type == Model.MenuType.Title)
 
     private string getItemClass()
     {
-        return Child ? "dropdown-item" : "navbar-brand";
-    } 
+        var c = Child ? "dropdown-item" : "navbar-brand";
+        return c + " px-2";
+    }
+
+    private string getNavbarItemClass()
+    {
+        return Child ? "nav-Item" : "nav-Item navbarItem";
+    }
 }

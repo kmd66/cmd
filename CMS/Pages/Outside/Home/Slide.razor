@@ -1,0 +1,46 @@
+﻿@inject IJSRuntime Js
+@if (items.Count > 0)
+{
+    <div id="homeSlider">
+        <div id="bHomeSlider" style="position: absolute; "></div>
+        <span class="control_next"><span class="svgDirectLeft"></span></span>
+        <span class="control_prev"><span class="svgDirectRight"></span></span>
+        <ul >
+            @foreach (var item in items)
+            {
+                <li>
+                    <div class="slide-item" style="background-image: url(@item.Img);">
+                        <NavLink href="@item.Link">
+                            <div class="slide-comment">
+                                <p>@item.Text</p>
+                            </div>
+                        </NavLink>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    List<CMS.Model.HomeSlide> items = new List<Model.HomeSlide>();
+    protected override async Task OnInitializedAsync()
+    {
+        var option = CMS.Model.Option.GetItem(CMS.Model.OptionType.HomeSlide);
+        if (!string.IsNullOrEmpty(option.Text))
+            items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.HomeSlide>>(option.Text);
+        //var db = new CMS.Dal.DataSource.PostDataSource();
+        //var result = await db.ListAsync(new CMS.Model.PostVM() { Special = true, IsProduct = false }, 3);
+        //if (result.Success)
+        //    items = result.Data;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && items.Count >0)
+        {
+            await Js.InvokeVoidAsync("InitHomeSlide");
+        }
+    }
+
+}

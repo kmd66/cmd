@@ -20,8 +20,8 @@
 }
 
 body {
-    direction:rtl;
-    font-family: Vazir, Tahoma;
+    direction: rtl;
+    font-family: Vazir, Tahoma,Open, Sans;
     margin: 0;
     padding: 0;
 }

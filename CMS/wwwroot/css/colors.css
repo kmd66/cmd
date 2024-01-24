@@ -1,6 +1,6 @@
 :root {
     --BaseColor: #9c730b;
-    --BasebackgroundColor: #fffbf0;
+    --BasebackgroundColor: #9c730b08;
 }
 .bg-BaseColor {
     background-color: var(--BaseColor) !important;
