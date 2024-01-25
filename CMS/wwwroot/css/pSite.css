@@ -5,7 +5,6 @@ body {
 .main {
     margin-top: 5px;
     margin-bottom: 5px;
-    background: aliceblue;
     display: flex;
     flex-wrap: wrap;
 }
@@ -13,17 +12,19 @@ body {
 .mainSlideRight {
     position: relative;
     /*float: right;*/
-    background: #ffc1fd;
     width: 300px;
+    margin-top: 2rem;
 }
 
 .mainSlideLeft {
     position: relative;
     /*float: left;*/
-    background: #dcc1ff;
     width: calc(100% - 300px);
     margin-left: auto;
     order: 2;
+    display: flex;
+    margin: 2rem 0 2rem 0;
+    padding: 0 1rem 0 0;
 }
 
 .mainSlideLeftLastFix {
@@ -47,6 +48,7 @@ body {
     .mainSlideLeft {
         width: 100%;
         order: unset;
+        padding: 0;
     }
 }
 
@@ -158,4 +160,76 @@ body {
 }
 li:has(> .dropdown-item.active), li:has(> .navbar-brand.active) {
     background-color: var(--BasebackgroundColor);
+}
+.mainCard {
+    border-radius: unset;
+    background: #f9f9f9;
+    border: 1px solid rgba(0,0,0,.05);
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+}
+    .mainCard > .card-header {
+        background: white;
+        text-align: center;
+        border: unset;
+        border-top: 2px solid #e54e7e;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+        border-radius: unset;
+    }
+.card-img-top {
+    height: 100%;
+    object-fit: cover;
+}
+.card-text {
+    font-size: .8rem;
+}
+.card a {
+    color: unset;
+    text-decoration: unset;
+}
+.card{
+    border: unset;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+}
+.dark {
+    background: #3c3d48;
+    color: white;
+}
+    .dark .card-header {
+        border-top: unset;
+        background: #30313c;
+        border-bottom: 1px solid rgba(0,0,0,.2);
+    }
+.socialItem {
+    height: 50px;
+    width: 50px;
+    list-style-type: none;
+}
+    .socialItem img {
+        height: 100%;
+        width: 100%;
+    }
+    .socialItem img:hover {
+        filter: opacity(0.5) drop-shadow(0 0 0 blue);
+    }
+.menuRighItem {
+    list-style-type: none;
+    align-items: center;
+    justify-content: flex-start;
+    display: flex;
+    border-bottom: 1px solid #ebebeb;
+    margin-top: 2rem;
+}
+    .menuRighItem li {
+    }
+ 
+    .menuRighItem .imgLink {
+        width: 120px;
+        padding: 7px;
+    }
+.mainSlideRight .mainCard .menuRighItem:first-child {
+    margin-top: 0 !important;
+}
+.mainSlideRight .mainCard .menuRighItem:last-child {
+    border-bottom: unset !important;
 }

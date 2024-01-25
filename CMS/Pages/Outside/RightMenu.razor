@@ -1,0 +1,53 @@
+﻿@using CMS.Model;
+
+<div class="mainSlideRight">
+
+    <div class="card mainCard mb-3 bg-white">
+        <h5 class="card-header" style="border-top: 2px solid #4ee563;">محصول ویژه</h5>
+        <ul class="card-body">
+            @foreach (var item in postItems)
+            {
+                <li class="menuRighItem">
+                    <NavLink href='@($"/{item.Alias}")' class="imgLink">
+                        <img src="@item.Img">
+                    </NavLink>
+                    <NavLink href='@($"/{item.Alias}")'>
+                        <h2 class="card-title h6">@item.Title</h2>
+                    </NavLink>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="card mainCard mb-3 dark mb-3">
+        <h5 class="card-header" style="border-top: unset">ما را دنبال کنید</h5>
+        <ul class="card-body d-flex align-items-center justify-content-around">
+            @foreach (var item in socialItems)
+            {
+                <li class="socialItem">
+                    <a target="_blank" href="@item.Link"><img src="@item.Img"> </a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+
+    public CMS.Model.Post post { get; set; }
+
+    List<Model.Post> postItems = new List<Model.Post>();
+    List<Model.Social> socialItems = new List<Model.Social>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var item = Option.GetItem(OptionType.Social);
+        if (!string.IsNullOrEmpty(item.Text))
+        {
+            socialItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Model.Social>>(item.Text);
+        }
+
+        CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+        var result = await db.ListAsync(new CMS.Model.PostVM() { Special = true, IsProduct = true }, 5);
+        postItems = result.Data.ToList();
+    }
+}

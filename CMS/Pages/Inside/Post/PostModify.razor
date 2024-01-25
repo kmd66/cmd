@@ -58,9 +58,13 @@
     }
     private async Task selectItem()
     {
-        Obj.Menues = Menus.GetList2(
-            new MenuVM() { Published = true, Type = MenuType.Categorie }, ""
+        Obj.Menues = Menus.GetAllItem(
+            new MenuVM() { Published = true, Type = MenuType.Categorie }
         );
+
+        Obj.Menues.AddRange(Menus.GetAllItem(
+            new MenuVM() { Published = true, Type = MenuType.ProductCategorie }
+        ));
         if (Obj.State == "add")
         {
             await selectAdd();
@@ -79,6 +83,7 @@
         Obj.Tags = new List<Tag>();
         Obj.EditProductItem = new Product();
         Obj.ProductPropertys = new List<ProductProperty>();
+        Obj.Imgs = new List<ProductImg>();
     }
 
     private async Task selectEdit()
@@ -103,7 +108,7 @@
         }
         Obj.EditProductItem = resultProduct.Data;
         Obj.ProductPropertys = Obj.EditProductItem.GetPropertys();
-
+        Obj.Imgs = Obj.EditProductItem.GetImgs();
 
         var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
         if (!resultTag.Success)
@@ -140,6 +145,7 @@
         if (result.Data.IsProduct)
         {
             Obj.EditProductItem.SetPropertys(Obj.ProductPropertys);
+            Obj.EditProductItem.SetImgs(Obj.Imgs);
             var resultProduct = await Obj.ProductHelper.Save(Obj.EditProductItem, Obj.EditItem);
             if (!resultProduct.Success)
             {

@@ -44,7 +44,8 @@
         Title = 1,
         Content = 2,
         Categorie = 3,
-        Link = 4
+        Link = 4,
+        ProductCategorie = 5
     }
     public enum PostAccessType : byte
     {

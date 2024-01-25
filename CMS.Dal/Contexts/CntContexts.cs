@@ -50,6 +50,8 @@ namespace CMS.Dal
                 .Property(b => b.ProductID).HasDefaultValue("");
             modelBuilder.Entity<Product>()
                 .Property(b => b.Property).HasDefaultValue("");
+            modelBuilder.Entity<Product>()
+                .Property(b => b.Img).HasDefaultValue("");
         }
 
         public DbSet<Post> Posts { get; set; }

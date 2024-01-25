@@ -20,6 +20,8 @@ namespace CMS.Dal.DbModel
 
         public string Property { get; set; }
 
+        public string Img { get; set; }
+
     }
 }
 

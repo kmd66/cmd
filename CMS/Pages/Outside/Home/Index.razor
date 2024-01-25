@@ -5,39 +5,82 @@
 <PageTitle>home</PageTitle>
 @{base.BuildRenderTree(__builder);}
 
+<Slide />
 
-<Slide></Slide>
+<Special Items="itemsTop" />
 
 <div class="container main">
     <div class="mainSlideLeft">
-        <p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p><p margin-top:350px;>d</p>
+        @if(post != null)
+        {
+            <div class="card rounded-0 w-100" style="border-top: 2px solid #9c730b;">
+                <div class="p-3 text-center"><h1 class="h2">@post.Title</h1></div>
+                <div style="max-height: 400px">
+                    <img src="@post.Img" class="card-img-top rounded-0" alt="@post.Title">
+                </div>
+                <div class="card-body mt-3">
+                    @((MarkupString)post.Content)
+                </div>
+            </div>
+
+        }
     </div>
-    <div class="mainSlideRight">
-        <div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
-        <div style="background: antiquewhite;padding:5px; height:200px">
-            <div style=" background: #d9d9d9; height:100px; height: 50px"> wwwwd</div>
-        </div>
-    </div>
+    <RightMenu />
 </div>
-<div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
-<div style="background: antiquewhite; margin-top:50px; padding:5px; height:200px">d</div>
+<Special Items="itemsBot" />
 
 
 
 @code {
-    [Parameter]
-    public string name { get; set; }
+
+    CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+
+    public CMS.Model.Post post { get; set; }
+
+    List<CMS.Model.Post> itemsTop = new List<Model.Post>();
+    List<CMS.Model.Post> itemsBot = new List<Model.Post>();
 
     protected override async Task OnInitializedAsync()
     {
+        await SeletePost();
+        await SeleteSpecialItem();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await Js.InvokeVoidAsync("PageInit");
         }
+            await Js.InvokeVoidAsync("PageInit");
         await base.OnAfterRenderAsync(firstRender);
+    }
+
+    async Task SeleteSpecialItem()
+    {
+        var result = await db.ListAsync(new CMS.Model.PostVM() { Special = true, IsProduct = false }, 6);
+        var items = result.Data.ToList();
+        if (items.Count < 1)
+            return;
+        for (int i = 0; i < items.Count; ++i)
+        {
+            if (i < 3)
+                itemsTop.Add(items[i]);
+            else
+                itemsBot.Add(items[i]);
+        }
+    }
+
+    async Task SeletePost()
+    {
+        var homePostId = CMS.Model.Option.GetItem(CMS.Model.OptionType.HomePostId);
+        if (string.IsNullOrEmpty(homePostId.Text))
+            return;
+
+        var id = new Guid(homePostId.Text);
+        var result = await db.GetAsync(0, id);
+        if (result.Data == null)
+            return;
+
+        post = result.Data;
     }
 }

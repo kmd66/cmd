@@ -12,8 +12,10 @@ namespace CMS.Pages.Inside.Menu
             :base(auth)
         {
             _dataSource = new MenuDataSource();
+            _postDataSource = new PostDataSource();
         }
         private readonly MenuDataSource _dataSource;
+        private readonly PostDataSource _postDataSource;
 
         public async Task<Result> Save(Model.Menu model, string state)
         {
@@ -115,6 +117,10 @@ namespace CMS.Pages.Inside.Menu
                 return Result.Failure(message: "نام تکراری است");
 
             var resultAlias = await _dataSource.GetByAliasAsync(model.Alias);
+            if (resultAlias.Data != null && resultAlias.Data.Id != model.Id)
+                return Result.Failure(message: "نام مستعار تکراری است");
+
+            var resultPostAlias = await _postDataSource.GetByAliasAsync(model.Alias);
             if (resultAlias.Data != null && resultAlias.Data.Id != model.Id)
                 return Result.Failure(message: "نام مستعار تکراری است");
 

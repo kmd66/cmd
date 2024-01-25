@@ -1,17 +1,17 @@
-﻿@page "/cmd-admin/setting/home-slide"
+﻿@page "/cmd-admin/setting/social"
 @inherits BacePage<BasePageObj>
 @using CMS.Helper;
 @using CMS.Model;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage localStorage
 
-<PageTitle>setting general</PageTitle>
+<PageTitle>setting social</PageTitle>
 @{
     base.BuildRenderTree(__builder);
 }
-<div><h2>اسلاید شو صفحه اصلی</h2></div>
+<div><h2>شبکه اجتماعی</h2></div>
 
-@foreach (var slide in slides)
+@foreach (var slide in items)
 {
     <div class="row">
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
@@ -19,12 +19,6 @@
                 لینک تصویر
             </label>
             <input type="text" @bind="slide.Img" class="form-control">
-        </div>
-        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label">
-                متن
-            </label>
-            <input type="text" @bind="slide.Text" class="form-control">
         </div>
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12" style="position:relative">
             <label class="form-label">
@@ -52,15 +46,17 @@
     public override BasePageObj Obj { get => obj; set => obj = value; }
 
     Option item = new Option();
-    List<CMS.Model.HomeSlide> slides = new List<Model.HomeSlide>();
+    List<CMS.Model.Social> items = new List<Model.Social>();
     OptinHelper helper;
 
     protected override async Task OnInitializedAsync()
     {
         helper = new OptinHelper(true);
-        item = Option.GetItem(OptionType.HomeSlide);
+        item = Option.GetItem(OptionType.Social);
         if (!string.IsNullOrEmpty(item.Text))
-            slides = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.HomeSlide>>(item.Text);
+        {
+            items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.Social>>(item.Text);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -74,7 +70,7 @@
     async Task save()
     {
         await Obj.LoadHandler(true);
-        item.Text = Newtonsoft.Json.JsonConvert.SerializeObject(slides);
+        item.Text = Newtonsoft.Json.JsonConvert.SerializeObject(items);
         var result = await helper.Add(new List<Option>() { item });
         if (!result.Success)
         {
@@ -89,10 +85,10 @@
 
     private async Task addProperty()
     {
-        slides.Add(new Model.HomeSlide());
+        items.Add(new Model.Social());
     }
-    private async Task removeProperty(Model.HomeSlide model)
+    private async Task removeProperty(Model.Social model)
     {
-        slides.Remove(model);
+        items.Remove(model);
     }
 }

@@ -1,0 +1,38 @@
+﻿@if (Items?.Count > 0)
+{
+    <div class="container mt-3">
+        <div class="card mainCard">
+            <h5 class="card-header">مطالب منتخب</h5>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var item in Items)
+                    {
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch">
+                            <div class="card">
+                                <div style="max-height: 180px">
+                                    <img src="@item.Img" class="card-img-top" alt="@item.Title">
+                                </div>
+                                <div class="card-body text-center">
+                                    <div>
+                                        <NavLink href='@($"/{item.Alias}")'>
+                                            <h2 class="card-title h5">@item.Title</h2>
+                                        </NavLink>
+                                    </div >
+                                    <div class="card-text mt-2">
+                                        @item.Summary
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<CMS.Model.Post> Items { get; set; }
+}

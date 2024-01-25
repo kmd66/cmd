@@ -3,6 +3,7 @@ using CMS.Dal;
 using CMS.Dal.DataSource;
 using CMS.Helper;
 using CMS.Model;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace CMS.Pages.Inside.Post
@@ -13,8 +14,10 @@ namespace CMS.Pages.Inside.Post
             : base(auth)
         {
             _dataSource = new PostDataSource();
+            _menuDataSource = new MenuDataSource();
         }
         private readonly PostDataSource _dataSource;
+        private readonly MenuDataSource _menuDataSource;
 
         public async Task<Result<Model.Post>> Get(long id = 0, string unicId = null)
         {
@@ -27,7 +30,7 @@ namespace CMS.Pages.Inside.Post
         }
         public async Task<Result<Model.Post>> Save(Model.Post model, string state)
         {
-            if (state == "add")
+            if (model.UnicId == Guid.Empty)
                 return await Add(model);
             return await Edit(model);
         }
@@ -85,6 +88,10 @@ namespace CMS.Pages.Inside.Post
                 return Result.Failure(message: "نام تکراری است");
 
             var resultAlias = await _dataSource.GetByAliasAsync(model.Alias);
+            if (resultAlias.Data != null && resultAlias.Data.Id != model.Id)
+                return Result.Failure(message: "نام مستعار تکراری است");
+
+            var resultMenuAlias = await _menuDataSource.GetByAliasAsync(model.Alias);
             if (resultAlias.Data != null && resultAlias.Data.Id != model.Id)
                 return Result.Failure(message: "نام مستعار تکراری است");
 

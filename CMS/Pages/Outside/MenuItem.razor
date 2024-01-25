@@ -18,6 +18,12 @@ else if (Item.Type == Model.MenuType.Categorie)
         <NavLink href="@($"category/{Item.Alias}")" class="@getItemClass()" Match="NavLinkMatch.All">@Item.Name</NavLink>
     </li>
 }
+else if (Item.Type == Model.MenuType.ProductCategorie)
+{
+    <li class="@getNavbarItemClass()">
+        <NavLink href="@($"product-category/{Item.Alias}")" class="@getItemClass()" Match="NavLinkMatch.All">@Item.Name</NavLink>
+    </li>
+}
 else if (Item.Type == Model.MenuType.Title)
 {
     <div class="dropdown navbarItem">

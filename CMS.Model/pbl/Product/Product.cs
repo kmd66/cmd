@@ -32,5 +32,23 @@ namespace CMS.Model
             else
                 Property = "[]";
         }
+
+        public string Img { get; set; }
+
+        public List<ProductImg> GetImgs()
+        {
+            if (string.IsNullOrEmpty(Img))
+                return new List<ProductImg>();
+            else
+                return JsonSerializer.Deserialize<List<ProductImg>>(Img);
+        }
+
+        public void SetImgs(List<ProductImg> model)
+        {
+            if (model != null)
+                Img = JsonSerializer.Serialize(model);
+            else
+                Img = "[]";
+        }
     }
 }

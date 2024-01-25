@@ -7,6 +7,24 @@ namespace CMS.Model
 
         public static List<Menu> List = new List<Menu>();
 
+        public static List<Menu> GetAllItem(MenuVM modelVM, Guid? ignore = null)
+        {
+            var list = new List<Menu>();
+
+            foreach (var item in List)
+            {
+                if (modelVM.Published != null && item.Published != modelVM.Published)
+                    continue;
+                if (modelVM.Type != MenuType.Unknown && item.Type != modelVM.Type)
+                    continue;
+                if (ignore != null && item.UnicId == ignore)
+                    continue;
+                var menu = Menu.Instance(item);
+                list.Add(menu);
+            }
+            return list;
+        }
+
         public static List<Menu> GetList(MenuVM modelVM)
         {
             var list = new List<Menu>();

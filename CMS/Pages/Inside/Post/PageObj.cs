@@ -16,6 +16,8 @@ namespace CMS.Pages.Inside.Post
 
         public List<ProductProperty> ProductPropertys { get; set; }
 
+        public List<ProductImg> Imgs = new List<ProductImg>();
+
         public List<Model.Tag> Tags { get; set; }
 
 
