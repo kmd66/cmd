@@ -54,6 +54,19 @@ namespace CMS.Dal
                 .Property(b => b.Img).HasDefaultValue("");
         }
 
+        private void commentConfig(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Comment>()
+                .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<Comment>()
+                .Property(b => b.WebSite).HasDefaultValue("");
+            modelBuilder.Entity<Comment>()
+                .HasIndex(p => p.PostId);
+
+            modelBuilder.Entity<Score>()
+                .HasIndex(p => p.CommentId);
+        }
+
         public DbSet<Post> Posts { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
@@ -61,5 +74,9 @@ namespace CMS.Dal
         public DbSet<Product> Products { get; set; }
 
         public DbSet<PostDto> PostDtos { get; set; }
+
+        public DbSet<Comment> Comments { get; set; }
+
+        public DbSet<Score> Scores { get; set; }
     }
 }

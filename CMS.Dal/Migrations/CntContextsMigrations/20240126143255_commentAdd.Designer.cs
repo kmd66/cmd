@@ -4,6 +4,7 @@ using CMS.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Dal.Migrations.CntContextsMigrations
 {
     [DbContext(typeof(CntContexts))]
-    partial class CntContextsModelSnapshot : ModelSnapshot
+    [Migration("20240126143255_commentAdd")]
+    partial class commentAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,53 +25,6 @@ namespace CMS.Dal.Migrations.CntContextsMigrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CMS.Dal.DbModel.Comment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Mail")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<long>("ParentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PostId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
-
-                    b.Property<Guid>("UnicId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("WebSite")
-                        .IsRequired()
-                        .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UnicId");
-
-                    b.ToTable("Comments", "cnt");
-                });
 
             modelBuilder.Entity("CMS.Dal.DbModel.Post", b =>
                 {
@@ -251,30 +207,6 @@ namespace CMS.Dal.Migrations.CntContextsMigrations
                     b.HasIndex("UnicId");
 
                     b.ToTable("Products", "cnt");
-                });
-
-            modelBuilder.Entity("CMS.Dal.DbModel.Score", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CommentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("UnicId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UnicId");
-
-                    b.ToTable("Scores", "cnt");
                 });
 
             modelBuilder.Entity("CMS.Dal.DbModel.Tag", b =>

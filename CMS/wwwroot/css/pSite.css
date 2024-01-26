@@ -218,18 +218,54 @@ li:has(> .dropdown-item.active), li:has(> .navbar-brand.active) {
     justify-content: flex-start;
     display: flex;
     border-bottom: 1px solid #ebebeb;
-    margin-top: 2rem;
+    margin-top: .5rem;
 }
     .menuRighItem li {
     }
- 
+
     .menuRighItem .imgLink {
-        width: 120px;
-        padding: 7px;
+        width: 80px;
+        height: 80px;
+        padding: 10px;
     }
-.mainSlideRight .mainCard .menuRighItem:first-child {
+        .menuRighItem .imgLink img {
+            height: 100%;
+            width: 100%;
+        }
+
+    .menuRighItem .textLink {
+        width: -moz-calc(100% - 80px);
+        width: -webkit-calc(100% - 80px);
+        width: -o-calc(100% - 80px);
+        width: calc(100% - 80px);
+    }
+.menuRighItem:first-child {
     margin-top: 0 !important;
 }
-.mainSlideRight .mainCard .menuRighItem:last-child {
+.menuRighItem:last-child {
     border-bottom: unset !important;
+}
+.postTitle {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(0%, -50%);
+    color: white;
+    background: #00000030;
+    text-align:center;
+}
+footer {
+    background: #373941;
+    /*padding: 20px 5px;*/
+}
+.site-info {
+    background: rgba(0,0,0,.35);
+    padding: 15px 0;
+    color: wheat;
+    font-size: .8rem;
+    text-align: center;
+}
+.mainSlideRight .card-body, footer .card-body {
+    padding: 1rem 0.5rem 0 0.5rem;
 }

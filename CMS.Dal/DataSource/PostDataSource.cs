@@ -68,7 +68,7 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<Post>> GetByAliasAsync(string alias)
+        public async Task<Result<Post>> GetByAliasAsync(string alias,bool? published = null,bool? isProduct = null)
         {
             try
             {
