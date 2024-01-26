@@ -21,10 +21,10 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Posts.Where(x =>
                    (id != 0 && x.Id == id)
                    || (id == 0 && x.UnicId == unicId)
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Post>.Successful();
 
@@ -48,9 +48,9 @@ namespace CMS.Dal.DataSource
             {
                 if (string.IsNullOrEmpty(name))
                     return Result<Post>.Successful();
-                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Posts.Where(x =>
                     x.Title == name
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Post>.Successful();
 
@@ -74,9 +74,9 @@ namespace CMS.Dal.DataSource
             {
                 if (string.IsNullOrEmpty(alias))
                     return Result<Post>.Successful();
-                var ett = await _pblContexts.Posts.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Posts.Where(x =>
                     x.Alias == alias
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Post>.Successful();
 
@@ -188,6 +188,42 @@ namespace CMS.Dal.DataSource
                 var returnMOdel = MapList<Post, Dal.DbModel.Post>(ett);
 
                 return Result<List<Post>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<Post>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+        public async Task<Result<List<Post>>> NextAndPrevAsync(Post model)
+        {
+            try
+            {
+                var list = new List<Post>();
+                var ettNext = await _pblContexts.Posts.Where(x =>
+                    x.Published == true
+                    && x.MenuId == model.MenuId
+                    && x.Date > model.Date
+                ).OrderBy(x => x.Id).Take(1).FirstOrDefaultAsync();
+                if (ettNext == null)
+                    list.Add(new Post());
+                else
+                    list.Add(Map<Post, Dal.DbModel.Post>(ettNext));
+
+                var ettPrev = await _pblContexts.Posts.Where(x =>
+                    x.Published == true
+                    && x.MenuId == model.MenuId
+                    && x.Date < model.Date
+                ).OrderByDescending(x => x.Id).Take(1).FirstOrDefaultAsync();
+                if (ettPrev == null)
+                    list.Add(new Post());
+                else
+                    list.Add(Map<Post, Dal.DbModel.Post>(ettPrev));
+
+                return Result<List<Post>>.Successful(data: list);
             }
             catch (Exception ex)
             {

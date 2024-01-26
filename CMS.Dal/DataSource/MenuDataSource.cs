@@ -20,10 +20,10 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Menus.Where(x =>
                    (id != 0 && x.Id == id)
                    || (id == 0 && x.UnicId == unicId)
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Menu>.Successful();
 
@@ -47,9 +47,9 @@ namespace CMS.Dal.DataSource
             {
                 if (string.IsNullOrEmpty(name))
                     return Result<Menu>.Successful();
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Menus.Where(x =>
                     x.Name == name
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Menu>.Successful();
 
@@ -72,9 +72,9 @@ namespace CMS.Dal.DataSource
             {
                 if (string.IsNullOrEmpty(alias))
                     return Result<Menu>.Successful();
-                var ett = await _pblContexts.Menus.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Menus.Where(x =>
                     x.Alias == alias
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Menu>.Successful();
 

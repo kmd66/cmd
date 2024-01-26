@@ -19,10 +19,10 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var ett = await _pblContexts.Users.SingleOrDefaultAsync(x =>
+                var ett = await _pblContexts.Users.Where(x =>
                    (id != 0 && x.Id == id)
                    || (id == 0 && x.UnicId == unicId)
-                );
+                ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<User>.Successful();
 
