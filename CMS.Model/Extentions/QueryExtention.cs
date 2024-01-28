@@ -39,5 +39,16 @@ namespace CMS.Model
 
         public static string Query(this bool b)
             => b? "1" : "0";
+
+        public static string Query(this long? i)
+        {
+            if (i == null)
+                return "NULL";
+            return i.ToString();
+        }
+        public static string Query(this long i)
+            => i.ToString();
+        public static string Query(this byte i)
+            => i.ToString();
     }
 }

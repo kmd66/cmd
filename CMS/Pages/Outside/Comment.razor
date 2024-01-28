@@ -147,7 +147,7 @@
         score = 0;
 
         var result = await helper.List(new CommentVM { PostId = Post.Id , Type = CommentType.منتشر_شده});
-        list = result.Data.ToList();
+        list = result.Data?.ToList();
         count = list.Count > 0 ? list[0].Count : 0;
 
         StateHasChanged();

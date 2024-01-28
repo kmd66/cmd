@@ -16,6 +16,6 @@ namespace CMS.Model
 
         public List<Comment> Childs { get; set; }
         public int Count { get; set; }
-        public int? Score { get; set; }
+        public int Score { get; set; }
     }
 }

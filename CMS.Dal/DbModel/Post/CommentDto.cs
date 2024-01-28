@@ -5,7 +5,7 @@ namespace CMS.Dal.DbModel
     [Keyless]
     public class CommentDto : Comment
     {
-        public string? MenuName { get; set; }
-        public int Total { get; set; }
+        public int Count { get; set; }
+        public int Score { get; set; }
     }
 }

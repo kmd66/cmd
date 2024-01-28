@@ -12,6 +12,7 @@ namespace CMS.Dal
             modelBuilder.HasDefaultSchema("cnt");
             postConfig(ref modelBuilder);
             productConfig(ref modelBuilder);
+            commentConfig(ref modelBuilder);
 
         }
 
@@ -39,6 +40,7 @@ namespace CMS.Dal
             //    .Property(b => b.Special).HasDefaultValue(true);
             //modelBuilder.Entity<Post>()
             //    .Property(b => b.Access).HasDefaultValue(1);
+            //modelBuilder.Ignore<PostDto>();
 
 
         }
@@ -52,12 +54,6 @@ namespace CMS.Dal
                 .Property(b => b.Property).HasDefaultValue("");
             modelBuilder.Entity<Product>()
                 .Property(b => b.Img).HasDefaultValue("");
-            modelBuilder
-                .Entity<CommentDto>(eb =>
-                {
-                    eb.HasNoKey();
-                    eb.ToView("PostViwe");
-                });
         }
 
         private void commentConfig(ref ModelBuilder modelBuilder)
@@ -71,6 +67,13 @@ namespace CMS.Dal
 
             modelBuilder.Entity<Score>()
                 .HasIndex(p => p.CommentId);
+            modelBuilder
+                .Entity<CommentDto>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("CommentViwe");
+                });
+            //modelBuilder.Ignore<CommentDto>();
         }
 
         public DbSet<Post> Posts { get; set; }

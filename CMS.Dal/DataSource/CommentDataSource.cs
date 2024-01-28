@@ -91,29 +91,33 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var result = from com in _pblContexts.Comments
-                    join sco in _pblContexts.Scores on com.Id equals sco.CommentId into Details
-                    from m in Details.DefaultIfEmpty()
-                    where com.PostId == modelVm.PostId
-                        && com.Type == (byte)modelVm.Type
-                    select new Comment
-                    {
-                        PostId = com.PostId,
-                        Name = com.Name,
-                        Mail = com.Mail,
-                        WebSite = com.WebSite,
-                        Text = com.Text,
-                        ParentId = com.ParentId,
-                        //Type = com.Type,
-                        Score = m.Value
-                    };
+                //var result = from com in _pblContexts.Comments
+                //    join sco in _pblContexts.Scores on com.Id equals sco.CommentId into Details
+                //    from m in Details.DefaultIfEmpty()
+                //    where com.PostId == modelVm.PostId
+                //        && com.Type == (byte)modelVm.Type
+                //    select new Comment
+                //    {
+                //        PostId = com.PostId,
+                //        Name = com.Name,
+                //        Mail = com.Mail,
+                //        WebSite = com.WebSite,
+                //        Text = com.Text,
+                //        ParentId = com.ParentId,
+                //        //Type = com.Type,
+                //        Score = m.Value
+                //    };
+                //var etts = await result.ToListAsync();
 
+                var query = $"cnt.SpGetComments"
+                    + $" @PostId = {modelVm.PostId.Query()}"
+                    + $", @Type = {((byte)modelVm.Type).Query()}";
+               
+                var ett = await _pblContexts.CommentDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-                var ett = await result.ToListAsync();
+                var returnMOdel = MapList<Comment, Dal.DbModel.CommentDto>(ett);
 
-                //var model = MapList<Comment, Dal.DbModel.Comment>(ett);
-                
-                return Result<IEnumerable<Comment>>.Successful(data: ett);
+                return Result<IEnumerable<Comment>>.Successful(data: returnMOdel);
             }
             catch (Exception ex)
             {
