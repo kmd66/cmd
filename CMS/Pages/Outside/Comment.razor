@@ -1,0 +1,173 @@
+﻿@using CMS.Model;
+
+<div class="card mainCard mt-4">
+    
+    <ul class="nav nav-tabs bg-white" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="CommentSend-tab" data-bs-toggle="tab" data-bs-target="#CommentSend" type="button" role="tab" aria-controls="CommentSend" aria-selected="true">ارسال نظر</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="CommentList-tab" data-bs-toggle="tab" data-bs-target="#CommentList" type="button" role="tab" aria-controls="CommentList" aria-selected="false">مشاهده نظرات (@count)</button>
+        </li>
+    </ul>
+    <div class="card-body">
+        <div class="tab-content" id="myTabComment">
+
+            <div class="tab-pane my-3 fade show active" id="CommentSend" role="tabpanel" aria-labelledby="CommentSend-tab">
+                @if (!senComment)
+                {
+                    <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
+                        <label class="form-label required">امتیاز</label>
+                        <ul class="ratings">
+                            <li class="star" @onclick="(()=> score = 5)"></li>
+                            <li class="star" @onclick="(()=> score = 4)"></li>
+                            <li class="star" @onclick="(()=> score = 3)"></li>
+                            <li class="star" @onclick="(()=> score = 2)"></li>
+                            <li class="star" @onclick="(()=> score = 1)"></li>
+                        </ul>
+                    </div>
+                    <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
+                        <label class="form-label required">نظر</label>
+                        <textarea @bind="comment.Text" cols="45" rows="8" aria-required="true" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام</label>
+                            <input @bind="comment.Name" type="text" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">ایمیل</label>
+                            <input @bind="comment.Mail" type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label">وبسایت</label>
+                            <input @bind="comment.WebSite" type="text" placeholder="Website" class="form-control">
+                        </div>
+                    </div>
+                    <button @onclick="save" type="button" class="btn w-100 bg-BaseColor text-white mt-1">ارسال نظر</button>
+
+                }
+                else
+                {
+                    <div class="staticAlert-success">"نظر با موفقیت ثبت شد. پس از تایید نظر شما منتشر خواهد شد"</div>
+                }
+            </div>
+
+            <div class="tab-pane my-3 fade" id="CommentList" role="tabpanel" aria-labelledby="CommentList-tab">
+                @if(list.Count >0)
+                {
+                    @foreach (var item in list)
+                    {
+                        <div class="card mainCard mb-3 bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-start">
+                                    <div class="UserAvatar align-self-start">
+                                        <div class="UserAvatarBorder">
+                                            <div class="svgUser commentUserAvatar"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ms-2 mt-2">
+                                        <div class="commentName">@item.Name</div>
+                                        <div class="commentDate">@item.Date.ToPersion()</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2 ps-4">@item.Text</div>
+
+                                @if (item.Childs.Count > 0)
+                                {
+                                    @foreach (var child in item.Childs)
+                                    {
+                                        <hr />
+                                        <div class="ps-4">
+                                            <div class="d-flex justify-content-start">
+                                                <div class="UserAvatar align-self-start">
+                                                    <div class="UserAvatarBorder">
+                                                        <div class="svgUser commentUserAvatar"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="ms-2 mt-2">
+                                                    <div class="commentName">@child.Name</div>
+                                                    <div class="commentDate">@child.Date.ToPersion()</div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 ps-4">@child.Text</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div>نظری برای نمایش وجود ندارد</div>
+                }
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+@code {
+    [Parameter]
+    public BasePageObj Obj { get; set; }
+    [Parameter]
+    public Model.Post Post { get; set; }
+
+    CMS.Pages.Inside.Comment.CommentHelper helper = new Inside.Comment.CommentHelper(null);
+    Model.Comment comment { get; set; }
+    List<Model.Comment> list = new List<Model.Comment>();
+    bool senComment = false;
+    int count = 0;
+    int score = 0;
+    Guid id = Guid.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //remoteIpAddress = httpContextAccessor.HttpContext.Connection?.RemoteIpAddress?.ToString();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        await setState();
+    }
+
+    async Task setState()
+    {
+        if (Post.UnicId == id)
+            return;
+
+        id = Post.UnicId;
+        comment = new Model.Comment();
+        comment.PostId = Post.Id; 
+        senComment = false; 
+        score = 0;
+
+        var result = await helper.List(new CommentVM { PostId = Post.Id , Type = CommentType.منتشر_شده});
+        list = result.Data.ToList();
+        count = list.Count > 0 ? list[0].Count : 0;
+
+        StateHasChanged();
+
+    }
+
+
+    async Task save()
+    {
+        await Obj.LoadHandler(true);
+        var result = await helper.Save(comment);
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        await Obj.LoadHandler(false);
+        senComment = true;
+        StateHasChanged();
+    }
+
+}

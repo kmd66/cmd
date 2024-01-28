@@ -13,12 +13,6 @@ namespace CMS.Dal
             postConfig(ref modelBuilder);
             productConfig(ref modelBuilder);
 
-            modelBuilder
-                .Entity<PostDto>(eb =>
-                {
-                    eb.HasNoKey();
-                    eb.ToView("PostViwe");
-                });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,6 +27,12 @@ namespace CMS.Dal
                 .HasIndex(p => p.UnicId);
             modelBuilder.Entity<Post>()
                 .Property(b => b.Img).HasDefaultValue("");
+            modelBuilder
+                .Entity<PostDto>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("PostViwe");
+                });
             //modelBuilder.Entity<Post>()
             //    .Property(b => b.Published).HasDefaultValue(true);
             //modelBuilder.Entity<Post>()
@@ -52,6 +52,12 @@ namespace CMS.Dal
                 .Property(b => b.Property).HasDefaultValue("");
             modelBuilder.Entity<Product>()
                 .Property(b => b.Img).HasDefaultValue("");
+            modelBuilder
+                .Entity<CommentDto>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("PostViwe");
+                });
         }
 
         private void commentConfig(ref ModelBuilder modelBuilder)
@@ -73,10 +79,12 @@ namespace CMS.Dal
 
         public DbSet<Product> Products { get; set; }
 
-        public DbSet<PostDto> PostDtos { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Score> Scores { get; set; }
+
+        public DbSet<PostDto> PostDtos { get; set; }
+        public DbSet<CommentDto> CommentDtos { get; set; }
     }
 }

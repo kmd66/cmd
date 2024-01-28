@@ -1,6 +1,5 @@
 ﻿using CMS.Model;
 using CMS.Model.Interface;
-using CMS.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;

@@ -25,5 +25,7 @@ namespace CMS.Dal.DbModel
         public long ParentId { get; set; }
         
         public byte Type { get; set; }
+
+        public DateTime Date { get; set; }
     }
 }

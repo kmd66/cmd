@@ -24,6 +24,8 @@
                     @((MarkupString)post.Content)
                 </div>
             </div>
+
+            <Comment Post="post" Obj="Obj" />
         </div>
         <RightMenu />
     </div>
@@ -38,13 +40,15 @@ else
     [Parameter]
     public string name { get; set; }
 
+    BasePageObj obj = new BasePageObj();
+    public override BasePageObj Obj { get => obj; set => obj = value; }
+
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
 
     public CMS.Model.Post post { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        //await SeletePost();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

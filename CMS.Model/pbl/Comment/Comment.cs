@@ -4,7 +4,6 @@ namespace CMS.Model
 {
     public class Comment : BaseModel<Comment>
     {
-        public Comment() { }
         public long PostId { get; set; }
         public string Name { get; set; }
         public string Mail { get; set; }
@@ -12,8 +11,11 @@ namespace CMS.Model
         public string Text { get; set; }
         public long ParentId { get; set; }
         public CommentType Type { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public List<Comment> Childs { get; set; }
+        public int Count { get; set; }
+        public int? Score { get; set; }
     }
 }
-
-//if (new EmailAddressAttribute().IsValid("someone@somewhere.com"))
-//    return true;

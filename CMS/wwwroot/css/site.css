@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
     font-family: Vazir;
     src: url('../fonts/Vazir-FD.eot');
     src: url('../fonts/Vazir-FD.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-FD.woff') format('woff'), url('../fonts/Vazir-FD.ttf') format('truetype');
@@ -75,4 +75,80 @@ img {
     cursor: pointer;
     padding: 5px;
     color: red;
+}
+span[class^='staticAlert'], div[class*='staticAlert'] {
+    text-align: center;
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+}
+.staticAlert-success {
+    background: var(--alert-success);
+}
+.UserAvatar {
+    border: 1px solid #dee2e678;
+    display: inline-table;
+    padding: 3px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+}
+.UserAvatarBorder {
+    background: #dee2e6;
+    border-radius: 50px;
+    padding: 12px;
+}
+.commentUserAvatar {
+    width: 25px !important;
+    height: 25px !important;
+    display: block !important;
+}
+.commentName {
+    color: var(--BaseColor) !important;
+    font-weight: bold;
+}
+.commentDate {
+    font-size: 12px;
+    color: #212529ad;
+    direction: ltr;
+}
+/*امتیاز*/
+.ratings {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    direction: ltr;
+    text-align: right;
+}
+
+.star {
+    position: relative;
+    line-height: 25px;
+    display: inline-block;
+    transition: color 0.2s ease;
+    color: #a7a7a7;
+}
+
+    .star:before {
+        content: '\2605';
+        width: 25px;
+        height: 25px;
+        font-size: 25px;
+    }
+
+    .star:hover,
+    .star.selected,
+    .star:hover ~ .star,
+    .star.selected ~ .star {
+        transition: color 0.8s ease;
+        color: var(--BaseColor);
+    }
+/*امتیاز*/
+.required {
+    color: unset ;
+}
+.required:after {
+    content: '*';
+    color:red
 }

@@ -9,6 +9,8 @@ document.addEventListener("scroll", (event) => {
 function PageInit() {
     setNavbar();
     setMainSlideRightLastChild();
+    setRandomColorForComment();
+    getScores();
 }
 
 function setNavbar() {
@@ -120,3 +122,31 @@ function showFixNavbar(t) {
 function getToTop() {
     document.documentElement.scrollIntoView({ behavior: "smooth" })
 }
+
+function setRandomColorForComment() {
+    $('.commentUserAvatar').each(function (i, obj) {
+        $(obj).css("background-color", getRandomColor());
+    });
+    var items = $(".commentUserAvatar");
+}
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function getScores() {
+    var star = '.star',
+        selected = '.selected';
+    $(star).on('click', function () {
+        $(selected).each(function () {
+            $(this).removeClass('selected');
+        });
+        $(this).addClass('selected');
+    });
+}
+
+
