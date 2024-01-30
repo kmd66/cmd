@@ -19,24 +19,39 @@ namespace CMS.Pages.Inside.Comment
         private readonly CommentDataSource _dataSource;
         private readonly MenuDataSource _menuDataSource;
 
-        public async Task<Result> Save(Model.Comment model)
+        public async Task<Result> Save(Model.Comment model,Captcha captcha = null)
         {
             if (model.UnicId == Guid.Empty)
                 return await Add(model);
             return await Edit(model);
         }
-        private async Task<Result> Add(Model.Comment model)
+        private async Task<Result> Add(Model.Comment model, Captcha captcha)
         {
+            if(captcha == null)
+                return Result.Successful();
+
+            if(string.IsNullOrEmpty(captcha.Code) || !CaptchaHelper.Validate(captcha))
+                return Result.Failure(message: "کد امنیتی را وارد کنید");
+
             var validationResult = await validation(model);
             if (!validationResult.Success)
-                return Result<Model.Comment>.Failure(message: validationResult.Message);
+                return Result.Failure(message: validationResult.Message);
+
+            if (model.Score ==0)
+                return Result.Failure(message: "امتیاز را وارد کنید");
 
             model.UnicId = Guid.NewGuid();
             model.Date = DateTime.Now;
 
-            await _dataSource.AddAsync(model);
+            var result = await _dataSource.AddAsync(model);
+            if (!result.Success)
+                return Result<Model.Comment>.Failure(message: result.Message);
 
-            return await _dataSource.GetAsync(0, model.UnicId);
+            var comment = await _dataSource.GetAsync(0, model.UnicId);
+            if (comment.Data != null)
+                await _dataSource.AddScoreAsync(comment.Data.Id, model.Score);
+         
+            return Result.Successful();
         }
         private async Task<Result> Edit(Model.Comment model)
         {
@@ -47,22 +62,26 @@ namespace CMS.Pages.Inside.Comment
             if (!validationResult.Success)
                 return Result<Model.Comment>.Failure(message: validationResult.Message);
 
-            await _dataSource.EditAsync(model);
-            return await _dataSource.GetAsync(0, model.UnicId);
+
+            var result = await _dataSource.EditAsync(model);
+            if (!result.Success)
+                return Result<Model.Comment>.Failure(message: result.Message);
+
+            return Result<Model.Comment>.Successful();
         }
         private async Task<Result> validation(Model.Comment model)
         {
             if (string.IsNullOrEmpty(model.Text))
-                return Result.Failure(message: "متن وارد نشده");
+                return Result.Failure(message: "متن را وارد نشده");
 
             if (string.IsNullOrEmpty(model.Name))
-                return Result.Failure(message: "نام وارد نشده");
+                return Result.Failure(message: "نام را وارد نشده");
 
             if (string.IsNullOrEmpty(model.Mail))
-                return Result.Failure(message: "ایمیل وارد نشده");
+                return Result.Failure(message: "ایمیل را وارد نشده");
 
             if (!new EmailAddressAttribute().IsValid(model.Mail))
-                return Result.Failure(message: "ایمیل صحیح وارد کنید");
+                return Result.Failure(message: "ایمیل را صحیح وارد کنید");
 
             if (string.IsNullOrEmpty(model.WebSite))
                 model.WebSite = "";
@@ -78,25 +97,33 @@ namespace CMS.Pages.Inside.Comment
             return Result.Successful();
         }
 
-        public async Task<Result<List<Model.Comment>>> List(CommentVM modelVm)
+        public async Task<Result<ScoreComment>> List(CommentVM modelVm)
         {
 
             var retult = await _dataSource.ListAsync(modelVm);
             if (!retult.Success)
-                return Result<List<Model.Comment>>.Failure(message: retult.Message);
+                return Result<ScoreComment>.Failure(message: retult.Message);
             var model = retult.Data.ToList();
             var list = new List<Model.Comment>();
+            
+            var scores = model.Where(x => x.Score > 0).ToList();
 
             foreach (var item in model)
             {
                 if (item.ParentId == 0)
                 {
                     item.Childs = model.Where(x => x.ParentId == item.Id).ToList();
-                    item.Count = model.Count;
                     list.Add(item);
                 }
             }
-            return Result<List<Model.Comment>>.Successful(data: list);
+            var t = scores.Count;
+            return Result<ScoreComment>.Successful(data:
+                new ScoreComment
+                {
+                    Comments = list,
+                    ScoreCount = scores.Count,
+                    ScoreSum = scores.Sum(x=>x.Score),
+                });
 
         }
     }

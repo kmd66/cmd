@@ -9,10 +9,10 @@
 }
 
 
-@if (post != null)
-{
-    <div class="container main">
-        <div class="mainSlideLeft">
+<div class="container main">
+    <div class="mainSlideLeft">
+        @if (post != null)
+        {
             <div class="card rounded-0 w-100">
                 <div style="max-height: 200px; position:relative">
                     <div class="postTitle">
@@ -22,19 +22,35 @@
                 </div>
                 <div class="card-body mt-3">
                     @((MarkupString)post.Content)
+                    @if (scoreComment.ScoreCount > 0)
+                    {
+                        <div class="text-center">
+                            <div class="star3"><span class="star3 active" style='width:@($"{scoreComment.ScorePercent}%")'></span></div>
+                        </div>
+                        <div class="commentDate rtl">تعداد امتیازها : @scoreComment.ScoreCount میانگین امتیاز @scoreComment.ScoreAvg از 5</div>
+                    }
+                    <div class="commentDate rtl mb-3">تاریخ ارسال مطلب : @post.Date.ToPersion()</div>
                 </div>
             </div>
 
-            <Comment Post="post" Obj="Obj" />
-        </div>
-        <RightMenu />
-    </div>
+            <NextAndPrev Items="nextAndPrev" />
+            <Related Items="related" />
+            <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
 
-}
-else
-{
-    <Error404 />
-}
+        }
+        else if (isPostNull)
+        {
+            <Error404 />
+        }
+        else
+        {
+            <div>درحال بارگزاری</div>
+        }
+
+    </div>
+    <RightMenu />
+</div>
+
 
 @code {
     [Parameter]
@@ -44,8 +60,13 @@ else
     public override BasePageObj Obj { get => obj; set => obj = value; }
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+    CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
 
-    public CMS.Model.Post post { get; set; }
+    ScoreComment scoreComment = new ScoreComment();
+    CMS.Model.Post post { get; set; }
+    List<Post> nextAndPrev = new List<Post>();
+    List<Post> related = new List<Post>();
+    bool isPostNull = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,7 +83,9 @@ else
 
     protected async override Task OnParametersSetAsync()
     {
+        isPostNull = false;
         post = null;
+        nextAndPrev = new List<Post>();
         if (!string.IsNullOrEmpty(name))
             await SeletePost();
     }
@@ -71,8 +94,24 @@ else
     {
         var result = await db.GetByAliasAsync(name, published: true, isProduct: false);
         if (result.Data == null)
+        {
+            isPostNull = true;
             return;
-
+        }
         post = result.Data;
+        var resultNextAndPrev = await db.NextAndPrevAsync(post);
+        nextAndPrev = resultNextAndPrev.Data;
+
+        var resultRelated = await db.RelatedAsync(post, 3);
+        related = resultRelated.Data;
+        
+        await selectComments();
+    }
+
+    async Task selectComments()
+    {
+        scoreComment = new ScoreComment();
+        var result = await commentHelper.List(new CommentVM { PostId = post.Id, Type = CommentType.منتشر_شده });
+        scoreComment = result.Data;
     }
 }

@@ -172,15 +172,15 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<List<Post>>> ListAsync(PostVM model,int count)
+        public async Task<Result<List<Post>>> ListAsync(PostVM model, int count)
         {
             try
             {
-                var ett = await _pblContexts.Posts.Where(x=> 
+                var ett = await _pblContexts.Posts.Where(x =>
                     x.Published == true && (
                    (model.Special == null || x.Special == model.Special)
                    && (model.IsProduct == null || x.IsProduct == model.IsProduct)
-                )).Take(count).OrderBy(x=>x.Date).ToListAsync();
+                )).Take(count).OrderByDescending(x => x.Date).ToListAsync();
                 if (ett == null)
                     return Result<List<Post>>.Successful(data: new List<Post>());
 
@@ -197,6 +197,31 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
+
+        public async Task<Result<List<Post>>> RelatedAsync(Post model, int count)
+        {
+            try
+            {
+                var query = $"cnt.SpGetRelatedPosts"
+                    + $" @Id = {model.Id.Query()}"
+                    + $", @MenuId = {model.MenuId.Query()}"
+                    + $", @Count = {count.Query()}";
+                var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var returnMOdel = MapList<Post, Dal.DbModel.PostDto>(ett);
+
+                return Result<List<Post>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<Post>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
         public async Task<Result<List<Post>>> NextAndPrevAsync(Post model)
         {
             try

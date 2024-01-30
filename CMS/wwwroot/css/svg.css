@@ -61,4 +61,7 @@ span[class^='svg'], div[class*='svg'] {
 .svgDirectLeft {
     mask-image: url(../svg/DirectLeft.svg);
 }
+.svgRefresh {
+    mask-image: url(../svg/Refresh.svg);
+}
 

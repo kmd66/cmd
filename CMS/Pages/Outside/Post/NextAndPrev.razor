@@ -1,0 +1,39 @@
+﻿@using CMS.Model;
+
+@if (Items?.Count > 0 && (Items[0].Id > 0 || Items[1].Id > 0))
+{
+    <div class="card py-4 px-2 rounded-0" style="background: #f9f9f9;">
+        <div class="nav-links d-flex align-items-center justify-content-around">
+            @if (Items[0].Id > 0)
+            {
+                <div class="nav-previous">
+                    <NavLink href='@($"/{Items[0].Alias}")'>
+                        <div class="imgsize1">
+                            <div class="postTitle"><h1 class="h2">بعدی</h1></div><!--!-->
+                            <img src="@Items[0].Img" class="card-img-top rounded-0" alt="@Items[0].Title">
+                        </div>
+                        <h2 class="h6 text-center mt-2"> @Items[0].Title</h2>
+                    </NavLink>
+                </div>
+            }
+            @if (Items[1].Id > 0)
+            {
+                <div class="nav-next">
+                    <NavLink href='@($"/{Items[1].Alias}")'>
+                        <div class="imgsize1">
+                            <div class="postTitle"><h1 class="h2">قبلی</h1></div><!--!-->
+                            <img src="@Items[1].Img" class="card-img-top rounded-0" alt="@Items[1].Title">
+                        </div>
+                        <h2 class="h6 text-center mt-2"> @Items[1].Title</h2>
+                    </NavLink>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter]
+    public List<Post> Items { get; set; }
+}

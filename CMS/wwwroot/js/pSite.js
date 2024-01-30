@@ -9,7 +9,7 @@ document.addEventListener("scroll", (event) => {
 function PageInit() {
     setNavbar();
     setMainSlideRightLastChild();
-    setRandomColorForComment();
+    setCommentEl();
     getScores();
 }
 
@@ -119,15 +119,25 @@ function showFixNavbar(t) {
         document.getElementById('fixNavbar').classList.add("d-hide");
     }
 }
+
 function getToTop() {
     document.documentElement.scrollIntoView({ behavior: "smooth" })
 }
 
-function setRandomColorForComment() {
+function setCommentEl() {
     $('.commentUserAvatar').each(function (i, obj) {
         $(obj).css("background-color", getRandomColor());
     });
-    var items = $(".commentUserAvatar");
+    $('.commentScore').each(function (i, obj) {
+        var t = $(obj).data("score") - 1;
+        $(obj).empty();
+        for (let ei = 0; ei < 5; ei++) {
+            if (ei <= t)
+                $(obj).append('<span class= "star2 active"></span >');
+            else
+                $(obj).append('<span class= "star2"></span >');
+        }
+    });
 }
 function getRandomColor() {
     var letters = '0123456789ABCDEF';

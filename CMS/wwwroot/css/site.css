@@ -144,6 +144,48 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
         transition: color 0.8s ease;
         color: var(--BaseColor);
     }
+
+.star2, .star3 {
+    position: relative;
+    line-height: 14px;
+    display: inline-block;
+    transition: color 0.2s ease;
+    color: #a7a7a7;
+}
+
+    .star2:before {
+        content: '\2605';
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+    }
+    .star2.active {
+        color: var(--BaseColor);
+    }
+.commentScore {
+    direction: rtl;
+}
+.star3 {
+    overflow: hidden;
+    line-height: 25px;
+    position: relative;
+}
+    .star3:before {
+        content: '\2605\2605\2605\2605\2605';
+        width: 25px;
+        height: 25px;
+        font-size: 25px;
+    }
+    .star3.active {
+        color: var(--BaseColor);
+        overflow: hidden;
+        float: right;
+        top: 0;
+        right: 0;
+        position: absolute;
+        white-space: nowrap;
+        width:0
+    }
 /*امتیاز*/
 .required {
     color: unset ;
@@ -151,4 +193,51 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
 .required:after {
     content: '*';
     color:red
+}
+.imgsize1 {
+    height: 180px;
+    width: 180px;
+    position: relative;
+    margin: auto;
+}
+.captchaBax {
+    width: 250px;
+    height: 32px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: white;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+.captchaIcon {
+    width: 20px !important;
+    height: 20px !important;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+.captchaImg {
+    height: 30px;
+    width: 150px;
+    border-left: 0;
+    padding: 0;
+    margin: 0;
+    margin-right: 30px;
+    border-right: 1px solid #ced4da;
+}
+.captchaInput {
+    width: 150px;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    border-radius: 0;
+    border-right: 1px solid #ced4da;
+    padding: 0 3px;
+    margin-top: -5px;
 }

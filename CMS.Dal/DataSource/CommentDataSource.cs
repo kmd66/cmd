@@ -57,6 +57,30 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
+        public async Task<Result> AddScoreAsync(long commentId, int score)
+        {
+            try
+            {
+                var ett = new DbModel.Score
+                {
+                    UnicId = Guid.NewGuid(),
+                    CommentId = commentId,
+                    Value = score
+                };
+                _pblContexts.Add<Dal.DbModel.Score>(ett);
+                await _pblContexts.SaveChangesAsync();
+
+                return Result.Successful();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
 
         public async Task<Result> EditAsync(Comment model)
         {

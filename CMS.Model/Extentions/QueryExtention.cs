@@ -38,7 +38,7 @@ namespace CMS.Model
         }
 
         public static string Query(this bool b)
-            => b? "1" : "0";
+            => b ? "1" : "0";
 
         public static string Query(this long? i)
         {
@@ -48,7 +48,21 @@ namespace CMS.Model
         }
         public static string Query(this long i)
             => i.ToString();
+        public static string Query(this byte? i)
+        {
+            if (i == null)
+                return "NULL";
+            return i.ToString();
+        }
         public static string Query(this byte i)
             => i.ToString();
+        public static string Query(this Guid? i)
+        {
+            if (i == null)
+                return "NULL";
+            return $"'{i}'";
+        }
+        public static string Query(this Guid i)
+            => $"'{i}'";
     }
 }

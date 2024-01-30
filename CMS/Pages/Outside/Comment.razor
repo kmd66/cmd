@@ -19,11 +19,11 @@
                     <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
                         <label class="form-label required">امتیاز</label>
                         <ul class="ratings">
-                            <li class="star" @onclick="(()=> score = 5)"></li>
-                            <li class="star" @onclick="(()=> score = 4)"></li>
-                            <li class="star" @onclick="(()=> score = 3)"></li>
-                            <li class="star" @onclick="(()=> score = 2)"></li>
-                            <li class="star" @onclick="(()=> score = 1)"></li>
+                            <li class="star" @onclick="(()=> comment.Score = 5)"></li>
+                            <li class="star" @onclick="(()=> comment.Score = 4)"></li>
+                            <li class="star" @onclick="(()=> comment.Score = 3)"></li>
+                            <li class="star" @onclick="(()=> comment.Score = 2)"></li>
+                            <li class="star" @onclick="(()=> comment.Score = 1)"></li>
                         </ul>
                     </div>
                     <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
@@ -43,6 +43,14 @@
                             <label class="form-label">وبسایت</label>
                             <input @bind="comment.WebSite" type="text" placeholder="Website" class="form-control">
                         </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">کد امنیتی</label>
+                            <div class="captchaBax">
+                                <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
+                                <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
+                                <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                            </div>
+                        </div>
                     </div>
                     <button @onclick="save" type="button" class="btn w-100 bg-BaseColor text-white mt-1">ارسال نظر</button>
 
@@ -54,9 +62,9 @@
             </div>
 
             <div class="tab-pane my-3 fade" id="CommentList" role="tabpanel" aria-labelledby="CommentList-tab">
-                @if(list.Count >0)
+                @if (ListComment.Count > 0)
                 {
-                    @foreach (var item in list)
+                    @foreach (var item in ListComment)
                     {
                         <div class="card mainCard mb-3 bg-white">
                             <div class="card-body">
@@ -70,6 +78,10 @@
                                     <div class="ms-2 mt-2">
                                         <div class="commentName">@item.Name</div>
                                         <div class="commentDate">@item.Date.ToPersion()</div>
+                                        @if (item.Score > 0)
+                                        {
+                                            <div class="commentDate rtl commentScore" data-score="@item.Score"></div>
+                                        }
                                     </div>
                                 </div>
                                 <div class="mt-2 ps-4">@item.Text</div>
@@ -107,8 +119,6 @@
             </div>
 
         </div>
-
-
     </div>
 </div>
 @code {
@@ -116,25 +126,39 @@
     public BasePageObj Obj { get; set; }
     [Parameter]
     public Model.Post Post { get; set; }
+    [Parameter]
+    public List<Model.Comment> ListComment { get; set; }
+
+    Helper.Captcha captcha = new Helper.Captcha();
 
     CMS.Pages.Inside.Comment.CommentHelper helper = new Inside.Comment.CommentHelper(null);
     Model.Comment comment { get; set; }
-    List<Model.Comment> list = new List<Model.Comment>();
     bool senComment = false;
     int count = 0;
-    int score = 0;
+    //int score = 0;
     Guid id = Guid.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         //remoteIpAddress = httpContextAccessor.HttpContext.Connection?.RemoteIpAddress?.ToString();
-    }
-
-    protected async override Task OnParametersSetAsync()
-    {
         await setState();
     }
+    
+    protected async override Task OnParametersSetAsync()
+    {
+        captchaReload();
+    }
+    async Task captchaReload()
+    {
+        captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+        StateHasChanged();
+    }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await setState();
+        StateHasChanged();
+    }
     async Task setState()
     {
         if (Post.UnicId == id)
@@ -144,13 +168,7 @@
         comment = new Model.Comment();
         comment.PostId = Post.Id; 
         senComment = false; 
-        score = 0;
-
-        var result = await helper.List(new CommentVM { PostId = Post.Id , Type = CommentType.منتشر_شده});
-        list = result.Data?.ToList();
-        count = list.Count > 0 ? list[0].Count : 0;
-
-        StateHasChanged();
+        count = ListComment.Count > 0 ? ListComment[0].Count : 0;
 
     }
 
@@ -158,7 +176,7 @@
     async Task save()
     {
         await Obj.LoadHandler(true);
-        var result = await helper.Save(comment);
+        var result = await helper.Save(comment, captcha);
         if (!result.Success)
         {
             await Obj.ErrorRequest(result);
