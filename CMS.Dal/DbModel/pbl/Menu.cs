@@ -10,7 +10,7 @@ namespace CMS.Dal.DbModel
         public int Order { get; set; }
 
         public byte Type { get; set; }
-        
+
         [MaxLength(25)]
         public string Name { get; set; }
 

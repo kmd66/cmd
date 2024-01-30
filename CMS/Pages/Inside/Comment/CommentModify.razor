@@ -1,0 +1,169 @@
+﻿@*@using CMS.Model;
+@inject IJSRuntime Js
+@inject NavigationManager _navManager;
+
+@if (Obj.EditItem != null)
+{
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button" role="tab" aria-controls="content" aria-selected="true">مطلب</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="meta-tab" data-bs-toggle="tab" data-bs-target="#meta" type="button" role="tab" aria-controls="meta" aria-selected="false">متا</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="property-tab" data-bs-toggle="tab" data-bs-target="#property" type="button" role="tab" aria-controls="property" aria-selected="false">خواص</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#product" type="button" role="tab" aria-controls="property" aria-selected="false">محصول</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+  
+        <div class="tab-pane my-3 fade show active" id="content" role="tabpanel" aria-labelledby="content-tab">
+            <PostTabContent Obj="Obj" />
+
+        </div>
+
+        <div class="tab-pane my-3 fade" id="meta" role="tabpanel" aria-labelledby="meta-tab">
+            <PostTabMeta Obj="Obj" />
+        </div>
+
+        <div class="tab-pane my-3 fade" id="property" role="tabpanel" aria-labelledby="property-tab">
+            <PostTabProperty Obj="Obj" />
+        </div>
+
+        <div class="tab-pane my-3 fade" id="product" role="tabpanel" aria-labelledby="product-tab">
+            <PostTabProduct Obj="Obj" />
+        </div>
+    </div>
+
+    <hr />
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
+    <NavLink href='cmd-admin/post/main' class="btn btn-outline-secondary">
+        انصراف
+    </NavLink>
+}
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    [Parameter]
+    public string id { get; set; }
+
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(id) || Obj.State == "add")
+            selectItem();
+    }
+    private async Task selectItem()
+    {
+        Obj.Menues = Menus.GetAllItem(
+            new MenuVM() { Published = true, Type = MenuType.Categorie }
+        );
+
+        Obj.Menues.AddRange(Menus.GetAllItem(
+            new MenuVM() { Published = true, Type = MenuType.ProductCategorie }
+        ));
+        if (Obj.State == "add")
+        {
+            await selectAdd();
+        }
+        else
+        {
+            await selectEdit();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task selectAdd()
+    {
+        Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
+        Obj.Tags = new List<Tag>();
+        Obj.EditProductItem = new Product();
+        Obj.ProductPropertys = new List<ProductProperty>();
+        Obj.Imgs = new List<ProductImg>();
+    }
+
+    private async Task selectEdit()
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.Get(0, id);
+
+        if (!result.Success)
+        {
+            await selectError(result);
+            return;
+        }
+        Obj.EditItem = result.Data;
+
+        var resultProduct = await Obj.ProductHelper.Get(Obj.EditItem.UnicId);
+
+        if (!resultProduct.Success)
+        {
+            await selectError(resultProduct);
+            return;
+        }
+        Obj.EditProductItem = resultProduct.Data;
+        Obj.ProductPropertys = Obj.EditProductItem.GetPropertys();
+        Obj.Imgs = Obj.EditProductItem.GetImgs();
+
+        var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
+        if (!resultTag.Success)
+        {
+            await selectError(resultTag);
+            return;
+        }
+        Obj.Tags = resultTag.Data;
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task selectError(Result result, bool selectadd = true)
+    {
+        if (selectadd)
+            await selectAdd();
+        await Obj.ErrorRequest(result);
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task save()
+    {
+        await Obj.LoadHandler(true);
+        Obj.EditItem.Content = await Js.InvokeAsync<string>("TextEditor.getContents");
+
+        var result = await Obj.Helper.Save(Obj.EditItem, Obj.State);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        Obj.EditItem = result.Data;
+
+        if (result.Data.IsProduct)
+        {
+            Obj.EditProductItem.SetPropertys(Obj.ProductPropertys);
+            Obj.EditProductItem.SetImgs(Obj.Imgs);
+            var resultProduct = await Obj.ProductHelper.Save(Obj.EditProductItem, Obj.EditItem);
+            if (!resultProduct.Success)
+            {
+                await selectError(resultProduct, false);
+                return;
+            }
+        }
+        var resultTag = await Obj.TagHelper.Add(Obj.EditItem.Id, Obj.Tags);
+        if (!resultTag.Success)
+        {
+            await selectError(resultTag, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/post/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+}
+*@

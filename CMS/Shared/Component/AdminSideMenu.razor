@@ -1,4 +1,6 @@
-﻿<div class="sideMenu col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark text-white">
+﻿@implements IDisposable
+
+<div class="sideMenu col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark text-white">
     <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
         <div class="text-center w-100 " style="margin-top:70px">
             CMS
@@ -20,9 +22,12 @@
 
             <li class="nav-item w-100 mt-2">
                 <NavLink href="cmd-admin/comment" class="nav-link d-flex">
-                    <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">نظر</span>
+                    <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">
+                        نظر <span style="font-size: 12px;color: red;">@status.CountComment</span>
+                    </span>
                 </NavLink>
             </li>
+
 
             <li class="nav-item w-100 mt-2">
                 <NavLink href="cmd-admin/menu/main" class="nav-link d-flex">
@@ -43,6 +48,14 @@
             </li>
 
             <li class="nav-item w-100 mt-2">
+                <NavLink href="cmd-admin/comment" class="nav-link d-flex">
+                    <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">
+                        پیام <span style="font-size: 12px;color: red;">@status.CountMessage</span>
+                    </span>
+                </NavLink>
+            </li>
+
+            <li class="nav-item w-100 mt-2">
                 <NavLink href="counter" class="nav-link d-flex">
                     <span class="svgSetting bg-white"></span> <span class="ms-3 d-none d-sm-inline">محصول</span>
                 </NavLink>
@@ -52,4 +65,34 @@
     </div>
 </div>
 @code {
+
+    Model.Status status = new Model.Status();
+    bool isTimer;
+
+    protected override void OnInitialized()
+    {
+        isTimer = true;
+        startTimer();
+    }
+    public void Dispose()
+    {
+        isTimer = false;
+    }
+    async Task startTimer()
+    {
+        if (!isTimer)
+            return;
+        await Task.Delay(1000*60);
+
+        if (!isTimer)
+            return;
+
+        StateHasChanged();
+        startTimer();
+    }
+
+
+    public void StateHasChanged(int i)
+    {
+    }
 }

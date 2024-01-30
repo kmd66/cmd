@@ -12,7 +12,7 @@ namespace CMS.Dal.DbModel
 
         [MaxLength(25)]
         public string FirstName { get; set; }
-        
+
         [MaxLength(25)]
         public string LastName { get; set; }
 

@@ -22,7 +22,7 @@ namespace CMS.Pages.Inside.Comment
         public async Task<Result> Save(Model.Comment model,Captcha captcha = null)
         {
             if (model.UnicId == Guid.Empty)
-                return await Add(model);
+                return await Add(model, captcha);
             return await Edit(model);
         }
         private async Task<Result> Add(Model.Comment model, Captcha captcha)

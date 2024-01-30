@@ -8,10 +8,10 @@
             @foreach (var item in postItems)
             {
                 <li class="menuRighItem">
-                    <NavLink href='@($"/{item.Alias}")' class="imgLink">
+                    <NavLink href='@($"/product/{item.Alias}")' class="imgLink">
                         <img src="@item.Img">
                     </NavLink>
-                    <NavLink href='@($"/{item.Alias}")' class="textLink">
+                    <NavLink href='@($"/product/{item.Alias}")' class="textLink">
                         <h2 class="card-title h6">@item.Title</h2>
                     </NavLink>
                 </li>
