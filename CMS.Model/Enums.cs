@@ -80,7 +80,7 @@
         منتشر_شده = 2,
         حذف = 3,
     }
-    public enum MessagesType : byte
+    public enum MessageType : byte
     {
         Unknown = 0,
         خوانده_نشده = 1,

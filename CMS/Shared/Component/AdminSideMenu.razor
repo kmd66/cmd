@@ -48,7 +48,7 @@
             </li>
 
             <li class="nav-item w-100 mt-2">
-                <NavLink href="cmd-admin/comment" class="nav-link d-flex">
+                <NavLink href="cmd-admin/message" class="nav-link d-flex">
                     <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">
                         پیام <span style="font-size: 12px;color: red;">@status.CountMessage</span>
                     </span>
@@ -65,13 +65,15 @@
     </div>
 </div>
 @code {
-
     Model.Status status = new Model.Status();
+    Dal.DataSource.StatusDataSource db = new Dal.DataSource.StatusDataSource();
+    int delay = 1000 * 60 * 5;
     bool isTimer;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         isTimer = true;
+        await setStatus();
         startTimer();
     }
     public void Dispose()
@@ -82,17 +84,22 @@
     {
         if (!isTimer)
             return;
-        await Task.Delay(1000*60);
+        await Task.Delay(delay);
 
         if (!isTimer)
             return;
+
+        await setStatus();
 
         StateHasChanged();
         startTimer();
     }
 
 
-    public void StateHasChanged(int i)
+    async Task setStatus()
     {
+        var result = await db.GetAsync();
+        if (result.Data != null)
+            status = result.Data;
     }
 }

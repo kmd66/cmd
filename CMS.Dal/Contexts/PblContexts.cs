@@ -25,6 +25,14 @@ namespace CMS.Dal
             modelBuilder.Entity<User>()
                 .HasIndex(p => p.UnicId);
             menusConfig(ref modelBuilder);
+
+
+            modelBuilder
+                .Entity<Status>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("StatusViwe");
+                });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -52,5 +60,9 @@ namespace CMS.Dal
         public DbSet<Option> Options { get; set; }
 
         public DbSet<Order> Orders { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
+
+        public DbSet<Status> Status { get; set; }
     }
 }
