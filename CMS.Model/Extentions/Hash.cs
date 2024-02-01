@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CMS.Model
 {
-    public static class Hash
+    public static class HashExtention
     {
         public static string ToMd5(this string val)
         {

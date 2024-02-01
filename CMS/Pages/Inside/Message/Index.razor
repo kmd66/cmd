@@ -1,4 +1,4 @@
-﻿@page "/cmd-admin/comment/{state?}/{id?}"
+﻿@page "/cmd-admin/message/{state?}/{id?}"
 @inherits BacePage<PageObj>
 @using CMS.Helper;
 @using CMS.Model;
@@ -7,26 +7,19 @@
 @inject NavigationManager _navManager;
 
 
-<PageTitle>comment</PageTitle>
+<PageTitle>Message</PageTitle>
 @{base.BuildRenderTree(__builder);}
 
 
 @if (Obj.State == "main")
 {
-    <h4 class="mb-4">لیست نظر</h4>
-    <CommentMain Obj="@Obj" />
+    <h4 class="mb-4">لیست پیام</h4>
+    <Main Obj="@Obj" />
 }
-else if (Obj.State == "edit" || Obj.State == "add")
+else if (Obj.State == "viwe")
 {
-    if (Obj.State == "add")
-    {
-        <h4 class="mb-4">افزودن نظر</h4>
-    }
-    else
-    {
-        <h4 class="mb-4">ویرایش نظر</h4>
-    }
-    <CommentModify Obj="@Obj" id="@id" />
+    <h4 class="mb-4">نمایش پیام</h4>
+    <Modify Obj="@Obj" id="@id" />
 
 }
 else if (Obj.State != "loading")
@@ -51,8 +44,7 @@ else if (Obj.State != "loading")
                 state = "main";
 
             var token = await localStorage.GetAsync<string>("token");
-            Obj.Helper = new CommentHelper(token.Value);
-            Obj.PostHelper = new Inside.Post.PostHelper(token.Value);
+            Obj.Helper = new MessageHelper(token.Value);
             FirstRender(state);
             StateHasChanged();
         }

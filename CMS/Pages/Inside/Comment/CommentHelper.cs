@@ -3,6 +3,7 @@ using CMS.Dal;
 using CMS.Dal.DataSource;
 using CMS.Helper;
 using CMS.Model;
+using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
@@ -14,16 +15,80 @@ namespace CMS.Pages.Inside.Comment
             : base(auth)
         {
             _dataSource = new CommentDataSource();
-            _menuDataSource = new MenuDataSource();
         }
         private readonly CommentDataSource _dataSource;
-        private readonly MenuDataSource _menuDataSource;
 
-        public async Task<Result> Save(Model.Comment model,Captcha captcha = null)
+        public async Task<Result<Model.Comment>> Get(string unicId)
+        {
+            if (!isAuthorize)
+                return Result<Model.Comment>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+            if (string.IsNullOrEmpty(unicId))
+                return Result<Model.Comment>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+            Guid _unicId =  new Guid(unicId);
+
+            return await _dataSource.GetAsync(unicId: _unicId);
+        }
+        public async Task<Result> AddInside(Model.Comment model)
+        {
+            if (!isAuthorize)
+                return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
+            var validationResult = await validation(model);
+            if (!validationResult.Success)
+                return Result.Failure(message: validationResult.Message);
+
+            model.UnicId = Guid.NewGuid();
+            model.Date = DateTime.Now;
+
+            var result = await _dataSource.AddAsync(model);
+            if (!result.Success)
+                return Result<Model.Comment>.Failure(message: result.Message);
+
+            return Result.Successful();
+        }
+        public async Task<Result> Save(Model.Comment model, string reply)
+        {
+            if (!isAuthorize)
+                return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
+
+            if (string.IsNullOrEmpty(reply))
+                return Result.Failure(message: "پاسخ وارد نشده");
+
+            var validationResult = await validation(model);
+            if (!validationResult.Success)
+                return Result.Failure(message: validationResult.Message);
+
+            var userDb = new UserDataSource();
+            var userResult = await userDb.GetAsync(id: UserId);
+            if (!userResult.Success)
+                return Result.Failure(message: userResult.Message);
+
+            var result = await _dataSource.EditAsync(model);
+            if (!result.Success)
+                return Result.Failure(message: result.Message);
+
+            Model.Comment saveModel = new Model.Comment
+            {
+                PostId = model.PostId,
+                Name = $"{userResult.Data.FirstName} {userResult.Data.LastName}",
+                Mail = "admin",
+                WebSite = "admin",
+                Text = reply,
+                ParentId = model.Id,
+                Type = CommentType.منتشر_شده,
+                UnicId = Guid.NewGuid(),
+                Date = DateTime.Now,
+
+            };
+            await _dataSource.AddAsync(saveModel);
+            return Result.Successful();
+        }
+        public async Task<Result> Save(Model.Comment model, Captcha captcha = null)
         {
             if (model.UnicId == Guid.Empty)
                 return await Add(model, captcha);
-            return await Edit(model);
+            return await EditInside(model);
         }
         private async Task<Result> Add(Model.Comment model, Captcha captcha)
         {
@@ -53,24 +118,31 @@ namespace CMS.Pages.Inside.Comment
          
             return Result.Successful();
         }
-        private async Task<Result> Edit(Model.Comment model)
+        public async Task<Result> EditInside(Model.Comment model)
         {
             if (!isAuthorize)
-                return Result<Model.Comment>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+                return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
 
             var validationResult = await validation(model);
             if (!validationResult.Success)
-                return Result<Model.Comment>.Failure(message: validationResult.Message);
+                return Result.Failure(message: validationResult.Message);
 
+            return await _dataSource.EditAsync(model);
+        }
+        public async Task<Result> SetPublicAsync(Model.Comment model)
+        {
+            if (!isAuthorize)
+                return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
 
-            var result = await _dataSource.EditAsync(model);
-            if (!result.Success)
-                return Result<Model.Comment>.Failure(message: result.Message);
+            model.Type = CommentType.منتشر_شده;
 
-            return Result<Model.Comment>.Successful();
+            return await _dataSource.EditAsync(model);
         }
         private async Task<Result> validation(Model.Comment model)
         {
+            if(model.PostId == 0)
+                return Result.Failure(message: "Comment E1");
+
             if (string.IsNullOrEmpty(model.Text))
                 return Result.Failure(message: "متن را وارد نشده");
 
@@ -125,6 +197,20 @@ namespace CMS.Pages.Inside.Comment
                     ScoreSum = scores.Sum(x=>x.Score),
                 });
 
+        }
+
+        public async Task<Result<List<Model.Comment>>> ListInside(CommentVM modelVm)
+        {
+            if (!isAuthorize)
+                return Result<List<Model.Comment>>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+            return await _dataSource.ListInsideAsync(modelVm);
+
+        }
+        public async Task<Result> Remove(long id = 0)
+        {
+            if (!isAuthorize)
+                return Result<List<Model.Comment>>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+            return await _dataSource.RemoveAsync(id);
         }
     }
 }

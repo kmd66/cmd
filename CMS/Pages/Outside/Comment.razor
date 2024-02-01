@@ -16,7 +16,7 @@
             <div class="tab-pane my-3 fade show active" id="CommentSend" role="tabpanel" aria-labelledby="CommentSend-tab">
                 @if (!senComment)
                 {
-                    <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
+                    <div class="mb-3 col-lg-12 col-sm-12">
                         <label class="form-label required">امتیاز</label>
                         <ul class="ratings">
                             <li class="star" @onclick="(()=> comment.Score = 5)"></li>
@@ -26,7 +26,7 @@
                             <li class="star" @onclick="(()=> comment.Score = 1)"></li>
                         </ul>
                     </div>
-                    <div class="mb-3 col-lg-12 col-md-12 col-sm-12">
+                    <div class="mb-3 col-lg-12 col-sm-12">
                         <label class="form-label required">نظر</label>
                         <textarea @bind="comment.Text" cols="45" rows="8" aria-required="true" class="form-control"></textarea>
                     </div>

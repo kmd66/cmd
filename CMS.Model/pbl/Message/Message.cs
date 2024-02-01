@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace CMS.Model.pbl.Message
+namespace CMS.Model
 {
     public class Message : BaseModel<Comment>
     {
@@ -11,5 +11,7 @@ namespace CMS.Model.pbl.Message
         public string Mail { get; set; }
         public string Phone { get; set; }
         public string Text { get; set; }
+        public DateTime Date { get; set; }
+        public int Count { get; set; }
     }
 }

@@ -24,7 +24,11 @@ namespace CMS.Dal.DataSource
                 if (ett == null)
                     return Result<Comment>.Successful();
 
+                var childs = await _pblContexts.Comments.Where(x =>
+                    x.ParentId == ett.Id
+                ).ToListAsync();
                 var returnMOdel = Map<Comment, Dal.DbModel.Comment>(ett);
+                returnMOdel.Childs = MapList<Comment, Dal.DbModel.Comment>(childs).ToList();
 
                 return Result<Comment>.Successful(data: returnMOdel);
             }
@@ -146,6 +150,57 @@ namespace CMS.Dal.DataSource
             catch (Exception ex)
             {
                 return Result<IEnumerable<Comment>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result<List<Comment>>> ListInsideAsync(CommentVM modelVm)
+        {
+            try
+            {
+                var query = $"cnt.SpGetInsideComments"
+                    + $" @Type = {((byte)modelVm.Type).Query()}"
+                    + $", @Name = {modelVm.Name.Query()}"
+                    + $", @PageSize = {modelVm.PageSize.Query()}"
+                    + $", @PageIndex = {modelVm.PageIndex.Query()}";
+
+                var ett = await _pblContexts.CommentDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var returnMOdel = MapList<Comment, DbModel.CommentDto>(ett);
+
+                return Result<List<Comment>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<Comment>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result> RemoveAsync(long id = 0)
+        {
+            try
+            {
+                var items = await GetAsync(id);
+                _pblContexts.Remove<Dal.DbModel.Comment>(new DbModel.Comment { Id = id });
+                if (items.Data?.Childs?.Count > 0)
+                {
+                    var childs = MapList<Dal.DbModel.Comment, Comment>(items.Data.Childs);
+                    _pblContexts.Comments.RemoveRange(childs);
+                }
+                await _pblContexts.SaveChangesAsync();
+
+                return Result.Successful();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(message: ex.Message);
             }
             finally
             {

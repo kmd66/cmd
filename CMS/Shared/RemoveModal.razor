@@ -1,0 +1,42 @@
+﻿@using CMS.Model;
+
+<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#@id">@BtnText</button>
+<div class="modal fade" id="@id" tabindex="-1" aria-labelledby="@label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="@label">Modal title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                آیا از حذف اطمینان دارید
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="callback">تایید</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string BtnText { get; set; }
+
+    [Parameter]
+    public EventCallback Callback { get; set; }
+
+    string id;
+    string label;
+
+    protected override async Task OnInitializedAsync()
+    {
+        id = "i"+ Guid.NewGuid().String();
+        label = id + "ModalLabel";
+    }
+
+    private async Task callback()
+    {
+        await Callback.InvokeAsync();
+    }
+}

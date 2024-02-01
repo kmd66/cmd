@@ -21,9 +21,13 @@
             </li>
 
             <li class="nav-item w-100 mt-2">
-                <NavLink href="cmd-admin/comment" class="nav-link d-flex">
+                <NavLink href="cmd-admin/comment/main" class="nav-link d-flex">
                     <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">
-                        نظر <span style="font-size: 12px;color: red;">@status.CountComment</span>
+                        نظر
+                        @if (status.CountComment > 0)
+                        {
+                            <span class="translate-middle badge rounded-pill bg-danger">@status.CountComment</span>
+                        }
                     </span>
                 </NavLink>
             </li>
@@ -48,9 +52,13 @@
             </li>
 
             <li class="nav-item w-100 mt-2">
-                <NavLink href="cmd-admin/message" class="nav-link d-flex">
+                <NavLink href="cmd-admin/message/main" class="nav-link d-flex">
                     <span class="svgMessage bg-white"></span> <span class="ms-3 d-none d-sm-inline">
-                        پیام <span style="font-size: 12px;color: red;">@status.CountMessage</span>
+                        پیام
+                        @if (status.CountMessage > 0)
+                        {
+                            <span class="translate-middle badge rounded-pill bg-danger">@status.CountMessage</span>
+                        }
                     </span>
                 </NavLink>
             </li>

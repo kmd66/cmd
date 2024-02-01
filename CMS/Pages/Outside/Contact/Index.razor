@@ -1,0 +1,120 @@
+﻿@page "/contact"
+@using CMS.Model;
+@inherits BacePage<BasePageObj>
+@inject IJSRuntime Js
+
+<PageTitle>contact</PageTitle>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+<div class="container main">
+    <div class="mainSlideLeft">
+        <div class="card rounded-0 w-100" style="border-top: 2px solid #9c730b;">
+            @if (post != null)
+            {
+                <div class="p-3 text-center"><h1 class="h2">@post.Title</h1></div>
+                <div style="max-height: 400px">
+                    <img src="@post.Img" class="card-img-top rounded-0" alt="@post.Title">
+                </div>
+                <div class="card-body mt-3">
+                    @((MarkupString)post.Content)
+                </div>
+
+            }
+
+            <div class="card-body mt-3">
+                @if (!senComment)
+                {
+                    <div class="mb-3 mt-5 col-lg-12 col-sm-12">
+                        <label class="form-label required">پیام</label>
+                        <textarea @bind="message.Text" cols="45" rows="8" aria-required="true" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام</label>
+                            <input @bind="message.Name" type="text" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">شماره تماس</label>
+                            <input @bind="message.Phone" type="text" placeholder="Phone" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label">ایمیل</label>
+                            <input @bind="message.Mail" type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">کد امنیتی</label>
+                            <div class="captchaBax">
+                                <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
+                                <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
+                                <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                            </div>
+                        </div>
+                    </div>
+                    <button @onclick="save" type="button" class="btn w-100 bg-BaseColor text-white mt-1">ارسال پیام</button>
+                }
+                else
+                {
+                    <div class="staticAlert-success">"پیام شما با موفقیت ارسال شد"</div>
+                }
+            </div>
+        </div>
+    </div>
+    <RightMenu />
+</div>
+
+@code {
+    BasePageObj obj = new BasePageObj();
+    public override BasePageObj Obj { get => obj; set => obj = value; }
+
+    CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+    CMS.Pages.Inside.Message.MessageHelper helper = new Inside.Message.MessageHelper(null);
+
+    public CMS.Model.Post post { get; set; }
+    public CMS.Model.Message message { get; set; }
+    Helper.Captcha captcha = new Helper.Captcha();
+    bool senComment = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        message = new Message();
+        captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+        await SeletePost();
+    }
+
+    async Task SeletePost()
+    {
+        var homePostId = CMS.Model.Option.GetItem(CMS.Model.OptionType.ContactPostId);
+        if (string.IsNullOrEmpty(homePostId.Text))
+            return;
+
+        var id = new Guid(homePostId.Text);
+        var result = await db.GetAsync(0, id);
+        if (result.Data == null)
+            return;
+
+        post = result.Data;
+    }
+
+    async Task captchaReload()
+    {
+        captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+        StateHasChanged();
+    }
+
+    async Task save()
+    {
+        await Obj.LoadHandler(true);
+        var result = await helper.Add(message, captcha);
+        if (!result.Success)
+        {
+            await Obj.ErrorRequest(result);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        await Obj.LoadHandler(false);
+        senComment = true;
+        StateHasChanged();
+    }
+}

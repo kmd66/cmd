@@ -1,0 +1,84 @@
+﻿@using CMS.Model;
+@inject IJSRuntime Js
+@inject NavigationManager _navManager;
+
+@if (Obj.EditItem != null)
+{
+  <fieldset disabled>
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">نام </label>
+            <input @bind="Obj.EditItem.Name" type="text" class="form-control disabled">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">شماره تماس </label>
+            <input @bind="Obj.EditItem.Phone" type="text" class="form-control disabled">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">ایمیل </label>
+            <input @bind="Obj.EditItem.Mail" type="text" class="form-control disabled">
+        </div>
+
+        <div class="mb-3 col-lg-12 col-sm-12">
+            <label class="form-label ">نظر</label>
+            <textarea @bind="Obj.EditItem.Text" class="form-control disabled"></textarea>
+        </div>
+    </div>
+    </fieldset>
+
+    <RemoveModal BtnText="حذف نظر" Callback="remove" />
+    <NavLink href='cmd-admin/message/main' class="btn btn-outline-secondary mx-2">
+        بازگشت
+    </NavLink>
+}
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    [Parameter]
+    public string id { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+            selectItem();
+    }
+    private async Task selectItem()
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.Get(id);
+
+        if (!result.Success)
+        {
+            await selectError(result);
+            return;
+        }
+        Obj.EditItem = result.Data;
+        if (Obj.EditItem?.Type == MessageType.خوانده_نشده)
+            await Obj.Helper.SetType(Obj.EditItem.Id, MessageType.خوانده_شده);
+        await Obj.LoadHandler(false);
+        StateHasChanged();
+    }
+
+    private async Task selectError(Result result)
+    {
+        await Obj.ErrorRequest(result);
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task remove()
+    {
+        await Obj.LoadHandler(true);
+        var result = await Obj.Helper.Remove(Obj.EditItem.Id);
+        if (!result.Success)
+        {
+            await selectError(result);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/message/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+}

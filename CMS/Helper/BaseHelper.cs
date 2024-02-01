@@ -19,7 +19,7 @@ namespace CMS.Helper
         {
             if (!string.IsNullOrEmpty(auth))
             {
-                var claims = new JwtHelper().GetClaims(auth);
+                claims = new JwtHelper().GetClaims(auth);
                 if (claims != null)
                     isAuthorize = true;
             }
@@ -35,7 +35,15 @@ namespace CMS.Helper
             remoteIpAddress = _remoteIpAddress;
         }
         public string? remoteIpAddress;
-        public bool isAuthorize { get; set; }
+        
+        private List<System.Security.Claims.Claim> claims{ get; set; }
+    public bool isAuthorize { get; set; }
+
+        public long UserId { get {
+
+                var id = claims?.FirstOrDefault(x => x.Type == "UserId")?.Value;
+                    return id.ToLong();
+            } }
 
     }
 }

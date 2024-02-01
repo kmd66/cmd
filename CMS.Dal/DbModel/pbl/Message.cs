@@ -18,5 +18,7 @@ namespace CMS.Dal.DbModel
         [MaxLength(500)]
         public string Text { get; set; }
 
+        public DateTime Date { get; set; }
+
     }
 }

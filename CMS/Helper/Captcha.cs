@@ -104,6 +104,8 @@ namespace CMS.Helper
         }
         public static bool Validate(Captcha c)
         {
+            if (c == null || string.IsNullOrEmpty(c.Text))
+                return false;
             if (c.Code == c.Text.ToMd5())
                 return true;
             return false;

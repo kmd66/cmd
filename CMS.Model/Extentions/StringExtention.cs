@@ -16,5 +16,23 @@ namespace CMS.Model
             var _s = s.Replace("&", "&amp").Replace("<", "(").Replace(">", ")").Replace("\"", "`").Replace("\'", "`");
             return _s;
         }
+        public static string Limit(this string? s, int i)
+        {
+            if (string.IsNullOrEmpty(s) || s.Length < i)
+                return s;
+            return s.Substring(0, i);
+        }
+        public static long ToLong(this string? s)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(s))
+                    return 0;
+                return long.Parse(s);
+            }
+            catch {
+                return 0;
+            }
+        }
     }
 }
