@@ -10,14 +10,18 @@ namespace CMS.Model
         {
             get
             {
-                return Math.Round((ScoreSum / (5 * ScoreCount)) * 100, 2);
+                if (ScoreCount > 0)
+                    return Math.Round((ScoreSum / (5 * ScoreCount)) * 100, 2);
+                return 0;
             }
         }
         public double ScoreAvg
         {
             get
             {
+                if(ScoreCount >0)
                 return Math.Round(ScoreSum / ScoreCount, 2);
+                return 0;
             }
         }
 

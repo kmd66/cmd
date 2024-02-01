@@ -277,3 +277,20 @@ footer {
     border-color: #dee2e6 #dee2e6 #f9f9f9;
     background-color: #f9f9f9;
 }
+.productProperty {
+    padding: 12px;
+    border-bottom: 1px #000;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+    margin-top: 20px;
+}
+.productPropertyName {
+    display: block;
+    width: 200px;
+    color: #858a8f;
+    color: #836211 !important;
+    color: var(--BaseColor) !important;
+    float: right;
+}
+.productPropertyValue {
+    display: block
+}

@@ -1,0 +1,90 @@
+﻿@using CMS.Model;
+
+<div class="ScrollIntoView">
+    @if (Product.GetPropertys().Count > 0)
+    {
+        <span onclick="ScrollIntoView('PropertyTab')">مشخصات</span>
+    }
+    <span onclick="ScrollIntoView('ContentTab')">توضیح</span>
+    <span onclick="ScrollIntoView('CommentTab')">نظر</span>
+</div>
+<div class="row mt-3 px-4">
+    @if (imgs.Count > 0)
+    {
+        <div class="mb-3 col-lg-6 col-md-12">
+            <div class="xzoom-container">
+                <img class="xzoom3" src="@imgs.First().Value" xoriginal="@imgs.First().Value" />
+                <div class="xzoom-thumbs">
+                    @if (imgs.Count > 1)
+                    {
+                        foreach (var img in imgs)
+                        {
+                            <a href="@img.Value"><img class="xzoom-gallery3" width="80" src="@Model.Files.Item.GetThumbnail(img.Value)" xpreview="@img.Value"></a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="mb-3 col-lg-6 col-md-12">
+        <div><span class="h5 fw-bold">@Post.Title</span></div>
+        <div class="mt-1">
+            <div class="q">
+                <div class="star3"><span class="star3 active" style='width:@($"{ScoreComment.ScorePercent}%")'></span></div>
+            </div>
+            <div class="commentDate rtl">تعداد امتیازها : @ScoreComment.ScoreCount میانگین امتیاز @ScoreComment.ScoreAvg از 5</div>
+            <div class="commentDate rtl">تعداد نظر : @(ScoreComment.Comments?.Count > 0 ? ScoreComment.Comments[0].Count : 0)</div>
+
+        </div>
+        <hr />
+
+        @if (Product.Price > 0 || Product.SpecialPrice > 0)
+        {
+            <div class="my-4">
+                @if (Product.SpecialPrice > 0)
+                {
+                    <span class="badge rounded-pill bg-danger">@darsadPrice()</span>
+                }
+                @if (Product.Price > 0)
+                {
+                    <span class="@classPrice()">@Product.Price </span>
+                }
+                @if (Product.SpecialPrice > 0)
+                {
+                    <span class="many"> @Product.SpecialPrice </span>
+                }
+                <span style="font-size:10px"> تومان</span>
+            </div>
+        }
+        <div class="text-secondary">@Post.Summary</div>
+        <button type="button" class="btn w-100 bg-BaseColor text-white mt-4">افزودن به سبد خرید</button>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public CMS.Model.Post Post { get; set; }
+    [Parameter]
+    public CMS.Model.Product Product { get; set; }
+    [Parameter]
+    public CMS.Model.ScoreComment ScoreComment { get; set; }
+
+    List<ProductImg> imgs = new List<ProductImg>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Product != null)
+            imgs = Product.GetImgs();
+    }
+
+    string classPrice()
+    {
+        if (Product.SpecialPrice > 0)
+            return "many diactive";
+        return "many";
+    }
+
+    string darsadPrice()
+    {
+        return $"{((Product.SpecialPrice * 100) / Product.Price) - 100}%";
+    }
+}

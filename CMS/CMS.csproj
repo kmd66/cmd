@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Outside\product\" />
     <Folder Include="Service\" />
   </ItemGroup>
 

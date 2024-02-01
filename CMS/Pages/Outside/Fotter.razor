@@ -4,13 +4,23 @@
 
             <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
                 <div class="card mainCard dark">
+                    <h5 class="card-header" style="border-top: unset">آخرین نظر</h5>
+                    <ul class="card-body">
+                        <li class="socialItem">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <div class="card mainCard dark">
                     <h5 class="card-header" style="border-top: unset">آخرین مطالب</h5>
                     <ul class="card-body">
                         @foreach (var item in postItems)
                         {
                             <li class="menuRighItem">
                                 <NavLink href='@($"/{item.Alias}")' class="imgLink">
-                                    <img src="@item.Img">
+                                    <img src="@Model.Files.Item.GetThumbnail(item.Img)">
                                 </NavLink>
                                 <NavLink href='@($"/{item.Alias}")' class="textLink">
                                     <h3 class="card-title h6">@item.Title</h3>
@@ -28,24 +38,14 @@
                         @foreach (var item in productItems)
                         {
                             <li class="menuRighItem">
-                                <NavLink href='@($"/{item.Alias}")' class="imgLink">
-                                    <img src="@item.Img">
+                                <NavLink href='@($"product/{item.Alias}")' class="imgLink">
+                                    <img src="@Model.Files.Item.GetThumbnail(item.Img)">
                                 </NavLink>
-                                <NavLink href='@($"/{item.Alias}")' class="textLink">
+                                <NavLink href='@($"product/{item.Alias}")' class="textLink">
                                     <h3 class="card-title h6">@item.Title</h3>
                                 </NavLink>
                             </li>
                         }
-                    </ul>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                <div class="card mainCard dark">
-                    <h5 class="card-header" style="border-top: unset">آخرین نظر</h5>
-                    <ul class="card-body">
-                        <li class="socialItem">
-                        </li>
                     </ul>
                 </div>
             </div>

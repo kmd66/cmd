@@ -98,8 +98,6 @@
             return;
 
         await setStatus();
-
-        StateHasChanged();
         startTimer();
     }
 
@@ -109,5 +107,7 @@
         var result = await db.GetAsync();
         if (result.Data != null)
             status = result.Data;
+
+        StateHasChanged();
     }
 }

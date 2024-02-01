@@ -9,6 +9,12 @@ namespace CMS.Model
 {
     public static class StringExtention
     {
+        public static string Default(this string? s)
+        {
+            if (s== null)
+                return "";
+            return s;
+        }
         public static string Xss(this string? s)
         {
             if (string.IsNullOrEmpty(s))

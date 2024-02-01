@@ -11,13 +11,13 @@
                     <article class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch">
                         <div class="card my-4 mx-4">
                             <div style="height: 150px">
-                                <NavLink href='@($"/{item.Alias}")'>
-                                    <img src="@item.Img" class="card-img-top" alt="@item.Title">
+                                <NavLink href='@($"{Link.Default()}/{item.Alias}")'>
+                                    <img src="@Model.Files.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
                                 </NavLink>
                             </div>
                             <div class="card-body">
                                 <h2 class="card-title text-center h6">
-                                    <NavLink href='@($"/{item.Alias}")'>
+                                    <NavLink href='@($"{Link.Default()}/{item.Alias}")'>
                                         @item.Title
                                     </NavLink>
                                 </h2>
@@ -36,4 +36,6 @@
 @code {
     [Parameter]
     public List<CMS.Model.Post> Items { get; set; }
+    [Parameter]
+    public string? Link { get; set; }
 }

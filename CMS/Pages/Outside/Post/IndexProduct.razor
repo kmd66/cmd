@@ -1,40 +1,46 @@
-﻿@page "/{name?}"
+﻿@page "/product/{name?}"
 @inherits BacePage<BasePageObj>
 @using CMS.Model;
 @inject IJSRuntime Js
 
-<PageTitle>post</PageTitle>
+<PageTitle>product</PageTitle>
 @{
     base.BuildRenderTree(__builder);
 }
 
-
 <div class="container main">
     <div class="mainSlideLeft">
-        @if (post != null)
+        @if (post != null && product!= null)
         {
             <div class="card rounded-0 w-100">
-                <div style="max-height: 200px; position:relative">
-                    <div class="postTitle">
-                        <h1 class="h2">@post.Title</h1>
+
+                <ProductTop Product="product" Post="post" ScoreComment="scoreComment" />
+
+                @if (productPropertys.Count > 0)
+                {
+                    <div class="card-body mt-3" id="PropertyTab">
+                        <span class="=h5 fw-bold">مشخصات</span>
+                        <hr />
+                        @foreach (var productProperty in productPropertys)
+                        {
+                            <div class="productProperty">
+                                <span class="productPropertyName">@productProperty.Name</span>
+                                <span class="productPropertyValue">@productProperty.Value</span>
+                                
+                            </div>
+                        }
                     </div>
-                    <img src="@post.Img" class="card-img-top rounded-0" alt="@post.Title">
-                </div>
-                <div class="card-body mt-3">
+                }
+
+                <div class="card-body mt-3" id="ContentTab">
+                    <span class="=h5 fw-bold">توضیحات</span>
+                        <hr />
                     @((MarkupString)post.Content)
-                    @if (scoreComment.ScoreCount > 0)
-                    {
-                        <div class="text-center">
-                            <div class="star3"><span class="star3 active" style='width:@($"{scoreComment.ScorePercent}%")'></span></div>
-                        </div>
-                        <div class="commentDate rtl">تعداد امتیازها : @scoreComment.ScoreCount میانگین امتیاز @scoreComment.ScoreAvg از 5</div>
-                    }
-                    <div class="commentDate rtl mb-3">تاریخ ارسال مطلب : @post.Date.ToPersion()</div>
                 </div>
             </div>
 
-            <NextAndPrev Items="nextAndPrev" />
-            <Related Items="related" />
+            <NextAndPrev Items="nextAndPrev" Link="/product" />
+            <Related Items="related" Link="/product" />
             <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
 
         }
@@ -60,10 +66,14 @@
     public override BasePageObj Obj { get => obj; set => obj = value; }
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+    CMS.Dal.DataSource.ProductDataSource dbProduct = new CMS.Dal.DataSource.ProductDataSource();
     CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
 
     ScoreComment scoreComment = new ScoreComment();
     CMS.Model.Post post { get; set; }
+    CMS.Model.Product product { get; set; }
+    List<ProductProperty> productPropertys = new List<ProductProperty>();
+
     List<Post> nextAndPrev = new List<Post>();
     List<Post> related = new List<Post>();
     bool isPostNull = false;
@@ -85,6 +95,7 @@
     {
         isPostNull = false;
         post = null;
+        product = null;
         nextAndPrev = new List<Post>();
         if (!string.IsNullOrEmpty(name))
             await SeletePost();
@@ -92,13 +103,23 @@
 
     async Task SeletePost()
     {
-        var result = await db.GetByAliasAsync(name, published: true, isProduct: false);
+        var result = await db.GetByAliasAsync(name, published: true, isProduct: true);
         if (result.Data == null)
         {
             isPostNull = true;
             return;
         }
         post = result.Data;
+
+        var resultProduct = await dbProduct.GetAsync(unicId: post.UnicId);
+        if (resultProduct.Data == null)
+        {
+            isPostNull = true;
+            return;
+        }
+        product = resultProduct.Data;
+        productPropertys = product.GetPropertys();
+
         var resultNextAndPrev = await db.NextAndPrevAsync(post);
         nextAndPrev = resultNextAndPrev.Data;
 

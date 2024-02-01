@@ -46,3 +46,11 @@ async function saveFile(obj) {
         return { Success: false, Message: e.statusText, Code: e.status };
     });
 }
+
+function ScrollIntoView(id) {
+    const y = document.getElementById(id).getBoundingClientRect().top + window.scrollY;
+    window.scroll({
+        top: y -50,
+        behavior: 'smooth'
+    });
+}

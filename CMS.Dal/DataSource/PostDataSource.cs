@@ -75,6 +75,8 @@ namespace CMS.Dal.DataSource
                     return Result<Post>.Successful();
                 var ett = await _pblContexts.Posts.Where(x =>
                     x.Alias == alias
+                    && (published == null || x.Published == published)
+                    && (isProduct == null || x.IsProduct == isProduct)
                 ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Post>.Successful();
