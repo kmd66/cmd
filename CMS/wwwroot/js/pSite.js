@@ -7,6 +7,7 @@ document.addEventListener("scroll", (event) => {
 });
 
 function PageInit() {
+    getGallery();
     setNavbar();
     setMainSlideRightLastChild();
     setCommentEl();
@@ -153,6 +154,7 @@ function getRandomColor() {
 function getScores() {
     var star = '.star',
         selected = '.selected';
+    $(star).unbind('click');
     $(star).on('click', function () {
         $(selected).each(function () {
             $(this).removeClass('selected');
@@ -185,4 +187,93 @@ function formatMoney(amount, decimalCount = 0, decimal = ".", thousands = ",") {
         return "0";
     }
 }
+function getGallery() {
+    var list = [];
+    $('img.g').each(function (i, obj) {
+        list.push({ at: $(obj).attr('slide'), obj: obj });
+    });
+    const grouped = groupBy(list, pet => pet.at);
+    var insertEl;
+    grouped.forEach((x) => {
+        x.forEach((num, idx, arr) => {
+            $(num.obj).addClass('cGallery');
+            $(num.obj).attr('galleryId', idx);
+            var p = $(num.obj).parent();
+            if (idx == 0) {
+                insertEl = p;
+                p.empty();
+            }
+            else {
+                p.remove();
+            }
+            insertEl.append(num.obj);
+        });
+    });
+    eventGallery();
+}
+function eventGallery() {
+    $('img.g').unbind('click');
+    $('#galleryClose').unbind('click');
+    $('#galleryNext').unbind('click');
+    $('#galleryPrev').unbind('click');
+    //var t = $._data($('#galleryClose')[0], "events");
+    //if ($("#galleryModalDialog").hasClass("galleryModalDialog"))
+    //    return;
+    //$("#galleryModalDialog").addClass("galleryModalDialog");
+    //
+    $('img.g').click(function () {
+
+        const groupId = $(this).attr('slide');
+        const src = $(this).attr('src').replace("-thumbnail", '');
+        const group = $(`[slide=${groupId}]`);
+        if (group.length > 1) {
+            $('#galleryNext').css("visibility", "visible");
+            $('#galleryPrev').css("visibility", "visible");
+        }
+        else {
+            $('#galleryNext').css("visibility", "hidden");
+            $('#galleryPrev').css("visibility", "hidden");
+        }
+        const dialog = $('#galleryModalDialog');
+        console.log(`${$(this).attr('galleryId')} | ${$(this).attr('slide')} | ${group.length}`);
+        dialog.empty();
+        dialog.append(`<img class="c" src="${src}" style="max-height: ${$(window).height() - 40}px" galleryId="${$(this).attr('galleryId')}" slideD="${$(this).attr('slide')}">`);
+        $('#galleryModal').modal('show');
+
+    });
+    $('#galleryClose').click(function () {
+        $('#galleryModal').modal('hide');
+    });
+    $('#galleryNext').click(function () {
+        moveGallery(true);
+    });
+    $('#galleryPrev').click(function () {
+        moveGallery( true);
+    });
+}
+function moveGallery(next) {
+    const el = $("#galleryModalDialog img:first-child");
+    var t = el.attr('slideD');
+    const group = $(`[slide=${el.attr('slideD')}]`);
+    var myArr = Array.from(group);
+    const dialog = $('#galleryModalDialog');
+
+    var idx = 0;
+    myArr.forEach((x, i, a) => {
+        if ($(x).attr('galleryId') == el.attr('galleryId'))
+            idx = i;
+    });
+    if (next)
+        idx++;
+    else
+        idx--;
+    if (idx < 0)
+        idx = group.length - 1;
+    if (idx > group.length - 1)
+        idx = 0;
+    dialog.empty();
+    const img = group[idx];
+    const src = $(img).attr('src').replace("-thumbnail", '');
+    dialog.append(`<img class="c" src="${src}" style="max-height: ${$(window).height() - 40}px" galleryId="${$(img).attr('galleryId')}" slideD="${$(img).attr('slide')}">`);
+};
 

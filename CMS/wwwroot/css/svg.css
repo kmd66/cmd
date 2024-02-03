@@ -64,4 +64,7 @@ span[class^='svg'], div[class*='svg'] {
 .svgRefresh {
     mask-image: url(../svg/Refresh.svg);
 }
+.svgClose {
+    mask-image: url(../svg/Close.svg);
+}
 

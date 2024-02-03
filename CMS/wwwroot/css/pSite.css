@@ -294,3 +294,76 @@ footer {
 .productPropertyValue {
     display: block
 }
+#galleryModal .modal-dialog {
+    max-width: unset;
+    overflow: unset;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+}
+#galleryModalDialog, #galleryModal .modal-dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+#galleryModalDialog {
+    margin: 0;
+    padding: 20px;
+    transition: none;
+    overflow: hidden;
+    text-align: center;
+    pointer-events: auto;
+}
+    #galleryModalDialog img {
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+#galleryPrev, #galleryNext, #galleryClose, #galleryZoom {
+    position: absolute;
+    z-index: 999;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 18px;
+    top: 50%;
+    background: #fff;
+    width: 40px;
+    height: 60px;
+    outline: 0;
+    text-align: left;
+    cursor: pointer;
+    margin-top: -40px;
+    opacity: .6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    pointer-events: auto;
+}
+    #galleryPrev:hover, #galleryNext:hover, #galleryClose:hover, #galleryZoom:hover {
+        opacity: 1;
+    }
+#galleryPrev {
+    left: unset;
+    right: 0
+}
+#galleryClose, #galleryZoom {
+    top: 5px;
+    left: unset;
+    margin-top: 0;
+    height: 40px;
+    right: 5px;
+}
+#galleryZoom{
+    top: 5px;
+    left:5px;
+    right: unset;
+}

@@ -106,7 +106,7 @@
     max-width: 400px !important;
 }
 
-.xzoom-thumbs img {
+.xzoom-thumbs img, .cGallery {
     width: 70px;
     height: 70px;
     padding: 2px;
@@ -115,4 +115,11 @@
 }
 .xzoom-container img {
     max-width: 100% !important;
+}
+.cGallery {
+    border: 1px solid #cecece;
+    cursor: pointer;
+    margin: 5px;
+    width: 120px;
+    height: 120px;
 }
