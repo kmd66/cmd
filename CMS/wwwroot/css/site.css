@@ -262,3 +262,16 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
     background: #fefefe;
     background: #f3f3f3;
 }
+.badge12 {
+    font-size: 12px;
+    font-weight: normal;
+    color: white;
+    position: absolute;
+    left: auto;
+    right: 2px;
+    top: 2px;
+    padding: 3px 4px;
+    border-radius: 7px;
+    background: #dc3545 !important;
+    line-height: 1;
+}

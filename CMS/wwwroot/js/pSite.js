@@ -8,7 +8,7 @@ document.addEventListener("scroll", (event) => {
 
 function PageInit() {
     getGallery();
-    setNavbar();
+    //setNavbar();
     setMainSlideRightLastChild();
     setCommentEl();
     getScores();
@@ -30,6 +30,7 @@ function setNavbar() {
         var cln = item.cloneNode(true);
         fixNavbar.appendChild(cln);
     });
+    document.getElementById('fixNavbar').classList.remove("disable");
 }
 
 function setMainSlideRightLastChild() {

@@ -1,4 +1,10 @@
-﻿<div class="bg-white">
+﻿@implements IDisposable
+@inject StateContainer StateContainer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@inject IJSRuntime Js
+
+<div class="bg-white">
     <div class="container">
         <div class="d-flex align-items-center justify-content-around p-3">
             <img src="@logo" style="width:70px" />
@@ -25,18 +31,33 @@
 
             </ul>
         </div>
-        <li class="nav-Item navbarIcon">
-            <span class="svgSearch"></span>
-        </li>
+        <div>
+            <ul class="navbar-nav fw500">
+                <li class="nav-Item navbarIcon">
+                    <span class="svgSearch"></span>
+                </li>
+                <NavLink href="/basket" Match="NavLinkMatch.All">
+                <li class="nav-Item navbarIcon" style="position:relative">
+                    <span class="svgShoppingCart" ></span>
+                    @if (count > 0)
+                    {
+                        <span class="badge12">@count</span>
+                    }
+                    </li>
+                </NavLink>
+            </ul>
+
+        </div>
     </div>
 </nav>
-<div id="fixNavbar" class="navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide "></div>
+<div id="fixNavbar" class="disable navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide"></div>
 
 @code {
     string logo = "";
     string title = "";
     string comment = "";
     List<CMS.Model.Menu> menus = new List<Model.Menu>();
+    int count = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,12 +65,29 @@
         title = CMS.Model.Option.GetItem(Model.OptionType.Title).Text;
         comment = CMS.Model.Option.GetItem(Model.OptionType.Comment).Text;
         menus = CMS.Model.Menus.GetList(new Model.MenuVM { Published = true });
-    }
 
+        StateContainer.OnChangeShopCount += ChangeShopCount;
+    }
+    public void Dispose()
+    {
+        StateContainer.OnChangeShopCount -= ChangeShopCount;
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            ChangeShopCount();
         }
     }
+    private async void ChangeShopCount()
+    {
+        var basket = await localStorage.GetAsync<List<string>>("basket");
+        if (!basket.Success)
+            return;
+        count = basket.Value.ToList().Count;
+        StateHasChanged();
+        await Js.InvokeVoidAsync("setNavbar");
+    }
+
+
 }

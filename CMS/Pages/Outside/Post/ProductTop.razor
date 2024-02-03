@@ -1,4 +1,8 @@
 ﻿@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@implements IDisposable
+@inject StateContainer StateContainer
 
 <div class="ScrollIntoView">
     @if (Product.GetPropertys().Count > 0)
@@ -57,7 +61,13 @@
             </div>
         }
         <div class="text-secondary">@Post.Summary</div>
-        <button type="button" class="btn w-100 bg-BaseColor text-white mt-4">افزودن به سبد خرید</button>
+        @if (isOrder)
+        {
+            <div class="btn w-100 bg-secondary text-white mt-4">این محصول به لیست سفارش شما اضافه شده است</div>
+        }
+        else{
+            <button @onclick="addBasket" type="button" class="btn w-100 bg-BaseColor text-white mt-4">افزودن به سبد خرید</button>
+        }
     </div>
 </div>
 @code {
@@ -69,11 +79,24 @@
     public CMS.Model.ScoreComment ScoreComment { get; set; }
 
     List<ProductImg> imgs = new List<ProductImg>();
+    bool isOrder = false;
+
+    protected override void OnInitialized()
+    {
+    }
+
+    public void Dispose()
+    {
+        //StateContainer.OnChangeShopCount -= StateHasChanged;
+    }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Product != null)
-            imgs = Product.GetImgs();
+        isOrder = false;
+        if (Product == null)
+            return;
+        imgs = Product.GetImgs();
+        getBasket();
     }
 
     string classPrice()
@@ -86,5 +109,31 @@
     string darsadPrice()
     {
         return $"{((Product.SpecialPrice * 100) / Product.Price) - 100}%";
+    }
+
+    async Task addBasket()
+    {
+
+        List<string> basket = new List<string>();
+        var basketResult = await localStorage.GetAsync<List<string>>("basket");
+        if (basketResult.Success)
+            basket = basketResult.Value?.ToList();
+        basket?.Add(Post.Alias);
+
+        isOrder = true;
+        await localStorage.SetAsync("basket", basket.Distinct().ToList());
+        StateContainer.SetShopCount();
+    }
+
+    async Task getBasket()
+    {
+        var basket = await localStorage.GetAsync<List<string>>("basket");
+        if (!basket.Success)
+            return;
+        var _isOrder = basket.Value?.FirstOrDefault(x => x == Post?.Alias);
+        if (string.IsNullOrEmpty(_isOrder))
+            return;
+        isOrder = true;
+        StateHasChanged();
     }
 }

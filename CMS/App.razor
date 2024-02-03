@@ -1,8 +1,10 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
     <NotFound>
+        <HeadOutlet />
         <PageTitle>Not found</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
             <CMS.Pages.Outside.Error404 />

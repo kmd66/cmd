@@ -57,6 +57,7 @@ async void RegisterLibrary(IServiceCollection services)
     //services.AddScoped<IInfo, CMS.Tools.Info>();
     //services.AddScoped<IOptionDataSource, OptionDataSource>();
     services.AddTransient<ApiRequest>();
+    services.AddScoped<StateContainer>();
 
     new MenuDataSource().ListAsync();
     new OptionDataSource().ListAsync();

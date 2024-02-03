@@ -72,6 +72,9 @@ body {
     visibility: visible;
     transition: visibility .3s linear,opacity .3s linear;
 }
+.disable#fixNavbar {
+    transition: visibility 0s linear,opacity 0s linear;
+}
 #fixNavbar:hover {
     opacity: 1;
 }

@@ -1,0 +1,55 @@
+﻿@page "/basket/{state?}"
+@using CMS.Model;
+@inherits BacePage<BasePageObj>
+@inject IJSRuntime Js
+@inject NavigationManager _navManager;
+
+<PageTitle>order</PageTitle>
+@{
+    base.BuildRenderTree(__builder);
+}
+
+
+@if (Obj.State == "order")
+{
+}
+else {
+
+}
+
+
+@code {
+    [Parameter]
+    public string state { get; set; }
+
+    BasePageObj obj = new BasePageObj();
+    public override BasePageObj Obj { get => obj; set => obj = value; }
+
+    CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+    CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
+
+    ScoreComment scoreComment = new ScoreComment();
+    CMS.Model.Post post { get; set; }
+    List<Post> nextAndPrev = new List<Post>();
+    List<Post> related = new List<Post>();
+    bool isPostNull = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!string.IsNullOrEmpty(state) && state != "order")
+            _navManager.NavigateTo("/");
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        //isPostNull = false;
+        //post = null;
+        //nextAndPrev = new List<Post>();
+        //if (!string.IsNullOrEmpty(name))
+        //    await SeletePost();
+    }
+}

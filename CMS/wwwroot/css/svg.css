@@ -67,4 +67,7 @@ span[class^='svg'], div[class*='svg'] {
 .svgClose {
     mask-image: url(../svg/Close.svg);
 }
+.svgShoppingCart {
+    mask-image: url(../svg/ShoppingCart.svg);
+}
 
