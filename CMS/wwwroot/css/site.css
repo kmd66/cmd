@@ -85,6 +85,9 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
 .staticAlert-success {
     background: var(--alert-success);
 }
+.staticAlert-error {
+    background: var(--alert-error);
+}
 .UserAvatar {
     border: 1px solid #dee2e678;
     display: inline-table;

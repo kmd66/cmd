@@ -4,6 +4,7 @@ using CMS.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMS.Dal.Migrations
 {
     [DbContext(typeof(PblContexts))]
-    partial class PblContextsModelSnapshot : ModelSnapshot
+    [Migration("20240203135151_OrderFix1")]
+    partial class OrderFix1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,9 +164,6 @@ namespace CMS.Dal.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -189,6 +189,9 @@ namespace CMS.Dal.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -212,21 +215,6 @@ namespace CMS.Dal.Migrations
                     b.HasIndex("UnicId");
 
                     b.ToTable("Orders", "pbl");
-                });
-
-            modelBuilder.Entity("CMS.Dal.DbModel.OrderPost", b =>
-                {
-                    b.Property<string>("Img")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("OrderPostViwe", "pbl");
                 });
 
             modelBuilder.Entity("CMS.Dal.DbModel.Status", b =>

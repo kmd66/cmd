@@ -1,0 +1,69 @@
+﻿@*@page "/cmd-admin/comment/{state?}/{id?}"
+@inherits BacePage<PageObj>
+@using CMS.Helper;
+@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@inject NavigationManager _navManager;
+
+
+<PageTitle>comment</PageTitle>
+@{base.BuildRenderTree(__builder);}
+
+
+@if (Obj.State == "main")
+{
+    <h4 class="mb-4">لیست نظر</h4>
+    <CommentMain Obj="@Obj" />
+}
+else if (Obj.State == "edit" || Obj.State == "add")
+{
+    if (Obj.State == "add")
+    {
+        <h4 class="mb-4">افزودن نظر</h4>
+    }
+    else
+    {
+        <h4 class="mb-4">ویرایش نظر</h4>
+    }
+    <CommentModify Obj="@Obj" id="@id" />
+
+}
+else if (Obj.State != "loading")
+{
+    <h3>وضعیت اشتباه</h3>
+    <h6>نظر برای نمایش وجود ندارد</h6>
+}
+@code {
+    [Parameter]
+    public string id { get; set; }
+    [Parameter]
+    public string state { get; set; }
+
+    private PageObj obj = new PageObj() { State = "loading" };
+    public override PageObj Obj { get => obj; set => obj = value; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (string.IsNullOrEmpty(state))
+                state = "main";
+
+            var token = await localStorage.GetAsync<string>("token");
+            Obj.Helper = new CommentHelper(token.Value);
+            Obj.PostHelper = new Inside.Post.PostHelper(token.Value);
+            FirstRender(state);
+            StateHasChanged();
+        }
+        else
+        {
+            if (Obj.State != state)
+            {
+                Obj.State = state;
+                StateHasChanged();
+            }
+        }
+    }
+}
+*@

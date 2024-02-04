@@ -122,7 +122,7 @@ namespace CMS.Dal.DataSource
                 var record = await GetAsync(model.Id);
                 if (!record.Success)
                     return Result.Failure(message: record.Message);
-                if (record == null)
+                if (record.Data == null)
                     return Result.Successful();
 
                 var ett = Map<Dal.DbModel.Post, Post>(model);
@@ -161,6 +161,34 @@ namespace CMS.Dal.DataSource
                 var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
                 var returnMOdel = MapList<Post, Dal.DbModel.PostDto>(ett);
+
+                return Result<IEnumerable<Post>>.Successful(data: returnMOdel);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Post>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result<IEnumerable<Post>>> ListAsync(List<string> alias)
+        {
+            try
+            {
+                alias = alias.Take(15).ToList();
+                var ett = await _pblContexts.Posts.Where(x =>
+                    x.Published == true &&
+                    alias.Any(a => a == x.Alias)
+                ).ToListAsync();
+
+                if (ett == null)
+                    return Result<IEnumerable<Post>>.Successful(data: new List<Post>());
+
+                var returnMOdel = MapList<Post, Dal.DbModel.Post>(ett);
+
 
                 return Result<IEnumerable<Post>>.Successful(data: returnMOdel);
             }

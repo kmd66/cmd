@@ -1,16 +1,10 @@
 ﻿using CMS.Model;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace CMS.Dal.DbModel
 {
     public class Order : BaseModel
     {
-
-        public long ProductId { get; set; }
 
         [MaxLength(12)]
         public string TrackingCode { get; set; }
@@ -37,6 +31,11 @@ namespace CMS.Dal.DbModel
 
         [MaxLength(1000)]
         public string Basket { get; set; }
+
+        [MaxLength(5000)]
+        public string Text { get; set; }
+
+        public DateTime Date { get; set; }
 
     }
 }

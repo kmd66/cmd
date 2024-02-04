@@ -83,8 +83,9 @@
     {
         var basket = await localStorage.GetAsync<List<string>>("basket");
         if (!basket.Success)
-            return;
-        count = basket.Value.ToList().Count;
+            count = 0;
+        else 
+            count = basket.Value.ToList().Count;
         StateHasChanged();
         await Js.InvokeVoidAsync("setNavbar");
     }

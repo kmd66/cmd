@@ -1,0 +1,218 @@
+﻿@*@using CMS.Model;
+@inject IJSRuntime Js
+@inject NavigationManager _navManager;
+
+@if (Obj.EditItem != null)
+{
+    @if (post != null)
+    {
+        <div>
+            <h3>مطلب : @post.Title</h3>
+        </div>
+    }
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">ایدی مطلب</label>
+            <input @bind="Obj.EditItem.PostId" type="text" class="form-control">
+        </div>
+        @if (Obj.State == "add")
+        {
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label required">امتیاز (1-5)</label>
+                <input @bind="Obj.EditItem.Score" type="text" class="form-control">
+            </div>
+        }
+    </div>
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">نام </label>
+            <input @bind="Obj.EditItem.Name" type="text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">سایت </label>
+            <input @bind="Obj.EditItem.WebSite" type="text" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">ایمیل </label>
+            <input @bind="Obj.EditItem.Mail" type="text" class="form-control">
+        </div>
+
+        <div class="mb-3 col-lg-12 col-sm-12">
+            <label class="form-label required">نظر</label>
+            <textarea @bind="Obj.EditItem.Text" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
+        </div>
+    </div>
+
+    @if (Obj.EditItem.Childs?.Count > 0 && !isReply)
+    {
+        <hr />
+        @foreach (var child in Obj.EditItem.Childs)
+        {
+            <div>نام: @child.Name </div>
+            <div>@child.Text</div>
+            
+        }
+    }
+    @if (isReply)
+    {
+        <div class="mb-3 col-lg-12 col-sm-12">
+            <label class="form-label required">پاسخ</label>
+            <textarea @bind="reply" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
+        </div>
+    }
+    <hr />
+    @if (Obj.State == "add")
+    {
+        <button class="btn btn-primary" type="button" @onclick="addInside">ذخیره</button>
+    }
+    else
+    {
+        if (!isReply)
+        {
+            <button class="btn btn-info" type="button" @onclick="setReply">پاسخ</button>
+            <button class="btn btn-primary" type="button" @onclick="editInside">ویرایش و انتشار</button>
+            <RemoveModal BtnText="حذف نظر" Callback="remove" />
+        }
+        else
+        {
+            <button class="btn btn-primary" type="button" @onclick="save">ذخیره و انتشار</button>
+        }
+    }
+    <NavLink href='cmd-admin/post/main' class="btn btn-outline-secondary mx-2">
+        انصراف
+    </NavLink>
+}
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    [Parameter]
+    public string id { get; set; }
+
+    Model.Post post { get; set; }
+    bool isReply = false;
+    public string reply { get; set; }
+
+    private async Task setReply()
+    {
+        reply = "";
+        isReply = true;
+        StateHasChanged();
+    }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (!string.IsNullOrEmpty(id) || Obj.State == "add")
+            selectItem();
+    }
+    private async Task selectItem()
+    {
+        post= new Post();
+        isReply = false;
+        if (Obj.State == "add")
+        {
+            await selectAdd();
+        }
+        else
+        {
+            await selectEdit();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task selectAdd()
+    {
+        Obj.EditItem = new Model.Comment() {Type = CommentType.منتشر_شده};
+    }
+
+    private async Task selectEdit()
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.Get(id);
+
+        if (!result.Success)
+        {
+            await selectError(result);
+            return;
+        }
+        Obj.EditItem = result.Data;
+        var resultPost = await Obj.PostHelper.Get(Obj.EditItem.PostId);
+        post = resultPost.Data;
+
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task selectError(Result result, bool selectadd = true)
+    {
+        if (selectadd)
+            await selectAdd();
+        await Obj.ErrorRequest(result);
+        await Obj.LoadHandler(false);
+    }
+
+    private async Task addInside()
+    {
+        await Obj.LoadHandler(true);
+
+        var result = await Obj.Helper.AddInside(Obj.EditItem);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/comment/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+    private async Task editInside()
+    {
+        await Obj.LoadHandler(true);
+        Obj.EditItem.Type = CommentType.منتشر_شده;
+        var result = await Obj.Helper.EditInside(Obj.EditItem);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/comment/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+    private async Task save()
+    {
+        await Obj.LoadHandler(true);
+        Obj.EditItem.Type = CommentType.منتشر_شده;
+        var result = await Obj.Helper.Save(Obj.EditItem,reply);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/comment/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+    private async Task remove()
+    {
+        await Obj.LoadHandler(true);
+        var result = await Obj.Helper.Remove(Obj.EditItem.Id);
+        if (!result.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
+
+        _navManager.NavigateTo("cmd-admin/comment/main");
+        await Obj.LoadHandler(false);
+        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
+    }
+
+}
+*@

@@ -1,0 +1,90 @@
+﻿@using CMS.Model;
+
+
+<div class="card">
+    <div class="my-4" style="max-width: 600px;margin: auto;">
+        <h4 class="c">آخرین وضعیت سفارش</h4>
+        <p>برای اطلاع از آخرین وضعیت سفارش کد رهگیری خود را وارد کنید </p>
+        <div class="input-group mb-3">
+            <input @bind="code" type="text" class="form-control">
+            <input @onclick="trackingCode" type="submit" id="searchsubmit" value="جستجو" class="btn btn-primary">
+        </div>
+    </div>
+</div>
+
+<div class="container main my-4">
+    <div class="mainSlideLeft" style="margin: auto;">
+        <div class="card p-3">
+            @if (Posts?.Count > 0)
+            {
+                i = 0;
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width:50px">#</th>
+                            <th scope="col" style="width:60px">تصویر</th>
+                            <th scope="col">نام</th>
+                            <th scope="col">قیمت</th>
+                            <th scope="col" style="width:50px"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Posts)
+                        {
+                            i++;
+                            <tr>
+                                <th class="align-middle">@i</th>
+                                <td class="align-middle"><img src="@Model.Files.Item.GetThumbnail(p.Img)"/></td>
+                                <td class="align-middle">@p.Title</td>
+                                <td class="align-middle">@getPrice(p)</td>
+                                <td class="align-middle"><span class="svgClose"></span></td>
+
+                            </tr>
+                        }
+                        <tr>
+                            <th class="align-middle"></th>
+                            <td class="align-middle">جمع</td>
+                            <td class="align-middle"></td>
+                            <td class="align-middle">@getSumPrice()</td>
+                            <td class="align-middle"></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+                <NavLink href="/basket/order" type="button" class="btn bg-BaseColor text-white mt-4">تکمیل خرید</NavLink>
+            }
+            else
+            {
+                <div class="h4">سبد خرید شما خالی است</div>
+                <div >مطلبی برای نمایش وجود ندارد</div>
+            }
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public List<CMS.Model.Post> Posts { get; set; }
+    [Parameter]
+    public List<CMS.Model.Product> Products { get; set; }
+
+    string code = "";
+    int i = 0;
+    long sum = 0;
+
+    string getPrice(CMS.Model.Post model)
+    {
+        var item = Products.FirstOrDefault(x => x.UnicId == model.UnicId);
+        if (item == null)
+            return "0";
+        var money = item.SpecialPrice > 0 ? item.SpecialPrice : item.Price;
+        sum += money;
+        return $"{money:C0}";
+    }
+    string getSumPrice()
+    {
+        return $"{sum:C0}";
+    }
+    async Task trackingCode()
+    {
+    }
+}

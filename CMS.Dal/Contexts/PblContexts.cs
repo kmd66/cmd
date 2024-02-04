@@ -25,6 +25,7 @@ namespace CMS.Dal
             modelBuilder.Entity<User>()
                 .HasIndex(p => p.UnicId);
             menusConfig(ref modelBuilder);
+            orderConfig(ref modelBuilder);
 
 
             modelBuilder
@@ -53,6 +54,20 @@ namespace CMS.Dal
             //    .Property(b => b.Published).HasDefaultValue(true);
         }
 
+        private void orderConfig(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Order>()
+                .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<Order>()
+                .Property(b => b.Text).HasDefaultValue("");
+            modelBuilder
+                .Entity<OrderPost>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("OrderPostViwe");
+                });
+        }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Menu> Menus { get; set; }
@@ -60,6 +75,7 @@ namespace CMS.Dal
         public DbSet<Option> Options { get; set; }
 
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderPost> OrderPost { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 

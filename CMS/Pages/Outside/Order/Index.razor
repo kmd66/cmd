@@ -1,8 +1,10 @@
-﻿@page "/basket/{state?}"
+﻿@page "/basket/{state?}/{trackingcode?}"
 @using CMS.Model;
 @inherits BacePage<BasePageObj>
 @inject IJSRuntime Js
 @inject NavigationManager _navManager;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
 
 <PageTitle>order</PageTitle>
 @{
@@ -12,27 +14,32 @@
 
 @if (Obj.State == "order")
 {
+    <Order Posts="posts" Products="products" Obj="Obj"/>
 }
-else {
-
+else if (Obj.State == "tracking")
+{
+    <Tracking Code="trackingcode" Obj="Obj" />
+}
+else
+{
+    <Main Posts="posts" Products="products" />
 }
 
 
 @code {
     [Parameter]
     public string state { get; set; }
+    [Parameter]
+    public string trackingcode { get; set; }
 
     BasePageObj obj = new BasePageObj();
     public override BasePageObj Obj { get => obj; set => obj = value; }
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
-    CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
+    CMS.Dal.DataSource.ProductDataSource dbProduct = new CMS.Dal.DataSource.ProductDataSource();
 
-    ScoreComment scoreComment = new ScoreComment();
-    CMS.Model.Post post { get; set; }
-    List<Post> nextAndPrev = new List<Post>();
-    List<Post> related = new List<Post>();
-    bool isPostNull = false;
+    List<CMS.Model.Post> posts { get; set; }
+    List<CMS.Model.Product> products { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,16 +47,43 @@ else {
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!string.IsNullOrEmpty(state) && state != "order")
+        await base.OnAfterRenderAsync(firstRender);
+        if (!string.IsNullOrEmpty(state) && state != "order" && state != "tracking")
+        {
             _navManager.NavigateTo("/");
+            return;
+        }
+        if (firstRender)
+        {
+            await selectItem();
+        }
+        if (Obj.State != state)
+        {
+            Obj.State = state;
+            StateHasChanged();
+        }
     }
-
-    protected async override Task OnParametersSetAsync()
+    async Task selectItem()
     {
-        //isPostNull = false;
-        //post = null;
-        //nextAndPrev = new List<Post>();
-        //if (!string.IsNullOrEmpty(name))
-        //    await SeletePost();
+        List<string> basket = new List<string>();
+        var basketResult = await localStorage.GetAsync<List<string>>("basket");
+        if (basketResult.Success)
+            basket = basketResult.Value?.ToList();
+        if (basket.Count == 0)
+            return;
+        await Obj.LoadHandler(true);
+        var postResult = await db.ListAsync(basket);
+        if (postResult.Data.ToList().Count == 0)
+        {
+            await Obj.LoadHandler(false);
+            return;
+        }
+        posts = postResult.Data.ToList();
+
+        var productResult = await dbProduct.ListAsync(posts.Select(x=>x.UnicId).ToList());
+        products = productResult.Data.ToList();
+
+        await Obj.LoadHandler(false);
+        StateHasChanged();
     }
 }

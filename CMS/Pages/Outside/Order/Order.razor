@@ -1,0 +1,118 @@
+﻿@using CMS.Model;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@inject StateContainer StateContainer
+
+<div class="container main my-4">
+    <div class="mainSlideLeft" style="margin: auto;">
+        <div class="card p-3">
+            @if (Posts?.Count > 0)
+            {
+                if (!isOrder)
+                {
+                    <div class="mb-4 card p-3 text-danger fw-bold">
+                        مجموعا @Posts.Count سفارش به ارزش @getPrice()
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام</label>
+                            <input @bind="model.FirstName" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام خانوادگی</label>
+                            <input @bind="model.LastName" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">شماره تماس</label>
+                            <input @bind="model.Mobile" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label">ایمیل</label>
+                            <input @bind="model.Mail" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label">کدپستی</label>
+                        <input @bind="model.PostalCode" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3 col-lg-12 col-sm-12">
+                        <label class="form-label required">آدرس</label>
+                        <textarea @bind="model.Address" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label required">کد امنیتی</label>
+                        <div class="captchaBax">
+                            <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
+                            <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
+                            <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                        </div>
+                    </div>
+                    <button @onclick="order" type="button" class="btn bg-BaseColor text-white mt-4">ثبت سفارش</button>
+                }
+            }
+            @if (isOrder)
+            {
+                <div class="staticAlert-success">سفارش شما با کد رهگیری زیر ثبت شد . برای پیگیری سفارش آن را ذخیره کنید</div>
+                <div class="staticAlert-error fw-bold mt-4">@trCode</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<CMS.Model.Post> Posts { get; set; }
+    [Parameter]
+    public List<CMS.Model.Product> Products { get; set; }
+    [Parameter]
+    public BasePageObj Obj { get; set; }
+
+    CMS.Model.Order model = new Model.Order();
+    CMS.Pages.Inside.Order.OrderHelper helper = new Inside.Order.OrderHelper(null);
+    Helper.Captcha captcha = new Helper.Captcha();
+    bool isOrder = false;
+    string trCode = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+            isOrder = false;
+            model = new Model.Order();
+            StateHasChanged();
+        }
+    }
+    async Task captchaReload()
+    {
+        captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+        StateHasChanged();
+    }
+
+    string getPrice()
+    {
+        long sum = Products.Sum(x=> x.SpecialPrice > 0 ? x.SpecialPrice : x.Price);
+        return $"{sum:C0}";
+    }
+    async Task order()
+    {
+        var basket = Posts.Select(x => x.Alias).Take(15).ToList();
+        await Obj.LoadHandler(true);
+        var result = await helper.Add(model, captcha, basket);
+        if (!result.Success )
+        {
+            await Obj.ErrorRequest(result);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        trCode = result.Data;
+        isOrder = true;
+        await localStorage.DeleteAsync("basket");
+        await Obj.LoadHandler(false);
+        StateContainer.SetShopCount();
+        StateHasChanged();
+    }
+
+}

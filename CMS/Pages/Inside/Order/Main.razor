@@ -1,0 +1,140 @@
+﻿@*@using CMS.Model;
+
+<div class="tableMain">
+    <div class="tableHeder d-flex justify-content-between">
+        <NavLink href='cmd-admin/comment/add' class="btn">
+            ایجاد
+        </NavLink>
+        <button class="btn tx-BaseColor collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#serchPanel">
+            جستجو
+        </button>
+    </div>
+
+    <div id="serchPanel" class="accordion-collapse collapse p-3">
+        <div class="row m-4">
+            <div class="form-check form-switch mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label required">نام</label>
+                <input type="text" class="form-control" @bind="Obj.Serch.Name">
+            </div>
+            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                <label class="form-label required">نوع سفارش</label>
+                <select class="form-select " aria-label="Default select example" @bind="Obj.Serch.Type">
+                    @foreach (Model.CommentType type in Enum.GetValues<Model.CommentType>())
+                    {
+                        <option value="@type">@type.String()</option>
+                    }
+                </select>
+            </div>
+
+        </div>
+        <button type="button" class="btn btn-primary" @onclick="search">جستجو</button>
+        <hr />
+    </div>
+
+    @if (Obj.Items?.Count > 0)
+    {
+        <table class="table" style="margin-bottom:auto;">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:50px">شناسه</th>
+                    <th scope="col">نام</th>
+                    <th scope="col">وضعیت</th>
+                    <th scope="col">نظر</th>
+                    <th scope="col" style="text-align:center"></th>
+                    <th scope="col" style="width:50px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Obj.Items)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Type.String()</td>
+                        <td>@item.Text.Limit(10) ..</td>
+                        <td><button type="button" class="btn btn-primary" @onclick="(() => setPublic(item))">انتشار</button></td>
+                        <td style="text-align:center">
+                            <NavLink href='@($"cmd-admin/comment/edit/{item.UnicId}")' class="nav-link d-flex">
+                                <span class="svgEdit"></span>
+                            </NavLink>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+        <CMS.Pages.Inside.Post.PostPagInation ItemModel="pagePagInation" SetPageIndex="setPageIndex" />
+    }
+    else
+    {
+        <div class="p-4">
+            <h6>مطلبی برای نمایش وجود ندارد</h6>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public PageObj Obj { get; set; }
+    int tableIndex = 0;
+    PagePagInation pagePagInation = new PagePagInation();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        tableIndex = 0;
+        if (firstRender)
+        {
+            Obj.Serch.PageIndex = 1;
+            setItem();
+        }
+
+    }
+
+    private async void setItem()
+    {
+        await Obj.LoadHandler(true);
+        var itemResult = await Obj.Helper.ListInside(Obj.Serch);
+
+        if (!itemResult.Success)
+        {
+            await Obj.ErrorRequest(itemResult);
+            return;
+        }
+        Obj.Items = itemResult.Data;
+        pagePagInation = new PagePagInation
+            {
+                PageIndex = Obj.Serch?.PageIndex,
+                PageSize = Obj.Serch?.PageSize,
+                Total = Obj.Items?.FirstOrDefault()?.Count,
+                ItemsCount = Obj.Items?.ToList().Count
+            };
+        await Obj.LoadHandler(false);
+        StateHasChanged();
+    }
+
+    async Task setPublic(Model.Comment model)
+    {
+        await Obj.LoadHandler(true);
+
+        var itemResult = await Obj.Helper.SetPublicAsync(model);
+        if (!itemResult.Success)
+        {
+            await Obj.ErrorRequest(itemResult);
+            await Obj.LoadHandler(false);
+            return;
+        }
+        setItem();
+    }
+
+    private void setPageIndex(int i)
+    {
+        Obj.Serch.PageIndex = i;
+        setItem();
+    }
+    private void search()
+    {
+        Obj.Serch.PageIndex = 1;
+        setItem();
+    }
+}
+*@

@@ -87,5 +87,30 @@ namespace CMS.Dal.DataSource
             }
         }
 
+        public async Task<Result<List<Product>>> ListAsync(List<Guid> ids)
+        {
+            try
+            {
+                var ett = await _pblContexts.Products.Where(x =>
+                    ids.Any(i=> i == x.UnicId)
+                ).ToListAsync();
+
+                if (ett == null)
+                    return Result<List<Product>>.Successful();
+
+                var returnMOdel = MapList<Product, Dal.DbModel.Product>(ett);
+
+                return Result<List<Product>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<Product>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
     }
 }

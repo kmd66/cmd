@@ -1,0 +1,84 @@
+﻿@using CMS.Model;
+
+<div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+
+    <div class="mb-4 card p-3">
+        برای مشاهده اطلاعات مربوط به سفارش کد <span class="text-danger fw-bold">@Code</span> امنیتی زیر را وارد کنید
+    </div>
+
+    <label class="form-label required">کد امنیتی</label>
+    <div class="captchaBax">
+        <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
+        <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
+        <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+    </div>
+    <button @onclick="getItem" type="button" class="btn bg-BaseColor text-white mt-4">ثبت سفارش</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public string Code { get; set; }
+    [Parameter]
+    public BasePageObj Obj { get; set; }
+
+    CMS.Pages.Inside.Order.OrderHelper helper = new Inside.Order.OrderHelper(null);
+    Helper.Captcha captcha = new Helper.Captcha();
+
+    List<CMS.Model.Post> posts { get; set; }
+    List<CMS.Model.Product> products { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            captchaReload();
+        }
+    }
+    async Task captchaReload()
+    {
+        captcha = CMS.Helper.CaptchaHelper.GenerateInPersian(charLength: 3, minDrawLine: 3, maxDrawLine: 5);
+        StateHasChanged();
+    }
+
+    async Task getItem()
+    {
+        await Obj.LoadHandler(true);
+
+        var captchaResult = await captchaCheck();
+        if (!captchaResult.Success)
+        {
+            await selectError(captchaResult);
+            return;
+        }
+
+
+        //var postResult = await db.ListAsync(basket);
+        //if (postResult.Data.ToList().Count == 0)
+        //{
+        //    await selectError(captchaResult);
+        //    return;
+        //}
+        //posts = postResult.Data.ToList();
+
+        //await Obj.LoadHandler(false);
+        //StateContainer.SetShopCount();
+        StateHasChanged();
+    }
+    private async Task selectError(Result result)
+    {
+        await Obj.ErrorRequest(result);
+        await Obj.LoadHandler(false);
+    }
+    private async Task<Result> captchaCheck()
+    {
+        if (captcha == null)
+            return Result.Failure(message: "کد امنیتی را وارد کنید");
+
+        if (string.IsNullOrEmpty(captcha.Code) || !CMS.Helper.CaptchaHelper.Validate(captcha))
+            return Result.Failure(message: "کد امنیتی را وارد کنید");
+
+        return Result.Successful();
+    }
+   
+}
