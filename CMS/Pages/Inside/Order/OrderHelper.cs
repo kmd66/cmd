@@ -35,6 +35,12 @@ namespace CMS.Pages.Inside.Order
 
             return await _dataSource.GetAsync(unicId: _unicId);
         }
+        public async Task<Result<OrderGet>> GetyByTrackingCode(string trackingCode)
+        {
+            if (string.IsNullOrEmpty(trackingCode))
+                return Result<OrderGet>.Failure(message: "موردی یافت نشد");
+            return await _dataSource.GetyByTrackingCodeAsync(trackingCode);
+        }
         public async Task<Result<string>> Add(Model.Order model, Captcha captcha, List<string> basket)
         {
             if (basket == null || basket.Count == 0)

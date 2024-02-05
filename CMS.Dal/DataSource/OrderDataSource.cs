@@ -40,6 +40,38 @@ namespace CMS.Dal.DataSource
                 _pblContexts.ChangeTracker.Clear();
             }
         }
+        public async Task<Result<OrderGet>> GetyByTrackingCodeAsync(string trackingCode)
+        {
+            try
+            {
+                var ett = await _pblContexts.Orders.Where(x =>
+                    x.TrackingCode == trackingCode
+                ).Take(1).FirstOrDefaultAsync();
+               
+                if (ett == null)
+                    return Result<OrderGet>.Failure(message: "موردی یافت نشد");
+
+                var returnMOdel = Map<OrderGet, Dal.DbModel.Order>(ett);
+
+                var query = $"cnt.SpGetOrderPost"
+                    + $" @TrackingCode = {trackingCode.Query()}";
+                var orderPosts = await _pblContexts.OrderPost.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var orderPostMOdel = MapList<OrderPost, Dal.DbModel.OrderPost>(orderPosts);
+
+                returnMOdel.posts = orderPostMOdel.ToList();
+
+                return Result<OrderGet>.Successful(data: returnMOdel);
+            }
+            catch (Exception ex)
+            {
+                return Result<OrderGet>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
 
         public async Task<Result> AddAsync(Order model)
         {

@@ -3,7 +3,15 @@
 @inherits BacePage<BasePageObj>
 @inject IJSRuntime Js
 
-<PageTitle>contact</PageTitle>
+@if (post != null)
+{
+@*    <HeadContent>
+        <link rel="stylesheet" href="/css/pSite.css" />
+        <meta name="description" content="@post.Summary" />
+    </HeadContent>*@
+    <PageTitle>@post.Title</PageTitle>
+
+}
 @{
     base.BuildRenderTree(__builder);
 }

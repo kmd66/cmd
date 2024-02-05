@@ -1,21 +1,57 @@
 ﻿@using CMS.Model;
 
-<div class="mb-3 col-lg-4 col-md-6 col-sm-12">
 
-    <div class="mb-4 card p-3">
-        برای مشاهده اطلاعات مربوط به سفارش کد <span class="text-danger fw-bold">@Code</span> امنیتی زیر را وارد کنید
+<div class="container main my-4">
+    <div class="mainSlideLeft" style="margin: auto;">
+        <div class="p-4 card">
+            @if (item == null)
+            {
+                <div class="mb-4 p-3">
+                    برای مشاهده اطلاعات مربوط به سفارش کد <span class="text-danger fw-bold">@Code</span> امنیتی زیر را وارد کنید
+                </div>
+
+                <label class="form-label required">کد امنیتی</label>
+                <div class="captchaBax">
+                    <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
+                    <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
+                    <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                </div>
+                <button @onclick="getItem" type="button" class="btn bg-BaseColor text-white mt-4">ثبت سفارش</button>
+            }
+            else
+            {
+                <div class="c"><span style="font-size: .8rem;">وضعیت:</span> <span class="fw-bold text-danger">@item.Type.String()</span></div>
+                <div class="c"><span style="font-size: .8rem;">تاریخ ثبت سفارش:</span> <span class="fw-bold">@item.Date.ToPersion()</span></div>
+
+                <div class="mt-4">
+                    <label class="form-label">اقلام سفارش:</label>
+                </div>
+                <table class="table table-striped">
+                    <tbody>
+                        @foreach (var p in item.posts)
+                        {
+                            <tr>
+                                <td style="width:60px" class="align-middle"><img src="@Model.Files.Item.GetThumbnail(p.Img)" /></td>
+                                <td class="align-middle">@p.Title</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @if (!string.IsNullOrEmpty(item.Text))
+                {
+                    <div class="mt-3">
+                        <label class="form-label">پیام:</label>
+                    </div>
+                    <div>@item.Text</div>
+                }
+                        
+            }
+        </div>
+
     </div>
 
-    <label class="form-label required">کد امنیتی</label>
-    <div class="captchaBax">
-        <span class="svgRefresh captchaIcon" @onclick="captchaReload"> </span>
-        <img src="data:image/png;base64, @captcha.Base64Image" class="captchaImg">
-        <input @bind="captcha.Text" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
-    </div>
-    <button @onclick="getItem" type="button" class="btn bg-BaseColor text-white mt-4">ثبت سفارش</button>
 </div>
-
-
 @code {
     [Parameter]
     public string Code { get; set; }
@@ -25,14 +61,14 @@
     CMS.Pages.Inside.Order.OrderHelper helper = new Inside.Order.OrderHelper(null);
     Helper.Captcha captcha = new Helper.Captcha();
 
-    List<CMS.Model.Post> posts { get; set; }
-    List<CMS.Model.Product> products { get; set; }
+    CMS.Model.OrderGet? item { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            captchaReload();
+            item = null;
+            await captchaReload();
         }
     }
     async Task captchaReload()
@@ -53,16 +89,15 @@
         }
 
 
-        //var postResult = await db.ListAsync(basket);
-        //if (postResult.Data.ToList().Count == 0)
-        //{
-        //    await selectError(captchaResult);
-        //    return;
-        //}
-        //posts = postResult.Data.ToList();
+        var postResult = await helper.GetyByTrackingCode(Code);
+        if (!postResult.Success)
+        {
+            await selectError(captchaResult);
+            return;
+        }
+        item = postResult.Data;
 
-        //await Obj.LoadHandler(false);
-        //StateContainer.SetShopCount();
+        await Obj.LoadHandler(false);
         StateHasChanged();
     }
     private async Task selectError(Result result)
@@ -80,5 +115,5 @@
 
         return Result.Successful();
     }
-   
+
 }

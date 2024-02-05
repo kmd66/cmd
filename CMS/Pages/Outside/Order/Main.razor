@@ -1,4 +1,8 @@
 ﻿@using CMS.Model;
+@inject NavigationManager _navManager;
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage localStorage
+@inject StateContainer StateContainer
 
 
 <div class="card">
@@ -37,7 +41,7 @@
                                 <td class="align-middle"><img src="@Model.Files.Item.GetThumbnail(p.Img)"/></td>
                                 <td class="align-middle">@p.Title</td>
                                 <td class="align-middle">@getPrice(p)</td>
-                                <td class="align-middle"><span class="svgClose"></span></td>
+                                <td class="align-middle"><span class="svgClose" @onclick="@(()=>remove(p))"></span></td>
 
                             </tr>
                         }
@@ -66,6 +70,8 @@
     public List<CMS.Model.Post> Posts { get; set; }
     [Parameter]
     public List<CMS.Model.Product> Products { get; set; }
+    [Parameter]
+    public BasePageObj Obj { get; set; }
 
     string code = "";
     int i = 0;
@@ -86,5 +92,31 @@
     }
     async Task trackingCode()
     {
+        var c = code.Trim();
+        if (string.IsNullOrEmpty(c))
+            await Obj.ErrorRequest(Result.Failure(message:"کد رهگیری را وارد کنید"));
+        else if (c.Length != 10)
+            await Obj.ErrorRequest(Result.Failure(message: "کد رهگیری نامعتبر است"));
+        else _navManager.NavigateTo($"/basket/tracking/{c}");
+    }
+    async Task remove(CMS.Model.Post model)
+    {
+        await Obj.LoadHandler(true);
+        List<string> basket = new List<string>();
+        var basketResult = await localStorage.GetAsync<List<string>>("basket");
+        if (basketResult.Success)
+            basket = basketResult.Value?.ToList();
+
+        var pr = Products.FirstOrDefault(x => x.UnicId == model.UnicId);
+        Posts.Remove(model);
+        basket.Remove(model.Alias);
+        Products.Remove(pr);
+
+        var items = System.Text.Json.JsonSerializer.Serialize(basket);
+        await localStorage.SetAsync("basket", basket.Distinct().ToList());
+
+        StateContainer.SetShopCount();
+        StateHasChanged();
+        await Obj.LoadHandler(false);
     }
 }
