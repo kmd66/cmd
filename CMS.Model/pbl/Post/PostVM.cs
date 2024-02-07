@@ -19,5 +19,7 @@ namespace CMS.Model
 
         public bool? IsProduct { get; set; }
 
+        public Guid? MenuId { get; set; }
+
     }
 }

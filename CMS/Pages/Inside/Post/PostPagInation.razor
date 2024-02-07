@@ -2,22 +2,63 @@
 
 @if (count> 1)
 {
-    <nav aria-label="Page navigation example" style="background: #dee2e6;">
+    <nav aria-label="Page navigation example" style="@style">
         <ul class="pagination justify-content-center">
 
             <li class="@getPreviousCalss()">
-                <a class="page-link" aria-label="Next" @onclick="(() =>elClick(false))">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            @foreach(var i in item){
+                @if (getPreviousCalss().Contains(" disabled"))
+                {
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                }
+                else if (string.IsNullOrEmpty(Link))
+                {
+                    <a class="page-link" aria-label="Next" @onclick="(() =>elClick(false))">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                }
+                else
+                {
+                    <NavLink href='@($"{Link}/{pageIndex.Default() -1}")' class="page-link"><span aria-hidden="true">&laquo;</span></NavLink>
 
-                <li class="@getNextCalss(i)" @onclick="(() =>setPageIndex(i))"><a class="page-link">@getText(i)</a></li>
+                }
+            </li>
+            @foreach (var i in item)
+            {
+                @if (getNextCalss(i).Contains(" disabled"))
+                {
+                    <li class="@getNextCalss(i)"><span class="page-link">@getText(i)</span></li>
+                }
+                else if(string.IsNullOrEmpty(Link))
+                {
+                    <li class="@getNextCalss(i)" @onclick="(() =>setPageIndex(i))"><a class="page-link">@getText(i)</a></li>
+                }
+                else
+                {
+                    <li class="@getNextCalss(i)">
+                        <NavLink href='@($"{Link}/{@getText(i)}")' class="page-link">@getText(i)</NavLink>
+                    </li>
+                }
             }
             <li class="@getNextCalss()">
-                <a class="page-link" aria-label="Next" @onclick="(() =>elClick(true))">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
+                @if (getNextCalss().Contains("disabled"))
+                {
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                }
+                else if (string.IsNullOrEmpty(Link))
+                {
+                    <a class="page-link" aria-label="Next" @onclick="(() =>elClick(true))">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                }
+                else
+                {
+                    <NavLink href='@($"{Link}/{pageIndex.Default() +1}")' class="page-link"><span aria-hidden="true">&raquo;</span></NavLink>
+
+                }
             </li>
        
         </ul>
@@ -31,6 +72,13 @@
     [Parameter]
     public EventCallback<int> SetPageIndex { get; set; }
 
+    [Parameter]
+    public string Style { get; set; }
+    string style = "background: #dee2e6;";
+
+    [Parameter]
+    public string Link { get; set; }
+
     double count = 0;
     int? pageIndex;
 
@@ -43,6 +91,12 @@
 
     bool endMore;
     bool startMore;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Style))
+            style = Style;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

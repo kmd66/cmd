@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CMS.Model.Files;
+using System;
 using System.Reflection;
 
 namespace CMS.Model
@@ -6,6 +7,15 @@ namespace CMS.Model
     public static class Menus{
 
         public static List<Menu> List = new List<Menu>();
+
+        public static Menu? GetByAlias(string alias)
+        {
+            var m = List.FirstOrDefault(x => x.Alias == alias);
+            if (m == null)
+                return null;
+            return Menu.Instance(m);
+        }
+
 
         public static List<Menu> GetAllItem(MenuVM modelVM, Guid? ignore = null)
         {

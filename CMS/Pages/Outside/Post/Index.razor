@@ -32,10 +32,12 @@
                     <div class="commentDate rtl mb-3">تاریخ ارسال مطلب : @post.Date.ToPersion()</div>
                 </div>
             </div>
-
-            <NextAndPrev Items="nextAndPrev" />
-            <Related Items="related" />
-            <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+            @if (!isMenuPost)
+            {
+                <NextAndPrev Items="nextAndPrev" />
+                <Related Items="related" />
+                <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+            }
 
         }
         else if (isPostNull)
@@ -67,6 +69,7 @@
     List<Post> nextAndPrev = new List<Post>();
     List<Post> related = new List<Post>();
     bool isPostNull = false;
+    bool isMenuPost = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,6 +87,7 @@
     protected async override Task OnParametersSetAsync()
     {
         isPostNull = false;
+        isMenuPost = false;
         post = null;
         nextAndPrev = new List<Post>();
         if (!string.IsNullOrEmpty(name))
@@ -95,7 +99,7 @@
         var result = await db.GetByAliasAsync(name, published: true, isProduct: false);
         if (result.Data == null)
         {
-            isPostNull = true;
+            await SeleteMenuPost();
             return;
         }
         post = result.Data;
@@ -106,6 +110,18 @@
         related = resultRelated.Data;
         
         await selectComments();
+    }
+
+    async Task SeleteMenuPost()
+    {
+        var result = await db.GetMenuPost(name);
+        if (result.Data == null)
+        {
+            isPostNull = true;
+            return;
+        }
+        isMenuPost = true;
+        post = result.Data;
     }
 
     async Task selectComments()

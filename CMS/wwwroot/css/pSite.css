@@ -253,11 +253,12 @@ li:has(> .dropdown-item.active), li:has(> .navbar-brand.active) {
     position: absolute;
     top: 50%;
     width: 100%;
+    padding: 7px 0 0;
     -ms-transform: translate(-50%, -50%);
     transform: translate(0%, -50%);
     color: white;
     background: #00000030;
-    text-align:center;
+    text-align: center;
 }
 footer {
     background: #373941;

@@ -166,7 +166,7 @@ function getScores() {
 
 function getMany() {
     $('.many').each(function (i, obj) {
-        var t = formatMoney($(obj).text().trim());
+        var t = formatMoney($(obj).text().trim().replaceAll(',', ''));
         $(obj).text(t);
     });
 }

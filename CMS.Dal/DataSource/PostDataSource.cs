@@ -67,7 +67,7 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<Post>> GetByAliasAsync(string alias,bool? published = null,bool? isProduct = null)
+        public async Task<Result<Post>> GetByAliasAsync(string alias, bool? published = null, bool? isProduct = null)
         {
             try
             {
@@ -77,6 +77,37 @@ namespace CMS.Dal.DataSource
                     x.Alias == alias
                     && (published == null || x.Published == published)
                     && (isProduct == null || x.IsProduct == isProduct)
+                ).Take(1).FirstOrDefaultAsync();
+                if (ett == null)
+                    return Result<Post>.Successful();
+
+                var returnMOdel = Map<Post, Dal.DbModel.Post>(ett);
+
+                return Result<Post>.Successful(data: returnMOdel);
+            }
+            catch (Exception ex)
+            {
+                return Result<Post>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result<Post>> GetMenuPost(string alias)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(alias))
+                    return Result<Post>.Successful();
+
+                var menu = Menus.GetByAlias(alias);
+                if(menu == null)
+                    return Result<Post>.Successful();
+
+                var ett = await _pblContexts.Posts.Where(x =>
+                    x.UnicId == menu.PostId && x.Published == false
                 ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Post>.Successful();
@@ -156,6 +187,7 @@ namespace CMS.Dal.DataSource
                     + $", @Special = {model.Special.Query()}"
                     + $", @Published = {model.Published.Query()}"
                     + $", @IsProduct = {model.IsProduct.Query()}"
+                    + $", @MenuId = {model.MenuId.Query()}"
                     + $", @PageSize = {model.PageSize.Query()}"
                     + $", @PageIndex = {model.PageIndex.Query()}";
                 var ett = await _pblContexts.PostDtos.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
@@ -282,6 +314,31 @@ namespace CMS.Dal.DataSource
             catch (Exception ex)
             {
                 return Result<List<Post>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
+        public async Task<Result<List<PostProduct>>> ListPostProductAsync(PostVM model)
+        {
+            try
+            {
+                var query = $"cnt.SpGetPostProducts"
+                    + $" @Alias = {model.Alias.Query()}"
+                    + $", @MenuId = {model.MenuId.Query()}"
+                    + $", @PageSize = {model.PageSize.Query()}"
+                    + $", @PageIndex = {model.PageIndex.Query()}";
+                var ett = await _pblContexts.PostProducts.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var returnMOdel = MapList<PostProduct, Dal.DbModel.PostProduct>(ett);
+
+                return Result<List<PostProduct>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<PostProduct>>.Failure(message: ex.Message);
             }
             finally
             {

@@ -1,4 +1,4 @@
-﻿@page "/category/{name}/{pageNumber?}"
+﻿@page "/product-category/{name}/{pageNumber?}"
 @inherits BacePage<BasePageObj>
 @using CMS.Model;
 @inject IJSRuntime Js
@@ -35,11 +35,15 @@
                             @foreach (var item in items)
                         {
                             <article class="article col-lg-4 col-md-6 col-sm-12">
-
+                         
                                 <div class="card w-100 my-4 ">
                                     <div class="img">
                                         <img src="@Model.Files.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
                                     </div>
+                                    @if (item.SpecialPrice > 0)
+                                    {
+                                        <div class="badge rounded-0 bg-danger position-absolute"> تخفیف @darsadPrice(item)</div>
+                                    }
                                     @if (item.Special)
                                     {
                                         <div class="badge labelSpecial">ویژه</div>
@@ -50,10 +54,23 @@
                                             <NavLink href='@($"/{item.Alias}")' class="text-decoration-none">@item.Title</NavLink>
                                         </h2>
 
-                                        <p class="card-text mt-3">@item.Summary</p>
+                                        @if (item.Price > 0 || item.SpecialPrice > 0)
+                                        {
+                                            <div class="c">
+                                                @if (item.Price > 0)
+                                                {
+                                                    <span class="@classPrice(item)">@item.Price </span>
+                                                }
+                                                @if (item.SpecialPrice > 0)
+                                                {
+                                                    <span class="many"> @item.SpecialPrice </span>
+                                                }
+                                                <span style="font-size:10px"> تومان</span>
+                                            </div>
+                                        }
                                     </div>
                                     <div class="card-footer bg-white border-0">
-                                        <NavLink href='@($"/{item.Alias}")' class="btn bg-BaseColor text-white">ادامه مطلب</NavLink>
+                                        <NavLink href='@($"/product/{item.Alias}")' class="btn bg-BaseColor text-white">مشاهده</NavLink>
                                     </div>
                                 </div>
                                 </article>
@@ -97,13 +114,12 @@
     PagePagInation pagePagInation = new PagePagInation();
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
-    CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
 
-    List<Post> items = new List<Post>();
+    List<PostProduct> items = new List<PostProduct>();
 
     protected override async Task OnInitializedAsync()
     {
-        link = $"/category/{name}";
+        link = $"/product-category/{name}";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -157,7 +173,7 @@
 
     async Task selectItem()
     {
-        var result = await db.ListAsync(Serch);
+        var result = await db.ListPostProductAsync(Serch);
         items = result.Data.ToList();
 
         pagePagInation = new PagePagInation
@@ -168,5 +184,16 @@
                 ItemsCount = items.ToList().Count
             };
         isLoading = false;
+    }
+
+    string darsadPrice(PostProduct model)
+    {
+        return $"{100 -((model.SpecialPrice * 100) / model.Price) }%";
+    }
+    string classPrice(PostProduct model)
+    {
+        if (model.SpecialPrice > 0)
+            return "many diactive";
+        return "many";
     }
 }

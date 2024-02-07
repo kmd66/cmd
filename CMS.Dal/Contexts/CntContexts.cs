@@ -34,6 +34,12 @@ namespace CMS.Dal
                     eb.HasNoKey();
                     eb.ToView("PostViwe");
                 });
+            modelBuilder
+                .Entity<PostProduct>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("PostProductViwe");
+                });
             //modelBuilder.Entity<Post>()
             //    .Property(b => b.Published).HasDefaultValue(true);
             //modelBuilder.Entity<Post>()
@@ -89,5 +95,6 @@ namespace CMS.Dal
 
         public DbSet<PostDto> PostDtos { get; set; }
         public DbSet<CommentDto> CommentDtos { get; set; }
+        public DbSet<PostProduct> PostProducts { get; set; }
     }
 }

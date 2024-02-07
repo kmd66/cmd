@@ -1,15 +1,11 @@
 USE [TalaPishe]
 GO
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'cnt.SpGetPosts') AND type in (N'P', N'PC'))
-    DROP PROCEDURE cnt.SpGetPosts
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'cnt.SpGetPostProducts') AND type in (N'P', N'PC'))
+    DROP PROCEDURE cnt.SpGetPostProducts
 GO
 
-CREATE PROCEDURE cnt.SpGetPosts
-	@Title NVARCHAR(max),
+CREATE PROCEDURE cnt.SpGetPostProducts
 	@Alias NVARCHAR(max),
-	@Special NVARCHAR(max),
-	@Published NVARCHAR(max),	
-	@IsProduct BIT,	
 	@MenuId UNIQUEIDENTIFIER,	
 	@PageSize INT,
 	@PageIndex INT
@@ -28,14 +24,14 @@ BEGIN
 	(
 		SELECT post.*
 			,menu.[Name] MenuName
- 		FROM [TalaPishe].cnt.[Posts] post
-		LEFT JOIN pbl.[Menus] menu On menu.UnicId = post.MenuId
-		WHERE
-			(@Title IS NULL OR Title LIKE '%' + @Title + '%')
+			,menu.Alias MenuAlias
+			,prd.Price
+			,prd.SpecialPrice
+ 		FROM cnt.[Posts] post
+		INNER JOIN pbl.[Menus] menu On menu.UnicId = post.MenuId
+		LEFT JOIN cnt.Products prd On prd.UnicId = post.UnicId
+		WHERE post.Published = 1
 			AND (@Alias IS NULL OR post.Alias LIKE '%' + @Alias + '%')
-			AND (@Special IS NULL OR Special = @Special)
-			AND (@Published IS NULL OR post.Published = @Published)
-			AND (@IsProduct IS NULL OR post.IsProduct = @IsProduct)
 			AND (@MenuId IS NULL OR post.MenuId = @MenuId)
 	)
 	SELECT 

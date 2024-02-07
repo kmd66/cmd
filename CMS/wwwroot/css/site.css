@@ -278,3 +278,13 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
     background: #dc3545 !important;
     line-height: 1;
 }
+.article {
+    align-items: stretch !important;
+    display: flex !important;
+}
+    .article .img {
+        height: 250px;
+    }
+    .article a {
+        color: var(--BaseColor);
+    }

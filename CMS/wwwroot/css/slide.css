@@ -102,3 +102,9 @@
         height: 300px;
     }
 }
+.labelSpecial {
+    left: 0 !important;
+    background: var(--bs-orange) !important;
+    position: absolute !important;
+    border-radius: 0 !important;
+}
