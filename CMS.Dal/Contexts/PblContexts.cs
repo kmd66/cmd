@@ -34,6 +34,13 @@ namespace CMS.Dal
                     eb.HasNoKey();
                     eb.ToView("StatusViwe");
                 });
+
+            modelBuilder
+                .Entity<StatusType>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("StatusTypeViwe");
+                });
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -66,6 +73,12 @@ namespace CMS.Dal
                     eb.HasNoKey();
                     eb.ToView("OrderPostViwe");
                 });
+            modelBuilder
+                .Entity<OrderDto>(eb =>
+                {
+                    eb.HasNoKey();
+                    eb.ToView("OrderDtoViwe");
+                });
         }
 
         public DbSet<User> Users { get; set; }
@@ -76,9 +89,12 @@ namespace CMS.Dal
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderPost> OrderPost { get; set; }
+        public DbSet<OrderDto> OrderDto { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 
         public DbSet<Status> Status { get; set; }
+
+        public DbSet<StatusType> StatusTypes { get; set; }
     }
 }

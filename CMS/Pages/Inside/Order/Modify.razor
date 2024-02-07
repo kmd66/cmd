@@ -1,83 +1,74 @@
-﻿@*@using CMS.Model;
+﻿@using CMS.Model;
 @inject IJSRuntime Js
 @inject NavigationManager _navManager;
 
+
 @if (Obj.EditItem != null)
 {
-    @if (post != null)
-    {
-        <div>
-            <h3>مطلب : @post.Title</h3>
-        </div>
-    }
     <div class="row">
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label required">ایدی مطلب</label>
-            <input @bind="Obj.EditItem.PostId" type="text" class="form-control">
-        </div>
-        @if (Obj.State == "add")
-        {
-            <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-                <label class="form-label required">امتیاز (1-5)</label>
-                <input @bind="Obj.EditItem.Score" type="text" class="form-control">
-            </div>
-        }
-    </div>
-    <div class="row">
-        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label required">نام </label>
-            <input @bind="Obj.EditItem.Name" type="text" class="form-control">
+            <label class="form-label">کد رهگیری</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.TrackingCode</div>
         </div>
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label required">سایت </label>
-            <input @bind="Obj.EditItem.WebSite" type="text" class="form-control">
+            <label class="form-label">نام</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.FirstName @Obj.EditItem.LastName</div>
         </div>
         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
-            <label class="form-label required">ایمیل </label>
-            <input @bind="Obj.EditItem.Mail" type="text" class="form-control">
+            <label class="form-label">تاریخ</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.Date.ToPersion()</div>
         </div>
 
-        <div class="mb-3 col-lg-12 col-sm-12">
-            <label class="form-label required">نظر</label>
-            <textarea @bind="Obj.EditItem.Text" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">ایمیل</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.Mail</div>
         </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">شماره تماس</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.Mobile</div>
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">کد پساتی</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.PostalCode</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">آدرس</label>
+            <div class="form-control" style="background-color: #e9ecef;">@Obj.EditItem.Address</div>
+
+        </div>
+
+    </div>
+    <div class="mt-4">
+        <label class="form-label">اقلام سفارش:</label>
+    </div>
+    <table class="table table-striped mb-3">
+        <tbody>
+            @foreach (var p in Obj.OrderGet.posts)
+            {
+                <tr>
+                    <td style="width:60px" class="align-middle"><img src="@Model.Files.Item.GetThumbnail(p.Img)" /></td>
+                    <td class="align-middle">@p.Title</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label required">وضعیت</label>
+            <select class="form-select " aria-label="Default select example" @bind="Obj.EditItem.Type">
+            @foreach (Model.OrderType type in Enum.GetValues<Model.OrderType>())
+            {
+                        <option value="@type">@type.String()</option>
+            }
+            </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">پیام</label>
+        <textarea class="form-control" id="descriptionTextarea" onc rows="3" @bind="Obj.EditItem.Text"></textarea>
     </div>
 
-    @if (Obj.EditItem.Childs?.Count > 0 && !isReply)
-    {
-        <hr />
-        @foreach (var child in Obj.EditItem.Childs)
-        {
-            <div>نام: @child.Name </div>
-            <div>@child.Text</div>
-            
-        }
-    }
-    @if (isReply)
-    {
-        <div class="mb-3 col-lg-12 col-sm-12">
-            <label class="form-label required">پاسخ</label>
-            <textarea @bind="reply" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
-        </div>
-    }
-    <hr />
-    @if (Obj.State == "add")
-    {
-        <button class="btn btn-primary" type="button" @onclick="addInside">ذخیره</button>
-    }
-    else
-    {
-        if (!isReply)
-        {
-            <button class="btn btn-info" type="button" @onclick="setReply">پاسخ</button>
-            <button class="btn btn-primary" type="button" @onclick="editInside">ویرایش و انتشار</button>
-            <RemoveModal BtnText="حذف نظر" Callback="remove" />
-        }
-        else
-        {
-            <button class="btn btn-primary" type="button" @onclick="save">ذخیره و انتشار</button>
-        }
-    }
+    <button class="btn btn-primary" type="button" @onclick="save">ذخیره</button>
     <NavLink href='cmd-admin/post/main' class="btn btn-outline-secondary mx-2">
         انصراف
     </NavLink>
@@ -101,28 +92,8 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        if (!string.IsNullOrEmpty(id) || Obj.State == "add")
-            selectItem();
-    }
-    private async Task selectItem()
-    {
-        post= new Post();
-        isReply = false;
-        if (Obj.State == "add")
-        {
-            await selectAdd();
-        }
-        else
-        {
-            await selectEdit();
-        }
-
-        StateHasChanged();
-    }
-
-    private async Task selectAdd()
-    {
-        Obj.EditItem = new Model.Comment() {Type = CommentType.منتشر_شده};
+        if (!string.IsNullOrEmpty(id))
+            selectEdit();
     }
 
     private async Task selectEdit()
@@ -137,64 +108,36 @@
             return;
         }
         Obj.EditItem = result.Data;
-        var resultPost = await Obj.PostHelper.Get(Obj.EditItem.PostId);
-        post = resultPost.Data;
+        
+        var postResult = await Obj.Helper.GetyByTrackingCode(Obj.EditItem.TrackingCode);
+        if (!postResult.Success)
+        {
+            await selectError(postResult);
+            return;
+        }
+        Obj.OrderGet = postResult.Data;
 
         await Obj.LoadHandler(false);
+        StateHasChanged();
     }
 
-    private async Task selectError(Result result, bool selectadd = true)
+    private async Task selectError(Result result)
     {
-        if (selectadd)
-            await selectAdd();
         await Obj.ErrorRequest(result);
         await Obj.LoadHandler(false);
-    }
-
-    private async Task addInside()
-    {
-        await Obj.LoadHandler(true);
-
-        var result = await Obj.Helper.AddInside(Obj.EditItem);
-        if (!result.Success)
-        {
-            await selectError(result, false);
-            return;
-        }
-
-        _navManager.NavigateTo("cmd-admin/comment/main");
-        await Obj.LoadHandler(false);
-        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
-    }
-
-    private async Task editInside()
-    {
-        await Obj.LoadHandler(true);
-        Obj.EditItem.Type = CommentType.منتشر_شده;
-        var result = await Obj.Helper.EditInside(Obj.EditItem);
-        if (!result.Success)
-        {
-            await selectError(result, false);
-            return;
-        }
-
-        _navManager.NavigateTo("cmd-admin/comment/main");
-        await Obj.LoadHandler(false);
-        await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
     }
 
     private async Task save()
     {
         await Obj.LoadHandler(true);
-        Obj.EditItem.Type = CommentType.منتشر_شده;
-        var result = await Obj.Helper.Save(Obj.EditItem,reply);
+        var result = await Obj.Helper.Edit(Obj.EditItem);
         if (!result.Success)
         {
-            await selectError(result, false);
+            await selectError(result);
             return;
         }
 
-        _navManager.NavigateTo("cmd-admin/comment/main");
+        _navManager.NavigateTo("cmd-admin/order/main");
         await Obj.LoadHandler(false);
         await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
     }
@@ -205,14 +148,13 @@
         var result = await Obj.Helper.Remove(Obj.EditItem.Id);
         if (!result.Success)
         {
-            await selectError(result, false);
+            await selectError(result);
             return;
         }
 
-        _navManager.NavigateTo("cmd-admin/comment/main");
+        _navManager.NavigateTo("cmd-admin/order/main");
         await Obj.LoadHandler(false);
         await Obj.ShowAlert(new Alert { alertType = AlertType.success, msg = "تغییرات انجام شد" });
     }
 
 }
-*@

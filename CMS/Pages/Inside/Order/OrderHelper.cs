@@ -76,7 +76,7 @@ namespace CMS.Pages.Inside.Order
 
             return Result.Successful();
         }
-        public async Task<Result> EditInside(Model.Order model)
+        public async Task<Result> Edit(Model.Order model)
         {
             if (!isAuthorize)
                 return Result.Failure(message: Property.MsgUnUnauthorized, code: 401);
@@ -122,11 +122,11 @@ namespace CMS.Pages.Inside.Order
             return Result.Successful();
         }
 
-
-
-        public async Task<Result> List(long id)
+        public async Task<Result<List<Model.Order>>> List(OrderVM model)
         {
-            return await _dataSource.RemoveAsync(id);
+            if (!isAuthorize)
+                return Result<List<Model.Order>>.Failure(message: Property.MsgUnUnauthorized, code: 401);
+            return await _dataSource.ListAsync(model);
         }
 
         public async Task<Result> Remove(long id = 0)

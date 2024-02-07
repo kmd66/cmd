@@ -53,7 +53,7 @@ namespace CMS.Dal.DataSource
 
                 var returnMOdel = Map<OrderGet, Dal.DbModel.Order>(ett);
 
-                var query = $"cnt.SpGetOrderPost"
+                var query = $"pbl.SpGetOrderPost"
                     + $" @TrackingCode = {trackingCode.Query()}";
                 var orderPosts = await _pblContexts.OrderPost.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
@@ -105,8 +105,8 @@ namespace CMS.Dal.DataSource
 
                 var ett = Map<Dal.DbModel.Order, Order>(record.Data);
 
-                ett.Type = (byte)record.Data.Type;
-                ett.Text = record.Data.Text;
+                ett.Type = (byte)model.Type;
+                ett.Text = model.Text;
 
                 _pblContexts.Update<Dal.DbModel.Order>(ett);
                 await _pblContexts.SaveChangesAsync();
@@ -122,21 +122,26 @@ namespace CMS.Dal.DataSource
             }
         }
 
-        public async Task<Result<IEnumerable<Order>>> ListAsync(OrderVM model)
+        public async Task<Result<List<Order>>> ListAsync(OrderVM model)
         {
             try
             {
-                var query = $"cnt.SpGetOrders"
-                    + $" @Type = {((byte)model.Type).Query()}";
-                var ett = await _pblContexts.Orders.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+                var query = $"pbl.SpGetOrders"
+                    + $" @Type = {((byte)model.Type).Query()}"
+                    + $", @FirstName = {model.FirstName.Query()}"
+                    + $", @LastName = {model.LastName.Query()}"
+                    + $", @TrackingCode = {model.TrackingCode.Query()}"
+                    + $", @PageSize = {model.PageSize.Query()}"
+                    + $", @PageIndex = {model.PageIndex.Query()}";
+                var ett = await _pblContexts.OrderDto.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
 
-                var returnMOdel = MapList<Order, Dal.DbModel.Order>(ett);
+                var returnMOdel = MapList<Order, Dal.DbModel.OrderDto>(ett);
 
-                return Result<IEnumerable<Order>>.Successful(data: returnMOdel);
+                return Result<List<Order>>.Successful(data: returnMOdel.ToList());
             }
             catch (Exception ex)
             {
-                return Result<IEnumerable<Order>>.Failure(message: ex.Message);
+                return Result<List<Order>>.Failure(message: ex.Message);
             }
             finally
             {

@@ -64,8 +64,14 @@
             </li>
 
             <li class="nav-item w-100 mt-2">
-                <NavLink href="counter" class="nav-link d-flex">
-                    <span class="svgSetting bg-white"></span> <span class="ms-3 d-none d-sm-inline">محصول</span>
+                <NavLink href="cmd-admin/order/main" class="nav-link d-flex">
+                    <span class="svgSetting bg-white"></span> <span class="ms-3 d-none d-sm-inline">
+                        سفارش
+                        @if (status.CountOrder > 0)
+                        {
+                            <span class="translate-middle badge rounded-pill bg-danger">@status.CountOrder</span>
+                        }
+                    </span>
                 </NavLink>
             </li>
 

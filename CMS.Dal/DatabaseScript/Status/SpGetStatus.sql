@@ -10,7 +10,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 	
-	DECLARE @Comment INT, @Message INT
+	DECLARE @Comment INT, @Message INT, @Order INT
 	
 	SET @Comment  = (
 		SELECT 
@@ -24,6 +24,12 @@ BEGIN
 		FROM [pbl].[Messages]
 		WHERE Type = 1
 	)
-	SELECT @Comment CountComment, @Message CountMessage
+	SET @Order  = (
+		SELECT 
+			COUNT(Id)
+		FROM [pbl].Orders
+		WHERE Type = 1
+	)
+	SELECT @Comment CountComment, @Message CountMessage, @Order CountOrder
 
 END 

@@ -1,10 +1,10 @@
 USE [TalaPishe]
 GO
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'cnt.SpGetOrderPost') AND type in (N'P', N'PC'))
-    DROP PROCEDURE cnt.SpGetOrderPost
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'pbl.SpGetOrderPost') AND type in (N'P', N'PC'))
+    DROP PROCEDURE pbl.SpGetOrderPost
 GO
 
-CREATE PROCEDURE cnt.SpGetOrderPost
+CREATE PROCEDURE pbl.SpGetOrderPost
 	@TrackingCode NVARCHAR(MAX)
 --WITH ENCRYPTION
 AS
