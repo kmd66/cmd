@@ -18,7 +18,9 @@
     src: url('../fonts/Vazir-Light-FD.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Light-FD.woff') format('woff'), url('../fonts/Vazir-Light-FD.ttf') format('truetype');
     font-weight: 300;
 }
-
+.loginMain {
+    background-color: var(--BaseColor);
+}
 body {
     direction: rtl;
     font-family: Vazir, Tahoma,Open, Sans;

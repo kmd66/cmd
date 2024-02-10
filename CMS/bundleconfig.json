@@ -1,0 +1,25 @@
+[
+  {
+    "outputFileName": "wwwroot/css/bundle.css",
+    "inputFiles": [
+      "wwwroot/css/bundleAlert.css",
+      "wwwroot/css/bundlecolors.css",
+      "wwwroot/css/bundleEditor.css",
+      "wwwroot/css/bundleSite.css",
+      "wwwroot/css/bundleSlide.css",
+      "wwwroot/css/bundleSvg.css",
+      "wwwroot/css/bundleXzoom.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundle.js",
+    "inputFiles": [
+      "wwwroot/js/bundleAlert.js",
+      "wwwroot/js/bundlePsite.js",
+      "wwwroot/js/bundleSite.js",
+      "wwwroot/js/bundleSlide.js",
+      "wwwroot/js/bundleSetup.js",
+      "wwwroot/js/bundleXzoom.min.js"
+    ]
+  }
+]

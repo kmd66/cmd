@@ -12,6 +12,8 @@ namespace CMS.Pages.Inside.Post
 
         public Model.Post EditItem { get; set; }
 
+        public Model.PostOption EditPostOptionItem { get; set; }
+
         public Model.Product EditProductItem { get; set; }
 
         public List<ProductProperty> ProductPropertys { get; set; }
@@ -22,6 +24,8 @@ namespace CMS.Pages.Inside.Post
 
 
         public PostHelper Helper { get; set; }
+
+        public PostOptionHelper PostOptionHelper { get; set; }
 
         public ProductHelper ProductHelper { get; set; }
 

@@ -13,6 +13,7 @@ namespace CMS.Dal
             postConfig(ref modelBuilder);
             productConfig(ref modelBuilder);
             commentConfig(ref modelBuilder);
+            PostOptionConfig(ref modelBuilder);
 
         }
 
@@ -82,7 +83,25 @@ namespace CMS.Dal
             //modelBuilder.Ignore<CommentDto>();
         }
 
+        private void PostOptionConfig(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PostOption>()
+                .HasIndex(p => p.UnicId);
+            modelBuilder.Entity<PostOption>()
+                .Property(b => b.Redirect).HasDefaultValue("");
+            //modelBuilder.Entity<PostOption>()
+            //    .Property(b => b.NoFlow).HasDefaultValue(false);
+            //modelBuilder.Entity<PostOption>()
+            //    .Property(b => b.NoIndex).HasDefaultValue(false);
+            //modelBuilder.Entity<PostOption>()
+            //    .Property(b => b.IsScore).HasDefaultValue(true);
+            //modelBuilder.Entity<PostOption>()
+            //    .Property(b => b.Comment).HasDefaultValue(true);
+        }
+
         public DbSet<Post> Posts { get; set; }
+
+        public DbSet<PostOption> PostOptions { get; set; }
 
         public DbSet<Tag> Tags { get; set; }
 
@@ -94,7 +113,9 @@ namespace CMS.Dal
         public DbSet<Score> Scores { get; set; }
 
         public DbSet<PostDto> PostDtos { get; set; }
+
         public DbSet<CommentDto> CommentDtos { get; set; }
+        
         public DbSet<PostProduct> PostProducts { get; set; }
     }
 }

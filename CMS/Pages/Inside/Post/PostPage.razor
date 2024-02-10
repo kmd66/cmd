@@ -56,6 +56,7 @@ else if (Obj.State != "loading")
             Obj.Helper = new PostHelper(token.Value);
             Obj.ProductHelper = new ProductHelper(token.Value);
             Obj.TagHelper = new TagHelper(token.Value);
+            Obj.PostOptionHelper = new PostOptionHelper(token.Value);
             FirstRender(state);
             StateHasChanged();
         }

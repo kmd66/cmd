@@ -2,6 +2,7 @@
 @inherits BacePage<BasePageObj>
 @using CMS.Model;
 @inject IJSRuntime Js
+@inject NavigationManager _navManager
 
 <PageTitle>post</PageTitle>
 @{
@@ -36,7 +37,10 @@
             {
                 <NextAndPrev Items="nextAndPrev" />
                 <Related Items="related" />
-                <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+                @if (postOption.IsComment)
+                {
+                    <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+                }
             }
 
         }
@@ -62,12 +66,16 @@
     public override BasePageObj Obj { get => obj; set => obj = value; }
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
+    CMS.Dal.DataSource.PostOptionDataSource dbPostOption = new CMS.Dal.DataSource.PostOptionDataSource();
     CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
 
     ScoreComment scoreComment = new ScoreComment();
     CMS.Model.Post post { get; set; }
+    CMS.Model.PostOption postOption { get; set; }
+
     List<Post> nextAndPrev = new List<Post>();
     List<Post> related = new List<Post>();
+
     bool isPostNull = false;
     bool isMenuPost = false;
 
@@ -92,6 +100,9 @@
         nextAndPrev = new List<Post>();
         if (!string.IsNullOrEmpty(name))
             await SeletePost();
+
+        if (postOption?.Redirect != "")
+            _navManager.NavigateTo(postOption.Redirect);
     }
 
     async Task SeletePost()
@@ -103,12 +114,18 @@
             return;
         }
         post = result.Data;
+
+        if (post == null)
+            return;
+
+        await selectPostOption();
+
         var resultNextAndPrev = await db.NextAndPrevAsync(post);
         nextAndPrev = resultNextAndPrev.Data;
 
         var resultRelated = await db.RelatedAsync(post, 3);
         related = resultRelated.Data;
-        
+
         await selectComments();
     }
 
@@ -124,8 +141,21 @@
         post = result.Data;
     }
 
+    async Task selectPostOption()
+    {
+        var resultPostOption = await dbPostOption.GetAsync(unicId: post.UnicId);
+        if (resultPostOption.Data == null)
+        {
+            return;
+        }
+        postOption = resultPostOption.Data;
+    }
+
     async Task selectComments()
     {
+        if (postOption?.IsComment == false)
+            return;
+
         scoreComment = new ScoreComment();
         var result = await commentHelper.List(new CommentVM { PostId = post.Id, Type = CommentType.منتشر_شده });
         scoreComment = result.Data;

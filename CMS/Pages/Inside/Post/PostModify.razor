@@ -80,6 +80,7 @@
     private async Task selectAdd()
     {
         Obj.EditItem = new Post() { Published = true, Access = PostAccessType.Publiced };
+        Obj.EditPostOptionItem = new PostOption { IsComment = true, IsScore = true, NoFlow = false, NoIndex = false, Redirect = "" };
         Obj.Tags = new List<Tag>();
         Obj.EditProductItem = new Product();
         Obj.ProductPropertys = new List<ProductProperty>();
@@ -99,25 +100,57 @@
         }
         Obj.EditItem = result.Data;
 
-        var resultProduct = await Obj.ProductHelper.Get(Obj.EditItem.UnicId);
+        var resultPostOption = await getPostOption();
+        if (!resultPostOption.Success)
+        {
+            await selectError(resultPostOption);
+            return;
+        }
 
+        var resultProduct = await getProduct();
         if (!resultProduct.Success)
         {
             await selectError(resultProduct);
             return;
         }
-        Obj.EditProductItem = resultProduct.Data;
-        Obj.ProductPropertys = Obj.EditProductItem.GetPropertys();
-        Obj.Imgs = Obj.EditProductItem.GetImgs();
 
-        var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
+        var resultTag = await getTag();
         if (!resultTag.Success)
         {
             await selectError(resultTag);
             return;
         }
-        Obj.Tags = resultTag.Data;
         await Obj.LoadHandler(false);
+    }
+
+    private async Task<Result> getPostOption()
+    {
+        var resultTag = await Obj.PostOptionHelper.Get(Obj.EditItem.UnicId);
+        if (!resultTag.Success)
+            return resultTag;
+        Obj.EditPostOptionItem = resultTag.Data;
+        return Result.Successful();
+    }
+
+    private async Task<Result> getProduct()
+    {
+        var resultProduct = await Obj.ProductHelper.Get(Obj.EditItem.UnicId);
+
+        if (!resultProduct.Success)
+            return resultProduct;
+        Obj.EditProductItem = resultProduct.Data;
+        Obj.ProductPropertys = Obj.EditProductItem.GetPropertys();
+        Obj.Imgs = Obj.EditProductItem.GetImgs();
+        return Result.Successful();
+    }
+
+    private async Task<Result> getTag()
+    {
+        var resultTag = await Obj.TagHelper.Get(Obj.EditItem.Id);
+        if (!resultTag.Success)
+            return resultTag;
+        Obj.Tags = resultTag.Data;
+        return Result.Successful();
     }
 
     private async Task selectError(Result result, bool selectadd = true)
@@ -141,6 +174,14 @@
         }
 
         Obj.EditItem = result.Data;
+
+        Obj.EditPostOptionItem.UnicId = Obj.EditItem.UnicId;
+        var resultPostOption = await Obj.PostOptionHelper.Save(Obj.EditPostOptionItem);
+        if (!resultPostOption.Success)
+        {
+            await selectError(result, false);
+            return;
+        }
 
         if (result.Data.IsProduct)
         {

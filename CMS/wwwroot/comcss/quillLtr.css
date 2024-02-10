@@ -835,3 +835,8 @@
 .ql-container.ql-snow {
   border: 1px solid #ccc;
 }
+
+.ql-editor .post pre, .ql-editor .post blockquote {
+    float: left;
+    width: 100%
+}

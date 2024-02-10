@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Pages\Inside\FileManager\FileManager.razor.css" />
   </ItemGroup>
 
@@ -28,6 +32,11 @@
   <ItemGroup>
     <Folder Include="Pages\Outside\product\" />
     <Folder Include="Service\" />
+    <Folder Include="wwwroot\css\bundle\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bundleconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
