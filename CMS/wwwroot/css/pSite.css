@@ -191,6 +191,10 @@ li:has(> .dropdown-item.active), li:has(> .navbar-brand.active) {
     color: unset;
     text-decoration: unset;
 }
+.card .post a {
+    color: var(--BaseColor) !important;
+    text-decoration: unset;
+}
 .card{
     border: unset;
     box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);

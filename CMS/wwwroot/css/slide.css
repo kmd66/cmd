@@ -102,9 +102,24 @@
         height: 300px;
     }
 }
-.labelSpecial {
-    left: 0 !important;
-    background: var(--bs-orange) !important;
+.labelSpecial, .labeTakhfif {
     position: absolute !important;
     border-radius: 0 !important;
+    top: 35px;
+    width: 200px;
 }
+.labeTakhfif {
+    background: var(--bs-red) !important;
+    rotate: 45deg;
+    right: -60px;
+}
+.labelSpecial {
+    background: var(--bs-orange) !important;
+    rotate: 45deg;
+    right: -80px;
+    top: 15px;
+}
+.offcanvas.hiding, .offcanvas.show, .offcanvas.showing {
+    visibility: visible;
+}
+.offcanvas {width:100%}

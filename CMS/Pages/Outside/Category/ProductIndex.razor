@@ -31,18 +31,18 @@
                 </div>
                 @if (items.Count > 0)
                 {
-                        <div class="row">
-                            @foreach (var item in items)
+                    <div class="row">
+                        @foreach (var item in items)
                         {
                             <article class="article col-lg-4 col-md-6 col-sm-12">
-                         
+
                                 <div class="card w-100 my-4 ">
                                     <div class="img">
                                         <img src="@Model.Files.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
                                     </div>
                                     @if (item.SpecialPrice > 0)
                                     {
-                                        <div class="badge rounded-0 bg-danger position-absolute"> تخفیف @darsadPrice(item)</div>
+                                        <div class="badge labeTakhfif"> تخفیف @darsadPrice(item)</div>
                                     }
                                     @if (item.Special)
                                     {
@@ -51,7 +51,7 @@
                                     <div class="card-body">
 
                                         <h2 class="card-title h4">
-                                            <NavLink href='@($"/{item.Alias}")' class="text-decoration-none">@item.Title</NavLink>
+                                            <NavLink href='@($"/product/{item.Alias}")' class="text-decoration-none">@item.Title</NavLink>
                                         </h2>
 
                                         @if (item.Price > 0 || item.SpecialPrice > 0)
@@ -73,10 +73,10 @@
                                         <NavLink href='@($"/product/{item.Alias}")' class="btn bg-BaseColor text-white">مشاهده</NavLink>
                                     </div>
                                 </div>
-                                </article>
-                            }
-                        </div>
-                    <CMS.Pages.Inside.Post.PostPagInation ItemModel="pagePagInation" Style="style" Link="@link" />
+                            </article>
+                        }
+                    </div>
+                    <CMS.Pages.Inside.Post.PostPagInation ItemModel="pageInation" Style="style" Link="@link" />
                 }
                 else
                 {
@@ -111,7 +111,7 @@
 
     BasePageObj obj = new BasePageObj();
     public override BasePageObj Obj { get => obj; set => obj = value; }
-    PagePagInation pagePagInation = new PagePagInation();
+    PageInation pageInation = new PageInation();
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
 
@@ -136,7 +136,7 @@
         await selectMenu();
         if (menu != null)
         {
-            pagePagInation = new PagePagInation();
+            pageInation = new PageInation();
             Serch.MenuId = menu.UnicId;
             isLoading = true;
             await selectItem();
@@ -176,7 +176,7 @@
         var result = await db.ListPostProductAsync(Serch);
         items = result.Data.ToList();
 
-        pagePagInation = new PagePagInation
+        pageInation = new PageInation
             {
                 PageIndex = Serch?.PageIndex,
                 PageSize = Serch?.PageSize,

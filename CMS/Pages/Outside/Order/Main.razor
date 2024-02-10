@@ -5,7 +5,7 @@
 @inject StateContainer StateContainer
 
 
-<div class="card">
+<div class="card p-2">
     <div class="my-4" style="max-width: 600px;margin: auto;">
         <h4 class="c">آخرین وضعیت سفارش</h4>
         <p>برای اطلاع از آخرین وضعیت سفارش کد رهگیری خود را وارد کنید </p>
@@ -75,7 +75,6 @@
 
     string code = "";
     int i = 0;
-    long sum = 0;
 
     string getPrice(CMS.Model.Post model)
     {
@@ -83,11 +82,11 @@
         if (item == null)
             return "0";
         var money = item.SpecialPrice > 0 ? item.SpecialPrice : item.Price;
-        sum += money;
         return $"{money:C0}";
     }
     string getSumPrice()
     {
+        long sum = Products.Sum(x => x.SpecialPrice > 0 ? x.SpecialPrice : x.Price);
         return $"{sum:C0}";
     }
     async Task trackingCode()

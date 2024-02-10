@@ -346,5 +346,34 @@ namespace CMS.Dal.DataSource
             }
         }
 
+        public async Task<Result<List<PostProduct>>> SearchAsync(PostVM model)
+        {
+            try
+            {
+                var search = model.Title?.Xss().Trim().Replace("-", " ");
+                if (string.IsNullOrEmpty(search))
+                    return Result<List<PostProduct>>.Successful(data:new List<PostProduct>());
+                if(search.Length < 5)
+                    return Result<List<PostProduct>>.Failure(message:"حد عقل 5 حرف برای جستجو وارد کنید");
+                var query = $"cnt.SpSearchPosts"
+                    + $" @Search = {search.Query()}"
+                    + $", @PageSize = {model.PageSize.Query()}"
+                    + $", @PageIndex = {model.PageIndex.Query()}";
+                var ett = await _pblContexts.PostProducts.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+
+                var returnMOdel = MapList<PostProduct, Dal.DbModel.PostProduct>(ett);
+
+                return Result<List<PostProduct>>.Successful(data: returnMOdel.ToList());
+            }
+            catch (Exception ex)
+            {
+                return Result<List<PostProduct>>.Failure(message: ex.Message);
+            }
+            finally
+            {
+                _pblContexts.ChangeTracker.Clear();
+            }
+        }
+
     }
 }

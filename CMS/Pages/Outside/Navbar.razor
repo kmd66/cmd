@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage localStorage
 @inject IJSRuntime Js
+@inject NavigationManager _navManager;
 
 <div class="bg-white">
     <div class="container">
@@ -18,7 +19,7 @@
 </div>
 <nav id="navbar" class="navbar navbar-expand-lg navbar-light p-0">
     <div class="container">
-        <button class="navbar-toggler navbarIcon" type="button" onclick="getToTop()">
+        <button class="navbar-toggler navbarIcon" type="button" onclick="showOffcanvas('offcanvasMenu')">
             <span class="navbar-toggler-icon" style="background-color:transparent"></span>
         </button>
         <div class="collapse navbar-collapse">
@@ -27,13 +28,11 @@
                 {
                     <MenuItem Item="item" Child="false" />
                 }
-
-
             </ul>
         </div>
         <div>
-            <ul class="navbar-nav fw500">
-                <li class="nav-Item navbarIcon">
+            <ul class="navbar-nav fw500" style="flex-direction: row;">
+                <li class="nav-Item navbarIcon" onclick="showNavSearch()">
                     <span class="svgSearch"></span>
                 </li>
                 <NavLink href="/basket" Match="NavLinkMatch.All">
@@ -52,12 +51,42 @@
 </nav>
 <div id="fixNavbar" class="disable navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide"></div>
 
+<div id="navSearch" class="navbar navbar-expand-lg navbar-light py-2 mb-3 d-none">
+    <div class="container">
+        <div class="input-group" style="max-width: 450px;margin: auto;">
+            <button type="submit" class="btn btn-primary" onclick="hideNavSearch()" style="padding: 0 5px;">
+                <span class="svgClose bg-white" style="width: 30px;height: 30px;margin: 5px 0 0;"></span>
+            </button>
+            <input type="text" class="form-control" @bind="searchText" />
+            <button type="submit" class="btn btn-primary" @onclick="navSearchSelect">جستجو</button>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">@title</h5>
+        <button type="button" class="btn-close text-reset" onclick="hideOffcanvas('offcanvasMenu')" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                @foreach (var item in menus)
+                {
+                    <MenuItemOffcanvas Item="item" Child="false" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
     string logo = "";
     string title = "";
     string comment = "";
     List<CMS.Model.Menu> menus = new List<Model.Menu>();
     int count = 0;
+    string searchText = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,8 +115,17 @@
             count = 0;
         else 
             count = basket.Value.ToList().Count;
-        StateHasChanged();
         await Js.InvokeVoidAsync("setNavbar");
+        StateHasChanged();
+    }
+    private async void navSearchSelect()
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return;
+        await Js.InvokeVoidAsync("hideNavSearch");
+        _navManager.NavigateTo($"search/{searchText.Replace(" ","-")}");
+        searchText = "";
+        StateHasChanged();
     }
 
 

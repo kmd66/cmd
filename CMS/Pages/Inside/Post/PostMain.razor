@@ -69,7 +69,7 @@
                 }
             </tbody>
         </table>
-        <PostPagInation ItemModel="pagePagInation" SetPageIndex="setPageIndex" />
+        <PostPagInation ItemModel="pageInation" SetPageIndex="setPageIndex" />
     }
     else
     {
@@ -83,7 +83,7 @@
     [Parameter]
     public PageObj Obj { get; set; }
     int tableIndex = 0;
-    PagePagInation pagePagInation = new PagePagInation();
+    PageInation pageInation = new PageInation();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -110,7 +110,7 @@
         }
         Obj.Items = itemResult.Data;
 
-        pagePagInation = new PagePagInation
+        pageInation = new PageInation
             {
                 PageIndex = Obj.Serch?.PageIndex,
                 PageSize = Obj.Serch?.PageSize,

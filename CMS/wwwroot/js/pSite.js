@@ -124,10 +124,6 @@ function showFixNavbar(t) {
     }
 }
 
-function getToTop() {
-    document.documentElement.scrollIntoView({ behavior: "smooth" })
-}
-
 function setCommentEl() {
     $('.commentUserAvatar').each(function (i, obj) {
         $(obj).css("background-color", getRandomColor());
@@ -201,6 +197,7 @@ function getGallery() {
             $(num.obj).attr('galleryId', idx);
             var p = $(num.obj).parent();
             if (idx == 0) {
+                p.addClass("pGallery");
                 insertEl = p;
                 p.empty();
             }

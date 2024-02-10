@@ -1,6 +1,6 @@
 ﻿namespace CMS.Model
 {
-    public class PagePagInation
+    public class PageInation
     {
         public int? PageIndex { get; set; }
         public int? PageSize { get; set; }

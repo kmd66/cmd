@@ -67,3 +67,52 @@ function groupBy(list, keyGetter) {
     });
     return map;
 }
+function groupBy(list, keyGetter) {
+    const map = new Map();
+    list.forEach((item) => {
+        const key = keyGetter(item);
+        const collection = map.get(key);
+        if (!collection) {
+            map.set(key, [item]);
+        } else {
+            collection.push(item);
+        }
+    });
+    return map;
+}
+
+function getToTop() {
+    document.documentElement.scrollIntoView({ behavior: "smooth" })
+}
+
+function showNavSearch() {
+    getToTop();
+    var el = document.getElementById('navSearch');
+    if (el?.className.indexOf('d-none') > -1) {
+        el.classList.remove("d-none");
+    }
+}
+
+function hideNavSearch() {
+    getToTop();
+    var el = document.getElementById('navSearch');
+    if (el?.className.indexOf('d-none') == -1) {
+        el.classList.add("d-none");
+    }
+}
+
+function showOffcanvas(id) {
+    var el = document.getElementById(id);
+    if (el?.className.indexOf('show') == -1) {
+        el.classList.add("show");
+        document.body.classList.add("bodyOverflowHide");
+    }
+}
+
+function hideOffcanvas(id) {
+    var el = document.getElementById(id);
+    if (el?.className.indexOf('show') > -1) {
+        el.classList.remove("show");
+        document.body.classList.remove("bodyOverflowHide");
+    }
+}

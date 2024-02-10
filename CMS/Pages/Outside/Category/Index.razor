@@ -59,7 +59,7 @@
                                 </article>
                             }
                         </div>
-                    <CMS.Pages.Inside.Post.PostPagInation ItemModel="pagePagInation" Style="style" Link="@link" />
+                    <CMS.Pages.Inside.Post.PostPagInation ItemModel="pageInation" Style="style" Link="@link" />
                 }
                 else
                 {
@@ -94,7 +94,7 @@
 
     BasePageObj obj = new BasePageObj();
     public override BasePageObj Obj { get => obj; set => obj = value; }
-    PagePagInation pagePagInation = new PagePagInation();
+    PageInation pageInation = new PageInation();
 
     CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();
     CMS.Pages.Inside.Comment.CommentHelper commentHelper = new Inside.Comment.CommentHelper(null);
@@ -120,7 +120,7 @@
         await selectMenu();
         if (menu != null)
         {
-            pagePagInation = new PagePagInation();
+            pageInation = new PageInation();
             Serch.MenuId = menu.UnicId;
             isLoading = true;
             await selectItem();
@@ -160,7 +160,7 @@
         var result = await db.ListAsync(Serch);
         items = result.Data.ToList();
 
-        pagePagInation = new PagePagInation
+        pageInation = new PageInation
             {
                 PageIndex = Serch?.PageIndex,
                 PageSize = Serch?.PageSize,

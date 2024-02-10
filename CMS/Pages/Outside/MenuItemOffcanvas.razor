@@ -1,0 +1,52 @@
+﻿
+
+@if (Item.Type == Model.MenuType.Link)
+{
+    <NavLink href="@Item.Link" class="list-group-item list-group-item-action py-2 ripple" Match="NavLinkMatch.All" onclick="hideOffcanvas('offcanvasMenu')">
+            <i class="fas fa-money-bill fa-fw me-3"></i><span>@Item.Name</span>
+    </NavLink>
+}
+else if (Item.Type == Model.MenuType.Content)
+{
+    <NavLink href="@Item.Alias" class="list-group-item list-group-item-action py-2 ripple" Match="NavLinkMatch.All" onclick="hideOffcanvas('offcanvasMenu')">
+            <i class="fas fa-money-bill fa-fw me-3"></i><span>@Item.Name</span>
+    </NavLink>
+}
+else if (Item.Type == Model.MenuType.Categorie)
+{
+    <NavLink href="@($"category/{Item.Alias}")" class="list-group-item list-group-item-action py-2 ripple" Match="NavLinkMatch.All" onclick="hideOffcanvas('offcanvasMenu')">
+            <i class="fas fa-money-bill fa-fw me-3"></i><span>@Item.Name</span>
+    </NavLink>
+}
+else if (Item.Type == Model.MenuType.ProductCategorie)
+{
+    <NavLink href="@($"product-category/{Item.Alias}")" class="list-group-item list-group-item-action py-2 ripple" Match="NavLinkMatch.All" onclick="hideOffcanvas('offcanvasMenu')">
+            <i class="fas fa-money-bill fa-fw me-3"></i><span>@Item.Name</span>
+    </NavLink>
+}
+else if (Item.Type == Model.MenuType.Title)
+{
+    <span data-bs-toggle="collapse"
+      class="list-group-item list-group-item-action py-2 ripple"
+      role="button" aria-expanded="false" href="#collapseMenuItem@(Item.Alias)"
+      aria-controls="collapseMenuItem@(Item.Alias)">
+        <i class="fas fa-money-bill fa-fw me-3"></i><span>@Item.Name</span>
+    </span>
+    @if (Item.Child?.Count > 0)
+    {
+        <div class="collapse" id="collapseMenuItem@(Item.Alias)">
+            <div class="card card-body">
+                @foreach (var child in Item.Child)
+                {
+                    <MenuItemOffcanvas Item="child" Child="true" />
+                }
+            </div>
+        </div>
+    }
+}
+@code {
+    [Parameter]
+    public CMS.Model.Menu Item { get; set; }
+    [Parameter]
+    public bool Child { get; set; }
+}

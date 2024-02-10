@@ -288,3 +288,20 @@ span[class^='staticAlert'], div[class*='staticAlert'] {
     .article a {
         color: var(--BaseColor);
     }
+.bodyOverflowHide {
+    overflow: hidden;
+    padding-right: 0px;
+}
+.offcanvas {
+    transition: transform .3s ease-in-out, visibility 0.3s linear;
+}
+.offcanvas-body span.list-group-item::after {
+    display: inline-block;
+    float: left;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-left: 0.3em solid transparent;
+    border-bottom: 0;
+    border-right: 0.3em solid transparent;
+}
