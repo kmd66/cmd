@@ -1,0 +1,96 @@
+﻿@using CMS.Model
+@using CMS.App.Controllers
+@using CMS.App.Components
+@using fileModel = CMS.Model.Files
+@model SingleModel
+
+<input id="PageId" type="hidden" value="@Model.id">
+<script>
+    var model = {};
+</script>
+
+<div class="container main">
+    <div class="mainSlideLeft">
+        <div class="card rounded-0 w-100" style="border-top: 2px solid #9c730b;">
+            @if (Model.post != null)
+            {
+                <div class="p-3 text-center"><h1 class="h2">@Model.post.Title</h1></div>
+                <div style="max-height: 400px">
+                    <img src="@Model.post.Img" class="card-img-top rounded-0" alt="@Model.post.Title">
+                </div>
+                <div class="card-body mt-3">
+                    @Html.Raw(Model.post.Content)
+                </div>
+
+            }
+
+            <div class="card-body mt-3">
+                <div id="MainMsg@(Model.id)">
+                    <div class="mb-3 mt-5 col-lg-12 col-sm-12">
+                        <label class="form-label required">پیام</label>
+                        <textarea id="Text@(Model.id)" cols="45" rows="8" aria-required="true" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام</label>
+                            <input id="Name@(Model.id)" type="text" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">شماره تماس</label>
+                            <input id="Phone@(Model.id)" type="text" placeholder="Phone" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label">ایمیل</label>
+                            <input id="Mail@(Model.id)" type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">کد امنیتی</label>
+                            <div class="captchaBax">
+                                <span class="svgRefresh captchaIcon" onclick="captchaReload()"> </span>
+                                <img id="captchaImg@(Model.id)" src="data:image/png;base64, @Model.captcha.Base64Image" class="captchaImg">
+                                <input id="captchaText@(Model.id)" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                                <input id="captchaKey@(Model.id)" type="hidden" value="@Model.captcha.Key">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn w-100 bg-BaseColor text-white mt-1" onclick="sendMsg()">ارسال پیام</button>
+                </div>
+
+                <div class="staticAlert-success d-none" id="SuccessMsg@(Model.id)">"پیام شما با موفقیت ارسال شد"</div>
+            </div>
+        </div>
+    </div>
+    @await Component.InvokeAsync("OutsideRightMenu")
+</div>
+
+<script>
+    var id = $(`#PageId`).val();
+    PageInit();
+
+    async function captchaReload() {
+        var result = await PostRequest("/CaptchaReload");
+        if (!result.data)
+            return;
+            var t =`#captchaKey${id}`;
+        $(`#captchaKey${id}`).val(result.data.key);
+        $(`#captchaImg${id}`).attr('src', `data:image/png;base64, ${result.data.base64Image}`);
+    }
+
+    async function sendMsg() {
+        model.CaptchaKey = $(`#captchaKey${id}`).val();
+        model.CaptchaText = $(`#captchaText${id}`).val();
+        model.Text = $(`#Text${id}`).val();
+        model.Name = $(`#Name${id}`).val();
+        model.Phone = $(`#Phone${id}`).val();
+        model.Mail = $(`#Mail${id}`).val();
+
+        var result = await PostRequest("/SaveMessage", model);
+        if (!result.success) {
+            captchaReload();
+            return;
+        }
+        $(`#SuccessMsg${id}`).removeClass("d-none");
+        $(`#MainMsg${id}`).addClass("d-none");
+
+    }
+</script>

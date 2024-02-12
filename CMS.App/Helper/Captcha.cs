@@ -1,7 +1,8 @@
 ﻿using CMS.Model;
+using CMS.Model.Interface;
 using System.Drawing;
 
-namespace CMS.Helper
+namespace CMS.App.Helper
 {
     public static class CaptchaHelper
     {
@@ -89,6 +90,7 @@ namespace CMS.Helper
 
             return new Captcha
             {
+                Key = Guid.NewGuid().String(),
                 Code = number.ToMd5(),
                 Base64Image = BitmapToBase64(bitmap)
             };
@@ -104,15 +106,22 @@ namespace CMS.Helper
         }
         public static bool Validate(Captcha c)
         {
-            if (c == null || string.IsNullOrEmpty(c.Text))
+            if (c == null || string.IsNullOrEmpty(c.Text) || string.IsNullOrEmpty(c.Key))
                 return false;
-            if (c.Code == c.Text.ToMd5())
+            
+            var httpContext = IContainer.Instance.GetService<IHttpContextAccessor>();
+            var code = httpContext?.HttpContext.Session.GetString(c.Key);
+            if (string.IsNullOrEmpty(code))
+                return false;
+
+            if (code == c.Text.ToMd5())
                 return true;
             return false;
         }
     }
     public class Captcha
     {
+        public string Key { get; set; }
         public string Text { get; set; }
 
         public string Code { get; set; }

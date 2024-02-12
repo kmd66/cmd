@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace CMS.Model
 {
-    public class Message : BaseModel<Comment>
+    public class Message : BaseModel<Message>
     {
         public MessageType Type { get; set; }
         public string Name { get; set; }

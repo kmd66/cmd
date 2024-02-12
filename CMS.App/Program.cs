@@ -10,9 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-CMS.App.Container.Init(builder.Services);
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 SetProperty(builder);
 RegisterLibrary(builder.Services);
+CMS.App.Container.Init(builder.Services);
 
 var app = builder.Build();
 
@@ -41,10 +49,20 @@ app.Use(async (context, next) =>
     if (context.Response.StatusCode == 404)
         context.Response.Redirect("/error/404");
 });
+app.UseSession();
 
 app.Run();
 async void RegisterLibrary(IServiceCollection services)
 {
+    services.Configure<WebEncoderOptions>(options =>
+    {
+        options.TextEncoderSettings = new TextEncoderSettings(
+            UnicodeRanges.BasicLatin,
+            UnicodeRanges.All);
+    });
+
+    services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
     new MenuDataSource().ListAsync();
     new OptionDataSource().ListAsync();
 }

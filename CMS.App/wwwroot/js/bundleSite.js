@@ -4,7 +4,7 @@ async function PostRequest(url, data) {
     return $.ajax({
         url: url,
         type: "post",
-        data: data
+        data: data ? data : {}
     }).done(function (response) {
         if (!response.success) {
             JsShowAlert({
