@@ -154,3 +154,10 @@ function hideOffcanvas(id) {
         document.body.classList.remove("bodyOverflowHide");
     }
 }
+function Search(id) {
+    const _id = '#' + id;
+    var s = $(_id).val()?.replaceAll(' ', '-');
+    if (!s)
+        return;
+    window.location.href = 'search/' + s;
+}

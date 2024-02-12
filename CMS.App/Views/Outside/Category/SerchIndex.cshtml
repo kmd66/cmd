@@ -1,0 +1,109 @@
+﻿@using CMS.Model
+@using CMS.App.Controllers
+@using CMS.App.Components
+@using fileModel = CMS.Model.Files
+@model CategoryModel
+
+
+<div class="container main">
+    <div class="mainSlideLeft">
+        <div class="card p-4">
+            <div class="my-4">
+                <div class="input-group mb-3">
+                    <input value="@Model.searchText" id="searchText" type="text" class="form-control">
+                    <input onclick="Search('searchText')" type="submit" value="جستجو" class="btn btn-primary">
+                </div>
+                @if (!string.IsNullOrEmpty(Model.msg))
+                {
+                    <div class="staticAlert-error fw-bold mt-4">@Model.msg</div>
+
+                }
+                @if (!string.IsNullOrEmpty(Model.searchText))
+                {
+                    <div class="input-group mt-3 h4">نتایج جستجو برای: @Model.searchText</div>
+                    <div class="input-group mb-3">موارد یافت شده: @Model?.total</div>
+                }
+            </div>
+        </div>
+        @if (Model.searchItems.Count > 0)
+        {
+            <div class="row">
+                @foreach (var item in Model.searchItems)
+                {
+                     <article class="article col-lg-4 col-md-6 col-sm-12">
+
+                        <div class="card w-100 my-4 ">
+                            <div class="img">
+                                <img src="@fileModel.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
+                            </div>
+                            @if (item.SpecialPrice > 0)
+                            {
+                                <div class="badge labeTakhfif"> تخفیف @darsadPrice(item)</div>
+                            }
+                            @if (item.Special)
+                            {
+                                <div class="badge labelSpecial">ویژه</div>
+                            }
+                            <div class="card-body">
+
+                                <h2 class="card-title h4">
+                                    <a href="@link(item)" class="text-decoration-none">@item.Title</a>
+                                </h2>
+
+                                @if (item.Price > 0 || item.SpecialPrice > 0)
+                                {
+                                    <div class="c">
+                                        @if (item.Price > 0)
+                                        {
+                                            <span class="@classPrice(item)">@item.Price </span>
+                                        }
+                                        @if (item.SpecialPrice > 0)
+                                        {
+                                            <span class="many"> @item.SpecialPrice </span>
+                                        }
+                                        <span style="font-size:10px"> تومان</span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card-footer bg-white border-0">
+                                <a href="@link(item)" class="btn bg-BaseColor text-white">مشاهده</a>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+            @Html.Raw(Model.postPagInation)
+        }
+        else
+        {
+            <div class="card rounded-0 p-4 w-100">
+                <span>مطلبی برای نمایش وجود ندارد</span>
+            </div>
+        }
+    </div>
+    @await Component.InvokeAsync("OutsideRightMenu")
+</div>
+
+<script>
+    PageInit();
+</script>
+@{
+    string link(PostProduct model)
+    {
+        if (model.IsProduct)
+            return $"/product/{model.Alias}";
+        return $"/{model.Alias}";
+    }
+
+    string darsadPrice(PostProduct model)
+    {
+        return $"{100 - ((model.SpecialPrice * 100) / model.Price)}%";
+    }
+
+    string classPrice(PostProduct model)
+    {
+        if (model.SpecialPrice > 0)
+            return "many diactive";
+        return "many";
+    }
+}

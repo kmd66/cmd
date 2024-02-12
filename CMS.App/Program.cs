@@ -1,6 +1,7 @@
 using CMS.Dal.DataSource;
 using Microsoft.Extensions.WebEncoders;
 using Sample.Model.Data;
+using System;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
@@ -33,6 +34,13 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode == 404)
+        context.Response.Redirect("/error/404");
+});
 
 app.Run();
 async void RegisterLibrary(IServiceCollection services)
