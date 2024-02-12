@@ -1,0 +1,309 @@
+﻿@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-FD.eot');
+    src: url('../fonts/Vazir-FD.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-FD.woff') format('woff'), url('../fonts/Vazir-FD.ttf') format('truetype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Bold-FD.eot');
+    src: url('../fonts/Vazir-Bold-FD.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Bold-FD.woff') format('woff'), url('../fonts/Vazir-Bold-FD.ttf') format('truetype');
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Vazir;
+    src: url('../fonts/Vazir-Light-FD.eot');
+    src: url('../fonts/Vazir-Light-FD.eot?#iefix') format('embedded-opentype'), url('../fonts/Vazir-Light-FD.woff') format('woff'), url('../fonts/Vazir-Light-FD.ttf') format('truetype');
+    font-weight: 300;
+}
+.loginMain {
+    background-color: var(--BaseColor);
+}
+body {
+    direction: rtl;
+    font-family: Vazir, Tahoma,Open, Sans;
+    margin: 0;
+    padding: 0;
+}
+img {
+    max-width: 100%;
+}
+.card {
+    overflow: hidden
+}
+.loding {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+    background-color: rgb(0 0 0 / 10%);
+    display: none;
+}
+.sideMenu a {
+    color: rgba(var(--bs-white-rgb),var(--bs-text-opacity)) !important;
+}
+.ltr {
+    direction: ltr;
+    text-align: left;
+}
+.rtl {
+    direction: rtl;
+    text-align: right;
+}
+.tableMain {
+    border: 1px solid #dee2e6;
+    border-bottom: unset;
+    border-top: unset;
+}
+.tableHeder {
+    background: #dee2e6;
+    padding: 5px;
+}
+    .tableHeder a {
+        color: var(--BaseColor);
+    }
+.required{color:red}
+.pagination a {
+    cursor: pointer;
+}
+.removeSpanTag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    padding: 5px;
+    color: red;
+}
+span[class^='staticAlert'], div[class*='staticAlert'] {
+    text-align: center;
+    padding: 7px;
+    border-radius: 5px;
+    color: white;
+}
+.staticAlert-success {
+    background: var(--alert-success);
+}
+.staticAlert-error {
+    background: var(--alert-error);
+}
+.UserAvatar {
+    border: 1px solid #dee2e678;
+    display: inline-table;
+    padding: 3px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.14);
+}
+.UserAvatarBorder {
+    background: #dee2e6;
+    border-radius: 50px;
+    padding: 12px;
+}
+.commentUserAvatar {
+    width: 25px !important;
+    height: 25px !important;
+    display: block !important;
+}
+.commentName {
+    color: var(--BaseColor) !important;
+    font-weight: bold;
+}
+.commentDate {
+    font-size: 12px;
+    color: #212529ad;
+    direction: ltr;
+}
+/*امتیاز*/
+.ratings {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    direction: ltr;
+    text-align: right;
+}
+
+.star {
+    position: relative;
+    line-height: 25px;
+    display: inline-block;
+    transition: color 0.2s ease;
+    color: #a7a7a7;
+}
+
+    .star:before {
+        content: '\2605';
+        width: 25px;
+        height: 25px;
+        font-size: 25px;
+    }
+
+    .star:hover,
+    .star.selected,
+    .star:hover ~ .star,
+    .star.selected ~ .star {
+        transition: color 0.8s ease;
+        color: var(--BaseColor);
+    }
+
+.star2, .star3 {
+    position: relative;
+    line-height: 14px;
+    display: inline-block;
+    transition: color 0.2s ease;
+    color: #a7a7a7;
+}
+
+    .star2:before {
+        content: '\2605';
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+    }
+    .star2.active {
+        color: var(--BaseColor);
+    }
+.commentScore {
+    direction: rtl;
+}
+.star3 {
+    overflow: hidden;
+    line-height: 25px;
+    position: relative;
+}
+    .star3:before {
+        content: '\2605\2605\2605\2605\2605';
+        width: 25px;
+        height: 25px;
+        font-size: 25px;
+    }
+    .star3.active {
+        color: var(--BaseColor);
+        overflow: hidden;
+        float: right;
+        top: 0;
+        right: 0;
+        position: absolute;
+        white-space: nowrap;
+        width:0
+    }
+/*امتیاز*/
+.required {
+    color: unset ;
+}
+.required:after {
+    content: '*';
+    color:red
+}
+.imgsize1 {
+    height: 180px;
+    width: 180px;
+    position: relative;
+    margin: auto;
+}
+.captchaBax {
+    width: 250px;
+    height: 32px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: white;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+.captchaIcon {
+    width: 20px !important;
+    height: 20px !important;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+}
+.captchaImg {
+    height: 30px;
+    width: 150px;
+    border-left: 0;
+    padding: 0;
+    margin: 0;
+    margin-right: 30px;
+    border-right: 1px solid #ced4da;
+}
+.captchaInput {
+    width: 150px;
+    width: 60px;
+    height: 30px;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    border-radius: 0;
+    border-right: 1px solid #ced4da;
+    padding: 0 3px;
+    margin-top: -5px;
+}
+.many {
+    margin: 0 5px 0 0px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+    .many.diactive {
+        font-size: 12px;
+        color: #a1a1a1;
+        text-decoration: line-through;
+        font-weight: normal;
+    }
+.ScrollIntoView {
+    justify-content: space-around !important;
+    display: flex !important;
+    color: #0d6efd;
+    cursor: pointer;
+    padding: 12px;
+    background: #fefefe;
+    background: #f3f3f3;
+}
+.badge12 {
+    font-size: 12px;
+    font-weight: normal;
+    color: white;
+    position: absolute;
+    left: auto;
+    right: 2px;
+    top: 2px;
+    padding: 3px 4px;
+    border-radius: 7px;
+    background: #dc3545 !important;
+    line-height: 1;
+}
+.article {
+    align-items: stretch !important;
+    display: flex !important;
+}
+    .article .img {
+        height: 250px;
+    }
+    .article a {
+        color: var(--BaseColor);
+    }
+.bodyOverflowHide {
+    overflow: hidden;
+    padding-right: 0px;
+}
+.offcanvas {
+    transition: transform .3s ease-in-out, visibility 0.3s linear;
+}
+.offcanvas-body span.list-group-item::after {
+    display: inline-block;
+    float: left;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-left: 0.3em solid transparent;
+    border-bottom: 0;
+    border-right: 0.3em solid transparent;
+}

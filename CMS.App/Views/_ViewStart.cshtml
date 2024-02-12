@@ -1,0 +1,14 @@
+﻿@{
+    if (Context.Request.Path.ToString().Contains("cmd-login"))
+    {
+        Layout = "_LoginLayout";
+    }
+    else if (Context.Request.Path.ToString().Contains("cmd-admin"))
+    {
+        Layout = "_AdminLayout";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
+}  

@@ -1,0 +1,73 @@
+﻿@using CMS.App.Components
+@using CMS.Model
+@model OutsideHederModel
+
+<div class="bg-white">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-around p-3">
+            <img src="@Model.logo" style="width:70px" />
+            <div style=" font-size: 16px; margin: 0.4375em 0 0;">
+
+                <p class="site-title" style="font-weight: 700;font-size: 26px;margin: 0; color: var(--BaseColor) !important;">@Model.title</p>
+                <p class="site-description" style="font-weight: 700;color: #6c757d;">@Model.comment</p>
+            </div>
+        </div>
+    </div>
+</div>
+<nav id="navbar" class="navbar navbar-expand-lg navbar-light p-0">
+    <div class="container">
+        <button class="navbar-toggler navbarIcon" type="button" onclick="showOffcanvas('offcanvasMenu')">
+            <span class="navbar-toggler-icon" style="background-color:transparent"></span>
+        </button>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav fw500">
+                @Html.Raw(Model.MenuItem)
+            </ul>
+        </div>
+        <div>
+            <ul class="navbar-nav fw500" style="flex-direction: row;">
+                <li class="nav-Item navbarIcon" onclick="showNavSearch()">
+                    <span class="svgSearch"></span>
+                </li>
+                <a href="/basket" Match="NavLinkMatch.All">
+                    <li class="nav-Item navbarIcon" style="position:relative">
+                        <span class="svgShoppingCart"></span>
+                        <span class="badge12 d-none"> @*تعداد سبد خرید*@</span>
+                    </li>
+                </a>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+<div id="fixNavbar" class="disable navbar navbar-expand-lg navbar-light fixed-top p-0 d-hide"></div>
+
+<div id="navSearch" class="navbar navbar-expand-lg navbar-light py-2 mb-3 d-none">
+    <div class="container">
+        <div class="input-group" style="max-width: 450px;margin: auto;">
+            <button type="submit" class="btn btn-primary" onclick="hideNavSearch()" style="padding: 0 5px;">
+                <span class="svgClose bg-white" style="width: 30px;height: 30px;margin: 5px 0 0;"></span>
+            </button>
+            <input type="text" class="form-control" />
+            <button type="submit" class="btn btn-primary" >جستجو</button>
+        </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">@Model.title</h5>
+        <button type="button" class="btn-close text-reset" onclick="hideOffcanvas('offcanvasMenu')" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div class="position-sticky">
+            <div class="list-group list-group-flush mx-3 mt-4">
+                @Html.Raw(Model.MenuItemOffcanvas)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    setNavbar();
+</script>

@@ -1,0 +1,29 @@
+﻿@using CMS.Model
+@using CMS.App.Controllers
+@model HomeModel
+
+@await Component.InvokeAsync("OutsideSlide")
+@await Component.InvokeAsync("OutsideSpecial", Model.itemsTop)
+<div class="container main">
+    <div class="mainSlideLeft">
+        @if (Model.post != null)
+        {
+            <div class="card rounded-0 w-100" style="border-top: 2px solid #9c730b;">
+                <div class="p-3 text-center"><h1 class="h2">@Model.post.Title</h1></div>
+                <div style="max-height: 400px">
+                    <img src="@Model.post.Img" class="card-img-top rounded-0" alt="@Model.post.Title">
+                </div>
+                <div class="card-body mt-3">
+                    @Html.Raw(Model.post.Content)
+                </div>
+            </div>
+
+        }
+    </div>
+    @await Component.InvokeAsync("OutsideRightMenu")
+</div>
+@await Component.InvokeAsync("OutsideSpecial", Model.itemsBot)
+
+<script>
+    PageInit();
+</script>

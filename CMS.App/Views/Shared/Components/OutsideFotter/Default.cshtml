@@ -1,0 +1,77 @@
+﻿@using CMS.App.Components
+@using CMS.Model
+@using fileModel = CMS.Model.Files
+@model OutsideFotterModel
+
+<footer>
+    <div class="container pt-4 pb-2">
+        <div class="row">
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <div class="card mainCard dark">
+                    <h5 class="card-header" style="border-top: unset">آخرین نظر</h5>
+                    <ul class="card-body">
+                        <li class="socialItem">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <div class="card mainCard dark">
+                    <h5 class="card-header" style="border-top: unset">آخرین مطالب</h5>
+                    <ul class="card-body">
+                        @foreach (var item in Model.PostItems)
+                        {
+                            <li class="menuRighItem">
+                                <NavLink href='@($"/{item.Alias}")' class="imgLink">
+                                    <img src="@fileModel.Item.GetThumbnail(item.Img)">
+                                </NavLink>
+                                <NavLink href='@($"/{item.Alias}")' class="textLink">
+                                    <h3 class="card-title h6">@item.Title</h3>
+                                </NavLink>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                <div class="card mainCard dark">
+                    <h5 class="card-header" style="border-top: unset">آخرین محصول</h5>
+                    <ul class="card-body">
+                        @foreach (var item in Model.ProductItems)
+                        {
+                            <li class="menuRighItem">
+                                <NavLink href='@($"product/{item.Alias}")' class="imgLink">
+                                    <img src="@fileModel.Item.GetThumbnail(item.Img)">
+                                </NavLink>
+                                <NavLink href='@($"product/{item.Alias}")' class="textLink">
+                                    <h3 class="card-title h6">@item.Title</h3>
+                                </NavLink>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container-full site-info">طراحی و تنظیم توسط محمدی </div>
+
+</footer>
+<div id="getToTop" onclick="getToTop()" class="diy d-hide">
+    <span class="svgDirectUp"></span>
+</div>
+
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div id="galleryModalDialog" style="max-width:unset">
+        </div>
+        <span id="galleryClose"><span class="svgClose"></span></span>
+        <span id="galleryZoom"><span class="svgSearch"></span></span>
+        <span id="galleryPrev"><span class="svgDirectRight"></span></span>
+        <span id="galleryNext"><span class="svgDirectLeft"></span></span>
+  </div>
+</div>

@@ -1,9 +1,4 @@
-﻿@page "/"
-@using Microsoft.AspNetCore.Components.Web
-@namespace CMS.Pages
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html dir="rtl" lang="fa-IR">
 <head>
     <meta charset="utf-8" />
@@ -18,7 +13,7 @@
     <script src="~/js/bootstrap.min.js"></script>
     <script src="~/js/jquery.particleground.min.js"></script>
 
-@*
+    
     <link rel="stylesheet" href="~/css/bundleAlert.css" />
     <link rel="stylesheet" href="~/css/bundleColors.css" />
     <link rel="stylesheet" href="~/css/bundleEditor.css" />
@@ -32,17 +27,22 @@
     <script src="~/js/bundleSetup.js"></script>
     <script src="~/js/bundleSite.js"></script>
     <script src="~/js/bundleSlide.js"></script>
-    <script src="~/js/bundleXzoom.min.js"></script>*@
+    <script src="~/js/bundleXzoom.min.js"></script>
 
-    <link rel="stylesheet" href="~/css/bundle.min.css" />
-    <script src="~/js/bundle.min.js"></script>
-
-    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
-    
-    <script src="_framework/blazor.server.js"></script>
+    @RenderBody()
 
+    <div class="loding" id="loding">
+        <div class="container h-100">
+
+            <div class="d-flex justify-content-md-center align-items-center vh-100">
+                <div class="spinner-grow" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="anotherElement"></div>
 </body>
 </html>

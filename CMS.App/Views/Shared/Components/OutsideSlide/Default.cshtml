@@ -1,0 +1,26 @@
+﻿@using CMS.Model
+@model List<CMS.Model.HomeSlide>
+
+<div id="homeSlider">
+    <div id="bHomeSlider" style="position: absolute; "></div>
+    <span class="control_next"><span class="svgDirectLeft"></span></span>
+    <span class="control_prev"><span class="svgDirectRight"></span></span>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="slide-item" style="background-image: url(@item.Img);">
+                    <NavLink href="@item.Link">
+                        <div class="slide-comment">
+                            <p>@item.Text</p>
+                        </div>
+                    </NavLink>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<script>
+    InitHomeSlide();
+</script>

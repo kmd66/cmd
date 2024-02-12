@@ -1,0 +1,40 @@
+﻿
+<div class="w-100 h-100 bg-BasebackgroundColor">
+    <div class="container h-100">
+
+        <div class="d-flex justify-content-md-center align-items-center vh-100">
+            <div class="card" style="width:350px">
+                <div class="p-3  h2 bg-BaseColor text-white text-center">
+                    فرم ورود
+                </div>
+                <div class="p-4">
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-BaseColor" id="basic-addon1">
+                            <span class="svgUser bg-white"></span>
+                        </span>
+                        <input id="loginUsername" placeholder="Username" class="form-control" type="text" />
+                    </div>
+
+                    <div class="input-group input-group-sm mb-3">
+                        <span class="input-group-text bg-BaseColor" id="basic-addon1">
+                            <span class="svgKey bg-white"></span>
+                        </span>
+                        <input id="loginPassword" placeholder="Password" class="form-control" type="password" />
+                    </div>
+                    <button type="button" class="btn w-100 bg-BaseColor text-white mt-4" onclick="login()">ورود</button>
+                    <div class="mt-3 text-center">cmd login template</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function login() {
+        var data = {
+            UserName: $("#loginUsername").val(),
+            Password: $("#loginPassword").val(),
+        };
+        var result = await PostRequest("/cmd-login/get", data);
+    }
+</script>
