@@ -16,8 +16,6 @@ namespace CMS.App.Controllers
         Helper.MessageHelper helper = new Helper.MessageHelper(null);
         SingleModel model = new SingleModel();
 
-        public PostPagInationModel postPagInationModel { get; set; }
-
         [Route("/contact")]
         public async Task<IActionResult> Contact()
         {

@@ -1,0 +1,50 @@
+﻿@using CMS.Model
+@using CMS.App.Controllers
+@using CMS.App.Components
+@using fileModel = CMS.Model.Files
+@model PosteModel
+
+
+<div class="container main">
+    <div class="mainSlideLeft">
+        <div class="card rounded-0 w-100">
+
+            <ProductTop Product="product" PostOption="postOption" Post="post" ScoreComment="scoreComment" />
+
+            @if (Model.productPropertys.Count > 0)
+            {
+                <div class="card-body mt-3" id="PropertyTab">
+                    <span class="=h5 fw-bold">مشخصات</span>
+                    <hr />
+                    @foreach (var productProperty in Model.productPropertys)
+                    {
+                        <div class="productProperty">
+                            <span class="productPropertyName">@productProperty.Name</span>
+                            <span class="productPropertyValue">@productProperty.Value</span>
+
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="card-body post mt-3" id="ContentTab">
+                <span class="=h5 fw-bold">توضیحات</span>
+                <hr />
+                @Html.Raw(Model.post.Content)
+            </div>
+        </div>
+
+        @await Component.InvokeAsync("OutsideNextAndPrev", Model.nextAndPrev)
+        @await Component.InvokeAsync("OutsideRelated", Model.related)
+        @if (Model.postOption.IsComment)
+        {
+            <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+        }
+
+    </div>
+    @await Component.InvokeAsync("OutsideRightMenu")
+</div>
+
+<script>
+    PageInit();
+</script>

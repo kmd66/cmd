@@ -13,7 +13,7 @@ namespace CMS.App.Controllers
         CategoryModel model = new CategoryModel();
         public PostPagInationModel postPagInationModel { get; set; }
 
-        [Route("category/{name}/{pageNumber?}")]
+        [Route("/category/{name}/{pageNumber?}")]
         public async Task<IActionResult> Category(string name, int? pageNumber)
         {
             await selectMenu(name, pageNumber);
@@ -32,7 +32,7 @@ namespace CMS.App.Controllers
             return View("~/Views/Outside/Category/Index.cshtml", model);
         }
 
-        [Route("product-category/{name}/{pageNumber?}")]
+        [Route("/product-category/{name}/{pageNumber?}")]
         public async Task<IActionResult> ProductCategory(string name, int? pageNumber)
         {
             await selectMenu(name, pageNumber);

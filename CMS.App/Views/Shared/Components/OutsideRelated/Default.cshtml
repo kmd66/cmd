@@ -1,0 +1,35 @@
+﻿@using CMS.Model
+@using fileModel = CMS.Model.Files
+@model List<CMS.Model.Post>
+
+@if (Model?.Count > 0)
+{
+    <div class="card mainCard mb-2 mt-5">
+        <h5 class="card-header">مطالب مرتبط</h5>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <article class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch">
+                        <div class="card my-4 mx-4">
+                            <div style="height: 150px">
+                                <a href='@($"{ViewBag.PrefixLink}/{item.Alias}")'>
+                                    <img src="@fileModel.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title text-center h6">
+                                    <a href='@($"{ViewBag.PrefixLink}/{item.Alias}")'>
+                                        @item.Title
+                                    </a>
+                                </h2>
+
+                            </div>
+                        </div>
+                    </article>
+                }
+
+            </div>
+        </div>
+    </div>
+}

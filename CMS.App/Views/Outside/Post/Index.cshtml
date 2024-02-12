@@ -1,0 +1,45 @@
+﻿@using CMS.Model
+@using CMS.App.Controllers
+@using CMS.App.Components
+@using fileModel = CMS.Model.Files
+@model PosteModel
+
+
+<div class="container main">
+    <div class="mainSlideLeft">
+        <div class="card rounded-0 w-100">
+            <div style="max-height: 200px; position:relative">
+                <div class="postTitle">
+                    <h1 class="h2">@Model.post.Title</h1>
+                </div>
+                <img src="@Model.post.Img" class="card-img-top rounded-0" alt="@Model.post.Title">
+            </div>
+            <div class="card-body post mt-3">
+                @Html.Raw(Model.post.Content)
+                @if (Model.scoreComment.ScoreCount > 0)
+                {
+                    <div class="text-center">
+                        <div class="star3"><span class="star3 active" style='width:@($"{Model.scoreComment.ScorePercent}%")'></span></div>
+                    </div>
+                    <div class="commentDate rtl">تعداد امتیازها : @Model.scoreComment.ScoreCount میانگین امتیاز @Model.scoreComment.ScoreAvg از 5</div>
+                }
+                <div class="commentDate rtl mb-3">تاریخ ارسال مطلب : @Model.post.Date.ToPersion()</div>
+            </div>
+        </div>
+        @if (!Model.isMenuPost)
+        {
+            @await Component.InvokeAsync("OutsideNextAndPrev", Model.nextAndPrev)
+            @await Component.InvokeAsync("OutsideRelated", Model.related)
+            @if (Model.postOption.IsComment)
+            {
+                <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+            }
+        }
+
+    </div>
+    @await Component.InvokeAsync("OutsideRightMenu")
+</div>
+
+<script>
+    PageInit();
+</script>

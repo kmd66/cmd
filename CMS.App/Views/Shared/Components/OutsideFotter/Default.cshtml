@@ -24,12 +24,12 @@
                         @foreach (var item in Model.PostItems)
                         {
                             <li class="menuRighItem">
-                                <NavLink href='@($"/{item.Alias}")' class="imgLink">
+                                <a href='@($"/{item.Alias}")' class="imgLink">
                                     <img src="@fileModel.Item.GetThumbnail(item.Img)">
-                                </NavLink>
-                                <NavLink href='@($"/{item.Alias}")' class="textLink">
+                                </a>
+                                <a href='@($"/{item.Alias}")' class="textLink">
                                     <h3 class="card-title h6">@item.Title</h3>
-                                </NavLink>
+                                </a>
                             </li>
                         }
                     </ul>
@@ -43,12 +43,12 @@
                         @foreach (var item in Model.ProductItems)
                         {
                             <li class="menuRighItem">
-                                <NavLink href='@($"product/{item.Alias}")' class="imgLink">
+                                <a href='@($"product/{item.Alias}")' class="imgLink">
                                     <img src="@fileModel.Item.GetThumbnail(item.Img)">
-                                </NavLink>
-                                <NavLink href='@($"product/{item.Alias}")' class="textLink">
+                                </a>
+                                <a href='@($"product/{item.Alias}")' class="textLink">
                                     <h3 class="card-title h6">@item.Title</h3>
-                                </NavLink>
+                                </a>
                             </li>
                         }
                     </ul>
