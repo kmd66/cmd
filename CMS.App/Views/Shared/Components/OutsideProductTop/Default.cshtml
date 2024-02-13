@@ -1,0 +1,129 @@
+﻿@using CMS.Model
+@using fileModel = CMS.Model.Files
+@model CMS.App.Controllers.PosteModel
+@{
+    List<ProductImg> imgs = Model.product.GetImgs();
+
+
+    string classPrice()
+    {
+        if (Model.product.SpecialPrice > 0)
+            return "many diactive";
+        return "many";
+    }
+
+    string darsadPrice()
+    {
+        return $"{((Model.product.SpecialPrice * 100) / Model.product.Price) - 100}%";
+    }
+}
+
+<div class="ScrollIntoView">
+    @if (Model.product.GetPropertys().Count > 0)
+    {
+        <span onclick="ScrollIntoView('PropertyTab')">مشخصات</span>
+    }
+    <span onclick="ScrollIntoView('ContentTab')">توضیح</span>
+    @if (Model.postOption.IsComment)
+    {
+        <span onclick="ScrollIntoView('CommentTab')">نظر</span>
+    }
+</div>
+<div class="row mt-3 px-4">
+    @if (imgs.Count > 0)
+    {
+        <div class="mb-3 col-lg-6 col-md-12">
+            <div class="xzoom-container">
+                <img class="xzoom3" src="@imgs.First().Value" xoriginal="@imgs.First().Value" />
+                <div class="xzoom-thumbs">
+                    @if (imgs.Count > 1)
+                    {
+                        foreach (var img in imgs)
+                        {
+                            <a href="@img.Value"><img class="xzoom-gallery3" width="80" src="@fileModel.Item.GetThumbnail(img.Value)" xpreview="@img.Value"></a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    <div class="mb-3 col-lg-6 col-md-12">
+        <div><span class="h5 fw-bold">@Model.post.Title</span></div>
+        @if (Model.postOption.IsComment)
+        {
+            <div class="mt-1">
+                <div class="q">
+                    <div class="star3"><span class="star3 active" style='width:@($"{Model.scoreComment.ScorePercent}%")'></span></div>
+                </div>
+                <div class="commentDate rtl">تعداد امتیازها : @Model.scoreComment.ScoreCount میانگین امتیاز @Model.scoreComment.ScoreAvg از 5</div>
+                <div class="commentDate rtl">تعداد نظر : @(Model.scoreComment.Comments?.Count > 0 ? Model.scoreComment.Comments[0].Count : 0)</div>
+
+            </div>
+        }
+        <hr />
+
+        @if (Model.product.Price > 0 || Model.product.SpecialPrice > 0)
+        {
+            <div class="my-4">
+                @if (Model.product.SpecialPrice > 0)
+                {
+                    <span class="badge rounded-pill bg-danger">@darsadPrice()</span>
+                }
+                @if (Model.product.Price > 0)
+                {
+                    <span class="@classPrice()">@Model.product.Price </span>
+                }
+                @if (Model.product.SpecialPrice > 0)
+                {
+                    <span class="many"> @Model.product.SpecialPrice </span>
+                }
+                <span style="font-size:10px"> تومان</span>
+            </div>
+        }
+        <div class="text-secondary">@Model.post.Summary</div>
+
+        <div id="msgAddBasket@(Model.id)" class="btn w-100 bg-secondary text-white mt-4 d-none">این محصول به لیست سفارش شما اضافه شده است</div>
+        <button id="btnAddBasket@(Model.id)" onclick="addBasket()" type="button" class="btn w-100 bg-BaseColor text-white mt-4 d-none">افزودن به سبد خرید</button>
+    </div>
+</div>
+
+
+
+
+<script> 
+    var pageId;
+    var pageAlias = "@Model.post.Alias";
+    $(document).ready(function () {
+        pageId = $(`#PageId`).val();
+        getBasket();
+    });
+    async function addBasket() {
+        var basket = [];
+        var local = localStorage.getItem("basket");
+        if (local)
+            basket = JSON.parse(local);
+        basket.push(pageAlias)
+        localStorage.setItem("basket", JSON.stringify(basket));
+        showMsg();
+        SetNavbarOrderBasketCount();
+    }
+
+    async function getBasket() {
+        var local = localStorage.getItem("basket");
+        if (!local)
+            return showMsg();
+        basket = JSON.parse(local);
+        var item = basket.find(x => x == pageAlias);
+        if (item)
+            return showMsg();
+        showBtn();
+    } 
+    function showMsg() {
+        $(GetPageId('msgAddBasket')).removeClass("d-none");
+        $(GetPageId('btnAddBasket')).addClass("d-none");
+    }
+    function showBtn() {
+        $(GetPageId('btnAddBasket')).removeClass("d-none");
+        $(GetPageId('msgAddBasket')).addClass("d-none");
+    }
+</script>

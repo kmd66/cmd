@@ -37,6 +37,24 @@ async function PostRequest(url, data) {
     });
 
 }
+function SetNavbarOrderBasketCount() {
+    var basket = [];
+    var local = localStorage.getItem("basket");
+    if (local)
+        basket = JSON.parse(local);
+    if (basket.length > 0) {
+        $(".navbarOrderBasketCount").text(basket.length);
+        $('.navbarOrderBasketCount').removeClass("d-none");
+    }
+    else {
+        $(".navbarOrderBasketCount").text(0);
+        $(GetPageId('btnAddBasket')).addClass("d-none");
+    }
+}
+function GetPageId(id) {
+    var pageId = $(`#PageId`).val();
+    return `#${id}${pageId}`;
+}
 function CopyToClipboard(data) {
     navigator.clipboard.writeText(data);
 }

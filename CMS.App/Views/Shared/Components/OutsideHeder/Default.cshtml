@@ -29,12 +29,12 @@
                 <li class="nav-Item navbarIcon" onclick="showNavSearch()">
                     <span class="svgSearch"></span>
                 </li>
-                <a href="/basket" Match="NavLinkMatch.All">
-                    <li class="nav-Item navbarIcon" style="position:relative">
+                <li class="nav-Item navbarIcon" style="position:relative;padding: 0;">
+                    <a href="/basket" Match="NavLinkMatch.All" style="position: relative;padding: 7px 12px;display: block;">
                         <span class="svgShoppingCart"></span>
-                        <span class="badge12 d-none"> @*تعداد سبد خرید*@</span>
-                    </li>
-                </a>
+                        <span class="navbarOrderBasketCount badge12 d-none"></span>
+                    </a>
+                </li>
             </ul>
 
         </div>
@@ -70,4 +70,5 @@
 
 <script>
     setNavbar();
+    SetNavbarOrderBasketCount();
 </script>

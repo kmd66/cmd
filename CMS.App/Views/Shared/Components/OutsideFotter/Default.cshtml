@@ -69,9 +69,15 @@
     <div class="modal-dialog">
         <div id="galleryModalDialog" style="max-width:unset">
         </div>
-        <span id="galleryClose"><span class="svgClose"></span></span>
-        <span id="galleryZoom"><span class="svgSearch"></span></span>
-        <span id="galleryPrev"><span class="svgDirectRight"></span></span>
-        <span id="galleryNext"><span class="svgDirectLeft"></span></span>
+        <span id="galleryClose" onclick="closeGallery()"><span class="svgClose"></span></span>
+        @*<span id="galleryZoom"><span class="svgSearch"></span></span>*@
+        <span id="galleryPrev" onclick="moveGallery(false)"><span class="svgDirectRight"></span></span>
+        <span id="galleryNext" onclick="moveGallery(true)"><span class="svgDirectLeft"></span></span>
   </div>
 </div>
+
+<script>
+    function closeGallery() {
+        $('#galleryModal').modal('hide');
+    }
+</script>

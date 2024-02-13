@@ -210,15 +210,6 @@ function getGallery() {
     eventGallery();
 }
 function eventGallery() {
-    $('img.g').unbind('click');
-    $('#galleryClose').unbind('click');
-    $('#galleryNext').unbind('click');
-    $('#galleryPrev').unbind('click');
-    //var t = $._data($('#galleryClose')[0], "events");
-    //if ($("#galleryModalDialog").hasClass("galleryModalDialog"))
-    //    return;
-    //$("#galleryModalDialog").addClass("galleryModalDialog");
-    //
     $('img.g').click(function () {
 
         const groupId = $(this).attr('slide');
@@ -238,15 +229,6 @@ function eventGallery() {
         dialog.append(`<img class="c" src="${src}" style="max-height: ${$(window).height() - 40}px" galleryId="${$(this).attr('galleryId')}" slideD="${$(this).attr('slide')}">`);
         $('#galleryModal').modal('show');
 
-    });
-    $('#galleryClose').click(function () {
-        $('#galleryModal').modal('hide');
-    });
-    $('#galleryNext').click(function () {
-        moveGallery(true);
-    });
-    $('#galleryPrev').click(function () {
-        moveGallery( true);
     });
 }
 function moveGallery(next) {

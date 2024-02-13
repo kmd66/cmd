@@ -4,12 +4,13 @@
 @using fileModel = CMS.Model.Files
 @model PosteModel
 
+<input id="PageId" type="hidden" value="@Model.id">
 
 <div class="container main">
     <div class="mainSlideLeft">
         <div class="card rounded-0 w-100">
 
-            <ProductTop Product="product" PostOption="postOption" Post="post" ScoreComment="scoreComment" />
+            @await Component.InvokeAsync("OutsideProductTop", Model)
 
             @if (Model.productPropertys.Count > 0)
             {
@@ -46,5 +47,6 @@
 </div>
 
 <script>
+
     PageInit();
 </script>

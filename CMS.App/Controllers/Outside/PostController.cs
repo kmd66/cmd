@@ -48,7 +48,7 @@ namespace CMS.App.Controllers
             if (model.post == null)
                 return Redirect("/Error/404");
 
-            return View("~/Views/Outside/Post/Index.cshtml", model);
+            return View("~/Views/Outside/Post/ProductIndex.cshtml", model);
         }
 
         async Task SeletePost(bool isProduct)
