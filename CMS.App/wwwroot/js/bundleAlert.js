@@ -10,6 +10,15 @@ function JsShowAlert(obj) {
         container: obj.container,
     })
 }
+function ShowAlertError(message) {
+    new Alert({
+        type: 'error',
+        message: message,
+        expires: true,
+        withProgress: true,
+        container: ".anotherElement"
+    })
+}
 class $Alert {
 
     /**

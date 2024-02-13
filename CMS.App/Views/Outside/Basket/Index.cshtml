@@ -1,61 +1,110 @@
 ﻿@using CMS.Model
-@using CMS.App.Controllers
-@using CMS.App.Components
-@using fileModel = CMS.Model.Files
-@model CategoryModel
+@{
+    var id = Guid.NewGuid().String();
+}
+<input id="PageId" type="hidden" value="@id">
 
-<div class="container main">
-    <div class="mainSlideLeft">
-        <div class="card rounded-0 w-100 mb-4">
-            <div style="max-height: 200px; position:relative">
-                <div class="postTitle">
-                    <h1 class="h2">@Model.menu.Name</h1>
-                </div>
-                <img src="@Model.menu.Img" class="card-img-top rounded-0" alt="@Model.menu.Name">
+<div class="card p-2">
+    <div class="my-4" style="max-width: 600px;margin: auto;">
+        <h4 class="c">آخرین وضعیت سفارش</h4>
+        <p>برای اطلاع از آخرین وضعیت سفارش کد رهگیری خود را وارد کنید </p>
+        <div class="input-group mb-3">
+            <input id="code@(id)" type="text" class="form-control">
+            <button onclick="trackingCode()" type="submit" id="searchsubmit" class="btn btn-primary">جستجو</button>
+        </div>
+    </div>
+</div>
+
+<div class="container main my-4">
+    <div class="mainSlideLeft" style="margin: auto;">
+        <div class="card p-3">
+            <div id="items@(id)">
+                
+            </div>
+            <div id="itemsEmpty@(id)" class="d-none">
+                <div class="h4">سبد خرید شما خالی است</div>
+                <div>مطلبی برای نمایش وجود ندارد</div>
             </div>
         </div>
-        @if (Model.items.Count > 0)
-        {
-            <div class="row">
-                @foreach (var item in Model.items)
-                {
-                    <article class="article col-lg-4 col-md-6 col-sm-12">
-
-                        <div class="card w-100 my-4 ">
-                            <div class="img">
-                                <img src="@fileModel.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
-                            </div>
-                            @if (item.Special)
-                            {
-                                <div class="badge labelSpecial">ویژه</div>
-                            }
-                            <div class="card-body">
-
-                                <h2 class="card-title h4">
-                                    <a href='@($"/{item.Alias}")' class="text-decoration-none">@item.Title</a>
-                                </h2>
-
-                                <p class="card-text mt-3">@item.Summary</p>
-                            </div>
-                            <div class="card-footer bg-white border-0">
-                                <a href='@($"/{item.Alias}")' class="btn bg-BaseColor text-white">ادامه مطلب</a>
-                            </div>
-                        </div>
-                    </article>
-                }
-            </div>
-            @Html.Raw(Model.postPagInation)
-        }
-        else
-        {
-            <div class="card rounded-0 p-4 w-100">
-                <span>مطلبی برای نمایش وجود ندارد</span>
-            </div>
-        }
     </div>
-    @await Component.InvokeAsync("OutsideRightMenu")
 </div>
 
 <script>
     PageInit();
+    $(document).ready(function () {
+        init();
+    }); 
+    var posts;
+    var products;
+    function trackingCode()
+    {
+        var c = $(GetPageId('code')).val()?.trim();
+        if (!c)
+            ShowAlertError("کد رهگیری را وارد کنید");
+        else if (c.length != 10)
+            ShowAlertError("کد رهگیری نامعتبر است");
+        else 
+            window.location.href = '/basket/tracking/' + c;
+    }
+
+    async function init() {
+        var local = localStorage.getItem("basket");
+        if (!local)
+            return hide();
+        var basket = JSON.parse(local);
+        if (!basket || !basket.length || basket.length == 0)
+            return hide();
+
+        var result = await PostRequest("/Order/GetPost", { "model": basket });
+        var data = result.data;
+        if (!result.success || !result.data || result.data.posts.length == 0) {
+            return hide();
+        }
+        posts = result.data.posts;
+        products = result.data.products;
+
+        setItems();
+        show();
+        getMany();
+    }
+    function setItems() {
+        var html = '<table class="table table-striped"><thead><tr><th scope="col" style="width:50px">#</th><th scope="col" style="width:60px">تصویر</th><th scope="col">نام</th><th scope="col">قیمت</th><th scope="col" style="width:50px"></th></tr></thead><tbody>';
+
+        posts.forEach((x, idx, arr) => {
+            const _idx = idx + 1;
+            const product = products.find(p => p.unicId == x.unicId);
+            const price = product.specialPrice > 0 ? product.specialPrice : product.price;
+            html += `<tr><th class="align-middle">${_idx}</th>`;
+            html += `<td class="align-middle"><img src="${x.img}" /></td>`;
+            html += `<td class="align-middle">${x.title}</td>`;
+            html += `<td class="align-middle"><span class="many">${price}</span> <span style="font-size:10px"> تومان</span></td>`;
+            html += `<td class="align-middle"><span class="svgClose" onclick="remove('${x.unicId}')"></span></td></tr>`;
+        });
+
+        const sum = products
+            .map(item => item.specialPrice > 0 ? item.specialPrice : item.price)
+            .reduce((prev, curr) => prev + curr, 0);
+        html += `<tr><th class="align-middle"></th><td class="align-middle">جمع</td><td class="align-middle"></td><td class="align-middle"><span class="many">${sum}</span> <span style="font-size:10px"> تومان</span></td><td class="align-middle"></td></tr></tbody></table><a href="/basket/order" type="button" class="btn bg-BaseColor text-white mt-4">تکمیل خرید</a>`;
+
+        $(GetPageId('items')).empty();
+        $(GetPageId('items')).append(html);
+    }
+    function show() {
+        $(GetPageId('itemsEmpty')).addClass("d-none");
+        $(GetPageId('items')).removeClass("d-none");
+    }
+    function hide() {
+        $(GetPageId('items')).addClass("d-none");
+        $(GetPageId('itemsEmpty')).removeClass("d-none");
+    }
+    function remove(unicId) {
+        posts = posts.filter(x => unicId != x.unicId);
+        products = products.filter(x => unicId != x.unicId);
+        const basket = posts.map(a => a.alias);
+        localStorage.setItem("basket", JSON.stringify(basket));
+        setItems();
+        SetNavbarOrderBasketCount();
+    }
+
+   
 </script>

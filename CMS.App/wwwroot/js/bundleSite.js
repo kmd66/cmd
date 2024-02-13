@@ -57,7 +57,7 @@ function SetNavbarOrderBasketCount() {
     }
     else {
         $(".navbarOrderBasketCount").text(0);
-        $(GetPageId('btnAddBasket')).addClass("d-none");
+        $(".navbarOrderBasketCount").addClass("d-none");
     }
 }
 function GetPageId(id) {

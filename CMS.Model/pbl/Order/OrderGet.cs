@@ -7,6 +7,8 @@ namespace CMS.Model
     {
         public List<OrderPost> posts { get; set; }
         public DateTime Date { get; set; }
+        public string DatePersion
+            => Date.ToPersion();
         public string Text { get; set; }
         public OrderType Type { get; set; }
     }

@@ -1,91 +1,131 @@
 ﻿@using CMS.Model
-@using CMS.App.Controllers
-@using CMS.App.Components
-@using fileModel = CMS.Model.Files
-@model CategoryModel
+@{
+    var id = Guid.NewGuid().String();
+}
 
-<div class="container main">
-    <div class="mainSlideLeft">
-        <div class="card rounded-0 w-100 mb-4">
-            <div style="max-height: 200px; position:relative">
-                <div class="postTitle">
-                    <h1 class="h2">@Model.menu.Name</h1>
+<input id="PageId" type="hidden" value="@id">
+
+<div class="container main my-4">
+    <div class="mainSlideLeft" style="margin: auto;">
+        <div class="card p-3">
+
+            <div id="isOrder@(id)" class="d-none">
+                <div class="mb-4 card p-3 text-danger fw-bold d-block">
+                    مجموعا <span id="postsCount@(id)"></span> سفارش به ارزش <span id="price@(id)"></span>
                 </div>
-                <img src="@Model.menu.Img" class="card-img-top rounded-0" alt="@Model.menu.Name">
+                <div class="row">
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label required">نام</label>
+                        <input id="FirstName@(id)"type="text" class="form-control">
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label required">نام خانوادگی</label>
+                        <input id="LastName@(id)" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label required">شماره تماس</label>
+                        <input id="Mobile@(id)" type="text" class="form-control">
+                    </div>
+                    <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                        <label class="form-label">ایمیل</label>
+                        <input id="Mail@(id)" type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                    <label class="form-label">کدپستی</label>
+                    <input id="PostalCode@(id)" type="text" class="form-control">
+                </div>
+                <div class="mb-3 col-lg-12 col-sm-12">
+                    <label class="form-label required">آدرس</label>
+                    <textarea id="Address@(id)" cols="45" rows="2" aria-required="true" class="form-control"></textarea>
+                </div>
+                <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                    <label class="form-label required">کد امنیتی</label>
+                    <div class="captchaBax">
+                        <span class="svgRefresh captchaIcon" onclick="CaptchaReload()"> </span>
+                        <img id="captchaImg@(id)" class="captchaImg">
+                        <input id="captchaText@(id)" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                        <input id="captchaKey@(id)" type="hidden">
+                    </div>
+                </div>
+                <button onclick="order()" type="button" class="btn bg-BaseColor text-white mt-4">ثبت سفارش</button>
+            </div>
+            <div id="isOrderTrCode@(id)" class="d-none">
+                <div class="staticAlert-success">سفارش شما با کد رهگیری زیر ثبت شد . برای پیگیری سفارش آن را ذخیره کنید</div>
+                <div id="trCode@(id)" class="staticAlert-error fw-bold mt-4"></div>
             </div>
         </div>
-        @if (Model.productItems.Count > 0)
-        {
-            <div class="row">
-                @foreach (var item in Model.productItems)
-                {
-                    <article class="article col-lg-4 col-md-6 col-sm-12">
-
-                                <div class="card w-100 my-4 ">
-                                    <div class="img">
-                                        <img src="@fileModel.Item.GetThumbnail(item.Img)" class="card-img-top" alt="@item.Title">
-                                    </div>
-                                    @if (item.SpecialPrice > 0)
-                                    {
-                                        <div class="badge labeTakhfif"> تخفیف @darsadPrice(item)</div>
-                                    }
-                                    @if (item.Special)
-                                    {
-                                        <div class="badge labelSpecial">ویژه</div>
-                                    }
-                                    <div class="card-body">
-
-                                        <h2 class="card-title h4">
-                                            <a href='@($"/product/{item.Alias}")' class="text-decoration-none">@item.Title</a>
-                                        </h2>
-
-                                        @if (item.Price > 0 || item.SpecialPrice > 0)
-                                        {
-                                            <div class="c">
-                                                @if (item.Price > 0)
-                                                {
-                                                    <span class="@classPrice(item)">@item.Price </span>
-                                                }
-                                                @if (item.SpecialPrice > 0)
-                                                {
-                                                    <span class="many"> @item.SpecialPrice </span>
-                                                }
-                                                <span style="font-size:10px"> تومان</span>
-                                            </div>
-                                        }
-                                    </div>
-                                    <div class="card-footer bg-white border-0">
-                                        <a href='@($"/product/{item.Alias}")' class="btn bg-BaseColor text-white">مشاهده</a>
-                                    </div>
-                                </div>
-                            </article>
-                }
-            </div>
-            @Html.Raw(Model.postPagInation)
-        }
-        else
-        {
-            <div class="card rounded-0 p-4 w-100">
-                <span>مطلبی برای نمایش وجود ندارد</span>
-            </div>
-        }
     </div>
-    @await Component.InvokeAsync("OutsideRightMenu")
 </div>
+
 
 <script>
     PageInit();
-</script>
-@{
 
-    string darsadPrice(PostProduct model)
-    {
-        return $"{100 -((model.SpecialPrice * 100) / model.Price) }%";
+    $(document).ready(function () {
+        init();
+    });
+
+    async function init() {
+        basket = getBasket();
+        if (!basket)
+            return;
+
+        var result = await PostRequest("/Order/GetPost", { "model": basket });
+        if (result.success && result.data && result.data.posts.length > 0) {
+            $(GetPageId('isOrder')).removeClass("d-none");
+            $(GetPageId('postsCount')).text(result.data.posts.length);
+            const sum = result.data.products
+                .map(item => item.specialPrice > 0 ? item.specialPrice : item.price)
+                .reduce((prev, curr) => prev + curr, 0);
+            $(GetPageId('price')).text(sum);
+            CaptchaReload();
+            return;
+        }
     }
-    string classPrice(PostProduct model)
-    {
-        if (model.SpecialPrice > 0)
-            return "many diactive";
-        return "many";
+
+    async function order() {
+        basket = getBasket();
+        if (!basket)
+            return;
+
+        var model = {};
+        model.ListBasket = basket;
+
+        model.FirstName = $(GetPageId('FirstName')).val();
+        model.LastName = $(GetPageId('LastName')).val();
+        model.Mobile = $(GetPageId('Mobile')).val();
+        model.Mail = $(GetPageId('Mail')).val();
+        model.PostalCode = $(GetPageId('PostalCode')).val();
+        model.Address = $(GetPageId('Address')).val();
+
+        model.CaptchaText = $(GetPageId('captchaText')).val();
+        model.CaptchaKey = $(GetPageId('captchaKey')).val();
+
+        var result = await PostRequest("/SaveOrder", model);
+        if (!result.success) {
+            CaptchaReload();
+            return;
+        }
+
+        localStorage.removeItem("basket");
+        $(GetPageId('trCode')).text(result.data);
+        $(GetPageId('isOrderTrCode')).removeClass("d-none");
+        $(GetPageId('isOrder')).addClass("d-none");
+        SetNavbarOrderBasketCount();
+
     }
-}
+
+    function getBasket() {
+        var local = localStorage.getItem("basket");
+        if (!local)
+            return null;
+        basket = JSON.parse(local);
+        if (!basket || !basket.length || basket.length == 0)
+            return null;
+        return basket;
+    }
+
+</script>
