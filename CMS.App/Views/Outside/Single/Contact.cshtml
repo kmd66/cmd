@@ -46,7 +46,7 @@
                         <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
                             <label class="form-label required">کد امنیتی</label>
                             <div class="captchaBax">
-                                <span class="svgRefresh captchaIcon" onclick="captchaReload()"> </span>
+                                <span class="svgRefresh captchaIcon" onclick="CaptchaReload()"> </span>
                                 <img id="captchaImg@(Model.id)" src="data:image/png;base64, @Model.captcha.Base64Image" class="captchaImg">
                                 <input id="captchaText@(Model.id)" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
                                 <input id="captchaKey@(Model.id)" type="hidden" value="@Model.captcha.Key">
@@ -67,15 +67,6 @@
     var id = $(`#PageId`).val();
     PageInit();
 
-    async function captchaReload() {
-        var result = await PostRequest("/CaptchaReload");
-        if (!result.data)
-            return;
-            var t =`#captchaKey${id}`;
-        $(`#captchaKey${id}`).val(result.data.key);
-        $(`#captchaImg${id}`).attr('src', `data:image/png;base64, ${result.data.base64Image}`);
-    }
-
     async function sendMsg() {
         model.CaptchaKey = $(`#captchaKey${id}`).val();
         model.CaptchaText = $(`#captchaText${id}`).val();
@@ -86,7 +77,7 @@
 
         var result = await PostRequest("/SaveMessage", model);
         if (!result.success) {
-            captchaReload();
+            CaptchaReload();
             return;
         }
         $(`#SuccessMsg${id}`).removeClass("d-none");

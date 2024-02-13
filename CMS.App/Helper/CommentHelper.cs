@@ -90,7 +90,7 @@ namespace CMS.App.Helper
             if (captcha == null)
                 return Result.Successful();
 
-            if (string.IsNullOrEmpty(captcha.Code) || !CaptchaHelper.Validate(captcha))
+            if (string.IsNullOrEmpty(captcha.Text) || !CaptchaHelper.Validate(captcha))
                 return Result.Failure(message: "کد امنیتی را وارد کنید");
 
             var validationResult = await validation(model);

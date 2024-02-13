@@ -1,0 +1,156 @@
+﻿@using CMS.Model
+@using fileModel = CMS.Model.Files
+@model CMS.App.Components.CommentModel
+@{
+    int count = 0;
+    string id = Model.post.id;
+    var ListComment = Model.post.scoreComment.Comments;
+    count = ListComment.Count > 0 ? ListComment[0].Count : 0;
+}
+<script>
+    var comment = { Score  : 0};
+    function setScore(i){
+        comment.Score = i;
+    }
+</script>
+
+<div class="card mainCard mt-4">
+
+    <ul class="nav nav-tabs bg-white" id="CommentTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="CommentSend-tab" data-bs-toggle="tab" data-bs-target="#CommentSend" type="button" role="tab" aria-controls="CommentSend" aria-selected="true">ارسال نظر</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="CommentList-tab" data-bs-toggle="tab" data-bs-target="#CommentList" type="button" role="tab" aria-controls="CommentList" aria-selected="false">مشاهده نظرات (@count)</button>
+        </li>
+    </ul>
+    <div class="card-body">
+        <div class="tab-content" id="myTabComment">
+
+            <div class="tab-pane my-3 fade show active" id="CommentSend" role="tabpanel" aria-labelledby="CommentSend-tab">
+                <div id="CommentSendItem@(id)">
+                    <div class="mb-3 col-lg-12 col-sm-12">
+                        <label class="form-label required">امتیاز</label>
+                        <ul class="ratings">
+                            <li class="star" onclick="setScore(5)"></li>
+                            <li class="star" onclick="setScore(4)"></li>
+                            <li class="star" onclick="setScore(3)"></li>
+                            <li class="star" onclick="setScore(2)"></li>
+                            <li class="star" onclick="setScore(1)"></li>
+                        </ul>
+                    </div>
+                    <div class="mb-3 col-lg-12 col-sm-12">
+                        <label class="form-label required">نظر</label>
+                        <textarea id="Text@(id)" cols="45" rows="8" aria-required="true" class="form-control"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">نام</label>
+                            <input id="Name@(id)" type="text" placeholder="Name" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">ایمیل</label>
+                            <input id="Mail@(id)" type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label">وبسایت</label>
+                            <input id="WebSite@(id)" type="text" placeholder="Website" class="form-control">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+                            <label class="form-label required">کد امنیتی</label>
+                            <div class="captchaBax">
+                                <span class="svgRefresh captchaIcon" onclick="CaptchaReload()"> </span>
+                                <img id="captchaImg@(id)" src="data:image/png;base64, @Model.captcha.Base64Image" class="captchaImg">
+                                <input id="captchaText@(id)" type="text" placeholder="code" class="form-control captchaInput" maxlength="3" onkeypress="return /[0-9]/i.test(event.key)">
+                                <input id="captchaKey@(id)" type="hidden" value="@Model.captcha.Key">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="saveComment()" type="button" class="btn w-100 bg-BaseColor text-white mt-1">ارسال نظر</button>
+                </div>
+
+                <div id="CommentSendMsg@(id)" class="staticAlert-success d-none">"نظر با موفقیت ثبت شد. پس از تایید نظر شما منتشر خواهد شد"</div>
+            </div>
+
+            <div class="tab-pane my-3 fade" id="CommentList" role="tabpanel" aria-labelledby="CommentList-tab">
+                @if (ListComment.Count > 0)
+                {
+                    @foreach (var item in ListComment)
+                    {
+                        <div class="card mainCard mb-3 bg-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-start">
+                                    <div class="UserAvatar align-self-start">
+                                        <div class="UserAvatarBorder">
+                                            <div class="svgUser commentUserAvatar"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="ms-2 mt-2">
+                                        <div class="commentName">@item.Name</div>
+                                        <div class="commentDate">@item.Date.ToPersion()</div>
+                                        @if (item.Score > 0)
+                                        {
+                                            <div class="commentDate rtl commentScore" data-score="@item.Score"></div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="mt-2 ps-4">@item.Text</div>
+
+                                @if (item.Childs.Count > 0)
+                                {
+                                    @foreach (var child in item.Childs)
+                                    {
+                                        <hr />
+                                        <div class="ps-4">
+                                            <div class="d-flex justify-content-start">
+                                                <div class="UserAvatar align-self-start">
+                                                    <div class="UserAvatarBorder">
+                                                        <div class="svgUser commentUserAvatar"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="ms-2 mt-2">
+                                                    <div class="commentName">@child.Name</div>
+                                                    <div class="commentDate">@child.Date.ToPersion()</div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 ps-4">@child.Text</div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div>نظری برای نمایش وجود ندارد</div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    async function saveComment() {
+        comment.Text = $(GetPageId('Text')).val();
+        comment.Name = $(GetPageId('Name')).val();
+        comment.Mail = $(GetPageId('Mail')).val();
+        comment.WebSite = $(GetPageId('WebSite')).val();
+        comment.CaptchaText = $(GetPageId('captchaText')).val();
+        comment.CaptchaKey = $(GetPageId('captchaKey')).val();
+        comment.PostUnicId = $(`#PostId`).val();
+
+        var result = await PostRequest("/SaveComment", comment);
+        if (!result.success) {
+            CaptchaReload();
+            return;
+        }
+
+        $(GetPageId('CommentSendMsg')).removeClass("d-none");
+        $(GetPageId('CommentSendItem')).addClass("d-none");
+
+    }
+</script>

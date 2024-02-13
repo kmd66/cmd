@@ -18,7 +18,7 @@ namespace CMS.App.Components
             var result = await db.ListAsync(new CMS.Model.PostVM() { Special = true, IsProduct = true }, 5);
             model.postItems = result.Data.ToList();
 
-            return View(model);
+            return View("~/Views/Shared/Outside/RightMenu.cshtml", model);
         }
 
     }

@@ -1,4 +1,13 @@
 ﻿
+async function CaptchaReload() {
+    var id = $(`#PageId`).val();
+    var result = await PostRequest("/CaptchaReload");
+    if (!result.data)
+        return;
+    $(`#captchaKey${id}`).val(result.data.key);
+    $(`#captchaImg${id}`).attr('src', `data:image/png;base64, ${result.data.base64Image}`);
+}
+
 async function PostRequest(url, data) {
     ShowLoad();
     return $.ajax({

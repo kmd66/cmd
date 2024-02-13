@@ -5,6 +5,7 @@
 @model PosteModel
 
 <input id="PageId" type="hidden" value="@Model.id">
+<input id="PostId" type="hidden" value="@Model.post.UnicId">
 
 <div class="container main">
     <div class="mainSlideLeft">
@@ -33,7 +34,7 @@
             @await Component.InvokeAsync("OutsideRelated", Model.related)
             @if (Model.postOption.IsComment)
             {
-                <Comment Post="post" Obj="Obj" ListComment="scoreComment.Comments" />
+                @await Component.InvokeAsync("OutsideComment", Model);
             }
         }
 

@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace CMS.App.Controllers
 {
     [Route("cmd-login")]
-    public class CmdLogin : Controller
+    public class LoginControlle : Controller
     {
         public ActionResult Index()
         {

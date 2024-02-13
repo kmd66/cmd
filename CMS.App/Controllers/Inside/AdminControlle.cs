@@ -6,7 +6,7 @@ using System.Security.Claims;
 namespace CMS.App.Controllers
 {
     [Route("cmd-admin")]
-    public class CmdAdmin : Controller
+    public class AdminControlle : Controller
     {
         public ActionResult Index()
         {

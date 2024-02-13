@@ -111,7 +111,7 @@
     async function getBasket() {
         var local = localStorage.getItem("basket");
         if (!local)
-            return showMsg();
+            return showBtn();
         basket = JSON.parse(local);
         var item = basket.find(x => x == pageAlias);
         if (item)
