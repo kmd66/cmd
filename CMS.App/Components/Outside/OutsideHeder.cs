@@ -23,7 +23,7 @@ namespace CMS.App.Components
             foreach (var item in model.menus)
                 model.MenuItemOffcanvas += getMenuItemOffcanvas(item, false);
 
-            return View(model);
+            return View("~/Views/Shared/Outside/Heder.cshtml", model);
         }
         private string getItemClass(bool Child)
         {

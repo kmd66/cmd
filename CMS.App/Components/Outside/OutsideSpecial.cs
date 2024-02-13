@@ -8,7 +8,7 @@ namespace CMS.App.Components
     {
         public async Task<IViewComponentResult> InvokeAsync(List<CMS.Model.Post> items)
         {
-            return View(items);
+            return View("~/Views/Shared/Outside/Special.cshtml", items);
         }
     }
 }

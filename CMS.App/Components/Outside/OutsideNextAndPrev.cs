@@ -2,11 +2,11 @@
 
 namespace CMS.App.Components
 {
-    public class OutsideRelated : ViewComponent
+    public class OutsideNextAndPrev : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync(List<Model.Post> model)
         {
-            return View(model);
+            return View("~/Views/Shared/Outside/NextAndPrev.cshtml", model);
         }
     }
 }

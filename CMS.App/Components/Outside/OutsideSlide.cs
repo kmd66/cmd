@@ -14,7 +14,7 @@ namespace CMS.App.Components
             if (!string.IsNullOrEmpty(option.Text))
                 items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.HomeSlide>>(option.Text);
 
-            return View(items);
+            return View("~/Views/Shared/Outside/Slide.cshtml", items);
         }
 
     }

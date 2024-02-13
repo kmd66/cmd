@@ -15,8 +15,8 @@ namespace CMS.App.Components
                 ProductItems =  resultProduct.Data.ToList(),
 
             };
+            return View("~/Views/Shared/Outside/Fotter.cshtml", model);
 
-            return View(model);
         }
     }
     public class OutsideFotterModel
