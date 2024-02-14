@@ -1,0 +1,24 @@
+﻿
+<nav class="navbar fixed-top bg-dark text-white">
+    <div class="container-fluid">
+        <span class="svgWebsite bg-white" style="cursor: pointer;width: 16px;height: 16px;" onclick="GetToWeb()"></span>
+        <span class="svgUser bg-white" style="cursor: pointer;width: 16px;height: 16px;" onclick="User()"></span>
+        <span class="svgLogout  bg-white" style="cursor: pointer;width: 16px;height: 16px;" onclick="Logout()"></span>
+    </div>
+</nav>
+<script>
+
+    function GetToWeb()
+    {
+        window.open('/cmd-admin/profile', '_blank');
+    }
+
+    function User()
+    {
+        window.location.href = "/cmd-admin/profile";
+    }
+    function Logout() {
+        delete_cookie('token')
+        window.location.href = '/cmd-admin';
+    }
+</script>

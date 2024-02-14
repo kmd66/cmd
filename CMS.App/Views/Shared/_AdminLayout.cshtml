@@ -32,6 +32,15 @@
 
 </head>
 <body>
-    @RenderBody()
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            @await Component.InvokeAsync("InsideNavMenu")
+            @await Component.InvokeAsync("InsideSideMenu")
+            <div class="col py-3" style="margin: 40px 0 20px 0;">
+                @RenderBody()
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>

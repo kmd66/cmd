@@ -1,0 +1,44 @@
+﻿@using CMS.Helper;
+@using CMS.Model;
+@{
+
+    Option item = new Option();
+    List<CMS.Model.Social> items = new List<CMS.Model.Social>();
+    item = Option.GetItem(OptionType.Social);
+    if (!string.IsNullOrEmpty(item.Text))
+    {
+        items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CMS.Model.Social>>(item.Text);
+    }
+}
+
+<div><h2>شبکه اجتماعی</h2></div>
+
+@foreach (var slide in items)
+{
+    <div class="row">
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12">
+            <label class="form-label">
+                لینک تصویر
+            </label>
+            <input type="text" value="@slide.Img" class="form-control">
+        </div>
+        <div class="mb-3 col-lg-4 col-md-6 col-sm-12" style="position:relative">
+            <label class="form-label">
+                لینک
+            </label>
+            <input type="text" value="@slide.Link" class="form-control">
+            <span class="removeSpanTag" onclick="(()=>removeProperty(slide))">×</span>
+        </div>
+    </div>
+    <hr />
+}
+
+<button class="btn btn-primary" type="button" onclick="addProperty">افزودن مقدارجدید</button>
+<hr />
+
+<div>
+    <button class="btn btn-primary" type="button" onclick="save">ذخیره</button>
+    <a href='cmd-admin/setting' class="btn btn-outline-secondary">
+        بازگشت
+    </a>
+</div>

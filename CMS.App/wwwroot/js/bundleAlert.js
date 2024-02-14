@@ -11,8 +11,14 @@ function JsShowAlert(obj) {
     })
 }
 function ShowAlertError(message) {
+    ShowAlert(message, 'error')
+}
+function ShowAlertSuccess(message) {
+    ShowAlert(message, 'success')
+}
+function ShowAlert(message, type) {
     new Alert({
-        type: 'error',
+        type: type,
         message: message,
         expires: true,
         withProgress: true,

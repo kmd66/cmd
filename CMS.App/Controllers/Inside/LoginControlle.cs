@@ -21,7 +21,7 @@ namespace CMS.App.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Index", "CmdAdmin");
+                    return Redirect("cmd-admin");
                 }
             }
 

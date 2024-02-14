@@ -1,0 +1,43 @@
+﻿@using CMS.Helper;
+@using CMS.Model;
+@{
+
+    List<Option> items = new List<Option>();
+    items = Option.GetItem(new List<OptionType>
+            {
+                OptionType.Title,
+                OptionType.Comment,
+                OptionType.Icon,
+            });
+}
+<div><h2>تنظیمات عمومی</h2></div>
+
+@foreach (var item in items)
+{
+    <div id="@item.Id" class="mb-3 col-lg-4 col-md-6 col-sm-12 itemOption">
+        <label class="form-label">@item.Type</label>
+        <input type="text" class="form-control" value="@item.Text">
+    </div>
+}
+
+<div>
+    <button class="btn btn-primary" type="button" onclick="save()">ذخیره</button>
+    <a href='/cmd-admin/setting' class="btn btn-outline-secondary">
+        بازگشت
+    </a>
+</div>
+
+<script>
+    var model = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(items));
+    
+    function save(){
+        var list =[];
+        $('.itemOption').each(function (i, obj) {
+            var itemId = $(obj).id;
+            objIndex = model.findIndex((x => x.id == itemId));
+            if (objIndex > -1){
+                model[objIndex].Text = $(obj).children("input[type='text']:first").val();
+            }
+        });
+    }
+</script>
