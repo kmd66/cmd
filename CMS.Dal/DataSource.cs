@@ -12,33 +12,39 @@ namespace CMS.Dal
     {
         public T1 Map<T1, T2>(T2 t2)
         {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<T2, T1>();
-            });
-            // only during development, validate your mappings; remove it before release
-            //mapperConfiguration.AssertConfigurationIsValid();
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(t2);
+            var m2 = System.Text.Json.JsonSerializer.Deserialize<T1>(jsonString);
+            return m2;
+            //var mapperConfiguration = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.CreateMap<T2, T1>();
+            //});
+            //// only during development, validate your mappings; remove it before release
+            ////mapperConfiguration.AssertConfigurationIsValid();
 
-            var mapper = mapperConfiguration.CreateMapper();
+            //var mapper = mapperConfiguration.CreateMapper();
 
-            var model = mapper.Map<T1>(t2);
+            //var model = mapper.Map<T1>(t2);
 
-            return model;
+            //return model;
         }
         public IEnumerable<T1> MapList<T1, T2>(IEnumerable<T2> t2)
         {
-            var mapperConfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<T2, T1>();
-            });
-            // only during development, validate your mappings; remove it before release
-            //mapperConfiguration.AssertConfigurationIsValid();
+            string jsonString = System.Text.Json.JsonSerializer.Serialize(t2);
+            var m2 = System.Text.Json.JsonSerializer.Deserialize<IEnumerable<T1>>(jsonString);
+            return m2;
+            //var mapperConfiguration = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.CreateMap<T2, T1>();
+            //});
+            //// only during development, validate your mappings; remove it before release
+            ////mapperConfiguration.AssertConfigurationIsValid();
 
-            var mapper = mapperConfiguration.CreateMapper();
+            //var mapper = mapperConfiguration.CreateMapper();
 
-            var model = mapper.Map<IEnumerable<T1>>(t2);
+            //var model = mapper.Map<IEnumerable<T1>>(t2);
 
-            return model;
+            //return model;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Sample.Model.Data
         {
             get
             {
+                //Data Source=193.141.65.146,2019;TrustServerCertificate=True;Initial Catalog=TalaPishe;User ID =kama; Password=kama@@1389
                 if (string.IsNullOrEmpty(connectionString))
                 {
                     using (StreamReader sr = File.OpenText(AppContext.BaseDirectory+"/dalSettings.txt"))

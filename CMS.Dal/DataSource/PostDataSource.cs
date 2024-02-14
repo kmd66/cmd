@@ -359,7 +359,7 @@ namespace CMS.Dal.DataSource
                     + $" @Search = {search.Query()}"
                     + $", @PageSize = {model.PageSize.Query()}"
                     + $", @PageIndex = {model.PageIndex.Query()}";
-                var ett = await _pblContexts.PostProducts.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).ToListAsync();
+                var ett = await _pblContexts.PostProducts.FromSql(System.Runtime.CompilerServices.FormattableStringFactory.Create(query)).AsNoTracking().ToListAsync();
 
                 var returnMOdel = MapList<PostProduct, Dal.DbModel.PostProduct>(ett);
 

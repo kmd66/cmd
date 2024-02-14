@@ -44,7 +44,9 @@
         }
 
     </div>
-    @await Component.InvokeAsync("OutsideRightMenu")
+    <cache expires-after="@TimeSpan.FromMinutes(5)">
+        @await Component.InvokeAsync("OutsideRightMenu")
+    </cache>
 </div>
 
 <script>

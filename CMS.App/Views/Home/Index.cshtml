@@ -2,8 +2,10 @@
 @using CMS.App.Controllers
 @model HomeModel
 
-@await Component.InvokeAsync("OutsideSlide")
-@await Component.InvokeAsync("OutsideSpecial", Model.itemsTop)
+<cache expires-after="@TimeSpan.FromMinutes(5)">
+    @await Component.InvokeAsync("OutsideSlide")
+    @await Component.InvokeAsync("OutsideSpecial", Model.itemsTop)
+</cache>
 <div class="container main">
     <div class="mainSlideLeft">
         @if (Model.post != null)
@@ -20,9 +22,13 @@
 
         }
     </div>
-    @await Component.InvokeAsync("OutsideRightMenu")
+    <cache expires-after="@TimeSpan.FromMinutes(5)">
+        @await Component.InvokeAsync("OutsideRightMenu")
+    </cache>
 </div>
-@await Component.InvokeAsync("OutsideSpecial", Model.itemsBot)
+<cache expires-after="@TimeSpan.FromMinutes(5)">
+    @await Component.InvokeAsync("OutsideSpecial", Model.itemsBot)
+</cache>
 
 <script>
     PageInit();

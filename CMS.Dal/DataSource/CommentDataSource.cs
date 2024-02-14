@@ -17,14 +17,14 @@ namespace CMS.Dal.DataSource
         {
             try
             {
-                var ett = await _pblContexts.Comments.Where(x =>
+                var ett = await _pblContexts.Comments.AsNoTracking().Where(x =>
                    (id != 0 && x.Id == id)
                    || (id == 0 && x.UnicId == unicId)
                 ).Take(1).FirstOrDefaultAsync();
                 if (ett == null)
                     return Result<Comment>.Successful();
 
-                var childs = await _pblContexts.Comments.Where(x =>
+                var childs = await _pblContexts.Comments.AsNoTracking().Where(x =>
                     x.ParentId == ett.Id
                 ).ToListAsync();
                 var returnMOdel = Map<Comment, Dal.DbModel.Comment>(ett);

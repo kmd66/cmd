@@ -1,7 +1,10 @@
 using CMS.Dal.DataSource;
+using CMS.Model.Interface;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.WebEncoders;
 using Sample.Model.Data;
 using System;
+using System.IO.Compression;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
@@ -16,6 +19,23 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddOutputCache(options =>
+{
+    // Add a base policy that applies to all endpoints
+    options.AddBasePolicy(basePolicy => basePolicy.Expire(TimeSpan.FromSeconds(120)));
+
+    // Add a named policy that applies to selected endpoints
+    options.AddPolicy("Expire20", policyBuilder => policyBuilder.Expire(TimeSpan.FromSeconds(20)));
+});
+
+// Configure Compression level
+builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Fastest);
+builder.Services.AddResponseCompression(options =>
+{
+    options.Providers.Add<GzipCompressionProvider>();
+    options.EnableForHttps = true;
 });
 
 SetProperty(builder);
@@ -34,9 +54,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseResponseCaching();
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -51,6 +70,8 @@ app.Use(async (context, next) =>
 });
 app.UseSession();
 
+app.UseResponseCompression();
+app.UseOutputCache();
 app.Run();
 async void RegisterLibrary(IServiceCollection services)
 {
