@@ -1,4 +1,5 @@
 ﻿using CMS.App.Components;
+using CMS.App.Helper;
 using CMS.App.Models;
 using CMS.Dal.Migrations;
 using CMS.Model;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 
 namespace CMS.App.Controllers
 {
+    [Delay]
     public class CategoryController : Controller
     {
         CMS.Dal.DataSource.PostDataSource db = new CMS.Dal.DataSource.PostDataSource();

@@ -1,4 +1,5 @@
-﻿using CMS.Model;
+﻿using CMS.App.Helper;
+using CMS.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ namespace CMS.App.Controllers
     [Route("cmd-admin")]
     public class AdminControlle : Controller
     {
+        [InsideDelay]
         [Route("")]
         [Route("index")]
         public ActionResult Index()

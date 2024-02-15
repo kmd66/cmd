@@ -1,4 +1,5 @@
-﻿using CMS.Model;
+﻿using CMS.App.Helper;
+using CMS.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using System.Security.Claims;
 
 namespace CMS.App.Controllers
 {
+    [InsideDelay]
     [Helper.Authorize]
     [Route("cmd-admin/setting")]
     public class SettingControlle : Controller
@@ -35,12 +37,6 @@ namespace CMS.App.Controllers
 
         [Route("social")]
         public ActionResult Social()
-        {
-            return View("~/Views/Inside/Setting/Social.cshtml");
-        }
-
-        [HttpPost, Route("save")]
-        public ActionResult Save()
         {
             return View("~/Views/Inside/Setting/Social.cshtml");
         }

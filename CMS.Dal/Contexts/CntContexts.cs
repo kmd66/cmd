@@ -1,5 +1,6 @@
 ﻿using CMS.Dal.DbModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Sample.Model.Data;
 using System.Reflection.Metadata;
 
@@ -19,7 +20,11 @@ namespace CMS.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(Register.ConnectionString);
+            optionsBuilder.UseSqlServer(Register.ConnectionString, x =>
+            {
+                x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+            });
+            optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
         }
 

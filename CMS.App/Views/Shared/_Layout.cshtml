@@ -35,11 +35,11 @@
 
 </head>
 <body>
-    <cache expires-after="@TimeSpan.FromMinutes(5)">
+    <cache expires-after="@TimeSpan.FromMinutes(40)">
         @await Component.InvokeAsync("OutsideHeder")
     </cache>
     @RenderBody()
-    <cache expires-after="@TimeSpan.FromMinutes(5)">
+    <cache expires-after="@TimeSpan.FromMinutes(30)">
         @await Component.InvokeAsync("OutsideFotter")
     </cache>
 

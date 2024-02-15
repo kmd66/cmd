@@ -14,21 +14,16 @@ async function CaptchaReload() {
 }
 
 async function PostRequest(url, data) {
+    debugger
     ShowLoad();
     return $.ajax({
         url: url,
         type: "post",
         data: data ? data : {}
     }).done(function (response) {
+        debugger
         if (!response.success) {
-            JsShowAlert({
-                type : 'error',
-                message:response.message,
-                expires : true,
-                withProgress: true,
-                container: ".anotherElement"
-            });
-
+            ShowAlertError(response.message);
             if (response.code == 401) {
             }
             return { success: false }
@@ -37,14 +32,11 @@ async function PostRequest(url, data) {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         if (jqXHR.status == 401) {
         }
+        else if (jqXHR.status == 403) {
+            ShowAlertError("محدودیت درخواست. کمی صبر کنید و دوباره امتحان کنید");
+        }
         else {
-            JsShowAlert({
-                type: 'error',
-                message: jqXHR.status + "" + jqXHR.statusText,
-                expires: true,
-                withProgress: true,
-                container: ".anotherElement"
-            });
+            ShowAlertError(jqXHR.status + "" + jqXHR.statusText);
         }
     }).always(function () {
         HideLoad();

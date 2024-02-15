@@ -1,4 +1,5 @@
-﻿using CMS.Model;
+﻿using CMS.App.Helper;
+using CMS.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -9,6 +10,7 @@ namespace CMS.App.Controllers
     [Route("cmd-login")]
     public class LoginControlle : Controller
     {
+        [InsideDelay]
         public ActionResult Index()
         {
             var cooki = Request.Cookies["token"];
@@ -28,6 +30,7 @@ namespace CMS.App.Controllers
             return View("~/Views/Inside/CmsLogin/Index.cshtml");
         }
 
+        [InsideDelayApi]
         [HttpPost, Route("get")]
         public async Task<Result<TokenObject>> Get([FromForm] User model)
         {
