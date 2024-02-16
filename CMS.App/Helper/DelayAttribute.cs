@@ -10,20 +10,19 @@ namespace CMS.App.Helper
     public class DelayAttribute : ActionFilterAttribute
 
     {
-        static bool isMulti = false;
-        private static int isExecuting = 0;
+        public static int isDelayExecuting = 0;
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (isExecuting < 10)
+            if (DelayAttribute.isDelayExecuting < 10)
             {
-                isExecuting++;
-                if (isExecuting > 1)
-                    await Task.Delay(isExecuting * 1500);
+                DelayAttribute.isDelayExecuting++;
+                if (DelayAttribute.isDelayExecuting > 1)
+                    await Task.Delay(DelayAttribute.isDelayExecuting * 1500);
                 await next();
                 await Task.Delay(200);
-                isExecuting--;
-                if (isExecuting < 0)
-                    isExecuting = 0;
+                DelayAttribute.isDelayExecuting--;
+                if (DelayAttribute.isDelayExecuting < 0)
+                    DelayAttribute.isDelayExecuting = 0;
             }
             else
             {
@@ -46,19 +45,18 @@ namespace CMS.App.Helper
     public class DelayApiAttribute : ActionFilterAttribute
 
     {
-        private static int isExecuting = 0;
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (isExecuting < 5)
+            if (DelayAttribute.isDelayExecuting < 5)
             {
-                isExecuting++;
-                if (isExecuting > 1)
-                    await Task.Delay(isExecuting * 2500);
+                DelayAttribute.isDelayExecuting++;
+                if (DelayAttribute.isDelayExecuting > 1)
+                    await Task.Delay(DelayAttribute.isDelayExecuting * 2500);
                 await next();
-                await Task.Delay(1000);
-                isExecuting--;
-                if (isExecuting < 0)
-                    isExecuting = 0;
+                await Task.Delay(1500);
+                DelayAttribute.isDelayExecuting--;
+                if (DelayAttribute.isDelayExecuting < 0)
+                    DelayAttribute.isDelayExecuting = 0;
             }
             else
             {
@@ -73,20 +71,18 @@ namespace CMS.App.Helper
     public class InsideDelayAttribute : ActionFilterAttribute
 
     {
-        static bool isMulti = false;
-        private static int isExecuting = 0;
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (isExecuting < 10)
+            if (DelayAttribute.isDelayExecuting < 5)
             {
-                isExecuting++;
-                if (isExecuting > 1)
-                    await Task.Delay(isExecuting * 2500);
+                DelayAttribute.isDelayExecuting++;
+                if (DelayAttribute.isDelayExecuting > 1)
+                    await Task.Delay(DelayAttribute.isDelayExecuting * 3500);
                 await next();
-                await Task.Delay(1000);
-                isExecuting--;
-                if (isExecuting < 0)
-                    isExecuting = 0;
+                await Task.Delay(2000);
+                DelayAttribute.isDelayExecuting--;
+                if (DelayAttribute.isDelayExecuting < 0)
+                    DelayAttribute.isDelayExecuting = 0;
             }
             else
             {
@@ -98,30 +94,22 @@ namespace CMS.App.Helper
                 };
             }
         }
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-        }
-
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-        }
     }
     public class InsideDelayApiAttribute : ActionFilterAttribute
 
     {
-        private static int isExecuting = 0;
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (isExecuting < 5)
+            if (DelayAttribute.isDelayExecuting < 5)
             {
-                isExecuting++;
-                if (isExecuting > 1)
-                    await Task.Delay(isExecuting * 3000);
+                DelayAttribute.isDelayExecuting++;
+                if (DelayAttribute.isDelayExecuting > 1)
+                    await Task.Delay(DelayAttribute.isDelayExecuting * 3500);
                 await next();
-                await Task.Delay(1500);
-                isExecuting--;
-                if (isExecuting < 0)
-                    isExecuting = 0;
+                await Task.Delay(2000);
+                DelayAttribute.isDelayExecuting--;
+                if (DelayAttribute.isDelayExecuting < 0)
+                    DelayAttribute.isDelayExecuting = 0;
             }
             else
             {

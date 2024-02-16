@@ -79,15 +79,15 @@ namespace CMS.App.Components
             }
             else if (Item.Type == Model.MenuType.Content)
             {
-                s = $"<a href=\"{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" Match=\"NavLinkMatch.All\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></a>";
+                s = $"<a href=\"{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></a>";
             }
             else if (Item.Type == Model.MenuType.Categorie)
             {
-                s = $"<NavLink href=\"category/{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" Match=\"NavLinkMatch.All\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></NavLink>";
+                s = $"<a href=\"category/{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></a>";
             }
             else if (Item.Type == Model.MenuType.ProductCategorie)
             {
-                s = $"<NavLink href=\"product-category/{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" Match=\"NavLinkMatch.All\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></NavLink>";
+                s = $"<a href=\"product-category/{Item.Alias}\" class=\"list-group-item list-group-item-action py-2 ripple\" onclick=\"hideOffcanvas('offcanvasMenu')\"><i class=\"fas fa-money-bill fa-fw me-3\"></i><span>{Item.Name}</span></a>";
             }
             else if (Item.Type == Model.MenuType.Title)
             {

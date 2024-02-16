@@ -375,3 +375,15 @@ footer {
     left:5px;
     right: unset;
 }
+.nav-previous, .nav-next{
+    width:unset;
+}
+@media (max-width: 576px) {
+    .nav-previous , .nav-next {
+        width: 100Px;
+    }
+        .nav-previous .imgsize1, .nav-next .imgsize1 {
+            width: 100Px;
+            height:100pX
+        }
+}
